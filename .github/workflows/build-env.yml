@@ -30,7 +30,9 @@ jobs:
         run: |
           tar --use-compress-program="zstd -T0 -3" -cf env.tar.zst .lake
           split -b 1900m env.tar.zst env.tar.zst.part-
-          sha256sum env.tar.zst > env.sha256
+          rm env.tar.zst
+          # One line per part, so the setup script learns the part names from this file alone.
+          sha256sum env.tar.zst.part-* > env.sha256
           du -sh .lake | tee -a "$GITHUB_STEP_SUMMARY"
           ls -la env.tar.zst.part-* env.sha256 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish release
