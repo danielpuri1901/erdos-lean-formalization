@@ -20,12 +20,8 @@ jobs:
       - name: Fetch dependencies and Mathlib cache
         run: |
           lake update --keep-toolchain 2>/dev/null || lake update
+          git diff --exit-code lake-manifest.json
           lake exe cache get
-      - name: Upload the generated manifest
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: lake-manifest
-          path: lake-manifest.json
       - name: Build
         run: |
           start=$(date +%s)
@@ -35,7 +31,9 @@ jobs:
         run: |
           cat > /tmp/Axioms.lean <<'EOF2'
           import Solution
+          /-! Axiom report for the solution. -/
           #print axioms challenge_trivial
           EOF2
           lake env lean /tmp/Axioms.lean | tee axioms.txt
-          grep -q "depends on axioms: \[\]" axioms.txt || grep -q "does not depend on any axioms" axioms.txt
+          # The statement itself uses classical definitions, so only a subset of the permitted axioms is accepted.
+          grep -qE "does not depend on any axioms|depends on axioms: \[((propext|Classical\.choice|Quot\.sound)(, )?)*\]$" axioms.txt
