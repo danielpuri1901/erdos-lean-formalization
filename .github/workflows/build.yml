@@ -1,0 +1,41 @@
+name: build
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch dependencies and Mathlib cache
+        run: |
+          lake update --keep-toolchain 2>/dev/null || lake update
+          lake exe cache get
+      - name: Upload the generated manifest
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: lake-manifest
+          path: lake-manifest.json
+      - name: Build
+        run: |
+          start=$(date +%s)
+          lake build Challenge Solution
+          echo "build_seconds=$(( $(date +%s) - start ))" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Axioms of the solution
+        run: |
+          cat > /tmp/Axioms.lean <<'EOF2'
+          import Solution
+          #print axioms challenge_trivial
+          EOF2
+          lake env lean /tmp/Axioms.lean | tee axioms.txt
+          grep -q "depends on axioms: \[\]" axioms.txt || grep -q "does not depend on any axioms" axioms.txt
