@@ -32,7 +32,38 @@ env_remote=true
 - The prebuilt formal-conjectures oleans must be hosted where the proxy serves them: a public repository release, or S3, unless probe 2 shows GET works on the private asset.
 - The setup script must locate the checkout explicitly (probe 2) instead of assuming it is the working directory.
 
-## Probe 2 (to run)
+## Probe 2, 2026-10-02 15:12 UTC, same environment
+
+```
+home_user_ls=erdos-lean-checker
+find_lakefile=
+get private asset -> 404
+get private release api -> 403
+```
+All other lines identical to probe 1.
+
+## Reading of probe 2
+
+- Repositories are cloned into `/home/user/<repo-name>` before the setup script runs.
+- This session had only `erdos-lean-checker` attached, not the agent repository, by mistake when the session was started. No agent work ran in it, so nothing was exposed, but real runs must attach only `erdos-lean-formalization`.
+- `find_lakefile` is empty because the agent repository has no `lakefile.toml` yet (Task 1 adds it).
+- GET on the private asset returned 404 and the release API returned 403, but the agent repository was not attached in this session, so this matches the documented rule (only attached repositories reach the proxy) and does not settle whether an attached private repository works.
+
+## Decision for Task 5
+
+Ruling: do not depend on private release assets.
+Use the cheapest path that the probes already proved:
+
+1. Toolchain: download `lean-4.33.1-linux.tar.zst` from the leanprover release (proved 200).
+2. Mathlib: `lake exe cache get` from `cache.mathlib.org` (proved reachable).
+3. formal-conjectures: build only the import closure of the current target in the setup script.
+
+Task 1's CI run measures that build on the same 4-core shape (`build_seconds`).
+If toolchain download plus cache get plus that build fits in about 270 seconds, Task 5 needs no artifact at all.
+If it does not fit, publish the built `.lake` as a release asset on a new public repository `erdos-lean-env` that holds only compiled open-source Lean libraries (formal-conjectures and Mathlib are Apache-2.0), because public release assets are proved to download.
+Creating that public repository needs Daniel's approval.
+
+## Probe 2 script (as run)
 
 Setup script addition, then a session that prints `/tmp/cloud-probe.log`:
 
