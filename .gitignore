@@ -4,3 +4,4 @@
 *.trace
 .env
 .DS_Store
+.superpowers/
