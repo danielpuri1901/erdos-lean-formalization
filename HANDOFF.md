@@ -27,8 +27,9 @@ Done:
 
 - Probe 1 ran (2026-10-02 15:02 UTC); results and reading in `docs/cloud-probe.md`.
   Public-repository release assets download through the proxy (Lean tarball 200); this private repository's asset returned 404 on HEAD; `cache.mathlib.org` is reachable; the setup script runs as root in `/home/user`, not in the checkout.
-  Probe 2 (checkout path, GET on the private asset) is queued in `scripts/setup-cloud.sh`; Daniel re-pastes the script into the environment and runs one more probe session.
-  Ruling for Task 5: install the toolchain straight from the leanprover release; host the prebuilt oleans on a public release (new public repo or this one made public) or S3 unless probe 2 shows GET works on private assets.
+- Probe 2 ran (15:12 UTC): repositories clone into `/home/user/<repo-name>` before the setup script; private release assets are not reachable; that session had the checker attached by mistake (no agent work ran).
+  Ruling for Task 5, recorded in `docs/cloud-probe.md`: toolchain from the leanprover release, Mathlib from `cache.mathlib.org`, build only the target's import closure in the setup script if Task 1's `build_seconds` shows it fits in about 270 seconds; otherwise a public `erdos-lean-env` repository for the built `.lake`, which needs Daniel's approval.
+  Every real cloud session attaches only `erdos-lean-formalization`.
 
 Not done: every other task in the plan.
 No Lean has been built anywhere yet.
