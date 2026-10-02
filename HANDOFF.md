@@ -20,7 +20,12 @@ Done:
 - The $250 cloud-session credit is claimed: $250 of $250 left, expires 2026-11-05 08:59 GMT+1, cloud sessions only, not Routines or Projects.
 - Preflight facts are in the spec, section 3: Erdős 105 counterexample verified with exact integers; Green 72 witness data sources confirmed; no Lean proof found for either; Comparator tag `v4.33.0` exists; Mathlib cache host is `cache.mathlib.org`.
 
-Not done: every task in the plan.
+- The checker secret `AGENT_REPO_TOKEN` is set on `erdos-lean-checker` (plan Task 2 step 1 done; token expires 2026-11-01).
+- Plan Task 4 steps 1 to 3 are done: release `probe-v0` exists, `scripts/setup-cloud.sh` is the v0 probe, `docs/cloud-environment.md` is written.
+  Ruling: network access is `Full`, not `Custom`, because the dialog offers it and it removes allowlist mistakes; GitHub still goes through the proxy either way.
+  Daniel creates the environment and runs the probe session himself; the executing session only records the result (Task 4 step 5).
+
+Not done: every other task in the plan.
 No Lean has been built anywhere yet.
 No cloud session has run yet.
 
