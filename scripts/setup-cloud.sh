@@ -17,5 +17,11 @@ LOG=/tmp/cloud-probe.log
     echo "head $u -> $code"
   done
   echo "env_remote=$CLAUDE_CODE_REMOTE"
+  echo "home_user_ls=$(ls /home/user 2>/dev/null | tr '\n' ' ')"
+  echo "find_lakefile=$(find / -maxdepth 4 -name lakefile.toml 2>/dev/null | tr '\n' ' ')"
+  code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 https://github.com/danielpuri1901/erdos-lean-formalization/releases/download/probe-v0/probe.txt 2>&1 | tail -c 3)
+  echo "get private asset -> $code"
+  code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 https://api.github.com/repos/danielpuri1901/erdos-lean-formalization/releases/tags/probe-v0 2>&1 | tail -c 3)
+  echo "get private release api -> $code"
 } > "$LOG" 2>&1 || true
 exit 0
