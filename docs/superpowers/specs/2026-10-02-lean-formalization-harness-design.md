@@ -41,6 +41,8 @@ File: `FormalConjectures/ErdosProblems/105.lean`.
 Statement: for disjoint finite sets A and B in the plane with |A| = |B| + 4 and A not collinear, does some line through two points of A miss B?
 The answer is no, by an explicit 10 plus 6 point counterexample posted on FC issue #6709 (opened 2026-09-30).
 The proof is a finite witness, which Lean checks by computation.
+The witness is the forum counterexample by Xichuan: ten points A and six points B with integer coordinates after a projective change of coordinates; checked on 2026-10-02 with exact integer arithmetic, A is not collinear and every one of the 45 lines through two points of A contains a point of B.
+The Lean proof needs 45 collinearity checks by `norm_num` plus the Mathlib lemma that membership in `line[ℝ, p, q]` is an affine combination, and it must use the repository's `ℝ²` notation, which `FormalConjecturesUtil` defines.
 Scoop risk is days, so this target is the smoke test, not the headline.
 Freeze the statement as the negated universal form on the pinned commit, because PR #6762 removes `answer(...)` wrappers.
 
@@ -50,8 +52,12 @@ File: `FormalConjectures/GreensOpenProblems/72.lean`.
 Statement: for 3 <= N <= 60, the largest subset of the N by N grid with no three points on a line has exactly 2N points.
 The upper bound is already proved in the file (`allowedSetSize_le`).
 The missing half is one witness set of 2N points per N, with a proof that no three of its points are collinear.
-Witness data is public for every N up to 60 (Flammenkamp, Prellberg).
+Witness data is public for every N up to 60.
+Prellberg's repository (MIT licence, `Table 1.txt`) lists full 2N-point configurations for N = 47, 49, 51 and 53 to 60, and his September 2025 note lists N = 43 to 50.
+Flammenkamp's database serves one configuration per N through a lookup form at wwwhomes.uni-bielefeld.de/achim/no3in; it carries no explicit licence, so the proof cites it and stores only the one witness per N it uses.
+Each witness must be re-checked with exact integer arithmetic before it enters the Lean file.
 No Lean proof was found in formal-conjectures, plby/lean-proofs, open pull requests, GitHub code search, or the forum, as of 2026-10-02.
+The September 2026 preprint on certified no-three-in-line computations (arXiv 2609.25133) certifies with two independent programs, not with Lean, so it is prior art for the data and not for the formalization.
 
 Known risks for Green 72:
 
@@ -121,8 +127,10 @@ The checker repository is the security.
 
 The workflow runs on `ubuntu-24.04` in the checker repository.
 It checks out the agent repository at the commit under test, installs elan, fetches the Mathlib cache, builds the target and the frozen statement, runs an axiom audit, builds Comparator and lean4export at pinned commits, runs Comparator under landrun, and writes a commit status back to the agent repository.
-Comparator is currently pinned to Lean v4.35.0-rc3 and FC to v4.33.1, and lean4export has a v4.33.0 tag.
+Comparator's main branch is on Lean v4.35.0-rc3, but it has a `v4.33.0` tag whose manifest pins lean4export at commit `15f6055e`.
+FC is on v4.33.1, one patch release later, so the checker starts from the Comparator `v4.33.0` tag and tests whether the patch difference matters.
 Making these versions agree is build step 3 in section 9, and the run does not start until the checker is green on a trivial statement.
+The Mathlib cache is served from `cache.mathlib.org`, the public endpoint since September 2026, which the cloud environment must allowlist.
 
 ### Budget and plateau rules
 
