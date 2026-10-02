@@ -128,6 +128,8 @@ Making these versions agree is build step 3 in section 9, and the run does not s
 
 Prices used: Opus 5.5 at $4 input, $20 output, $0.20 cache read per million tokens; Fable 5.1 at $10, $50, $0.25.
 The credit is about 17 to 34 Opus hours or 4 to 11 Fable hours; the 15-minute burn test replaces this estimate with a measurement.
+Credit terms, confirmed from the claim dialog on 2026-10-02: $250, expires 2026-11-05 08:59 GMT+1, applies automatically to cloud sessions, not eligible for Projects and Routines.
+So every run is a plain cloud session or a `claude --cloud` launch from a local script, never a Routine or a Project.
 Budget plan: about 20 Opus worker hours, at most three Fable escalations of 20 minutes, $20 reserve.
 Usage credits shorten the prompt cache lifetime to five minutes; set `CLAUDE_CODE_PROMPT_CACHE_TTL=1h` and confirm it holds in the burn test.
 Each session has a hard dollar cap and a kill rule written in the ledger.
@@ -163,7 +165,7 @@ Morning after: re-run the checker on the final commit, read `#print axioms`, sam
 
 ## 9. Build order
 
-1. Claim the credit (done 2026-10-02) and record the usage settings before and after.
+1. Claim the credit (done 2026-10-02, $250 of $250 available) and record the usage-credit setting on claude.ai/settings/usage.
 2. Create the two private repositories (this commit).
 3. Make the checker green on a trivial statement with Lean v4.33.1 and a compatible Comparator and lean4export; no go until green.
 4. Build the environment artifact: Lean 4.33.1, leantar, Mathlib oleans at the pinned revision, and the FC utilities, hosted as release assets on the agent repository or as a Docker image, because the cloud GitHub proxy blocks release assets from unattached repositories.
