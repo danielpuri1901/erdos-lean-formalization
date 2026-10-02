@@ -25,9 +25,19 @@ Done:
   Ruling: network access is `Full`, not `Custom`, because the dialog offers it and it removes allowlist mistakes; GitHub still goes through the proxy either way.
   Daniel creates the environment and runs the probe session himself; the executing session only records the result (Task 4 step 5).
 
+- Probe 1 ran (2026-10-02 15:02 UTC); results and reading in `docs/cloud-probe.md`.
+  Public-repository release assets download through the proxy (Lean tarball 200); this private repository's asset returned 404 on HEAD; `cache.mathlib.org` is reachable; the setup script runs as root in `/home/user`, not in the checkout.
+  Probe 2 (checkout path, GET on the private asset) is queued in `scripts/setup-cloud.sh`; Daniel re-pastes the script into the environment and runs one more probe session.
+  Ruling for Task 5: install the toolchain straight from the leanprover release; host the prebuilt oleans on a public release (new public repo or this one made public) or S3 unless probe 2 shows GET works on private assets.
+
 Not done: every other task in the plan.
 No Lean has been built anywhere yet.
-No cloud session has run yet.
+
+## Executing session: local only
+
+The executor must be a local session (`claude --add-dir ~/Desktop/Projects/erdos-lean-checker` from this repository).
+Cloud sessions do not have the superpowers plugin, spend the credit on build work, and would attach the checker repository to the cloud, which the spec forbids.
+If the plan's skills are unavailable, run the tasks in order by hand, keeping a ledger in `.superpowers/sdd/<plan>/progress.md` with one line per completed task.
 
 ## How to execute
 
