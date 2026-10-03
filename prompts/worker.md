@@ -23,6 +23,9 @@ Commit after every green build with a message starting `wip({{task_id}}):`.
 Stop at the time box even if unfinished.
 When you stop, always commit the final state, even if the build is red, with the message `wip({{task_id}}): stop`.
 
+`green` means `lake build Solution` succeeds and `Solution.lean` contains no `sorry`.
+`partial` means you made progress but one of those two is still false; `stuck` means you made none.
+
 Return exactly this report, nothing else:
 
 status: green | partial | stuck

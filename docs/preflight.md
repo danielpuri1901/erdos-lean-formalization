@@ -38,3 +38,14 @@ Scaling by triple count, all N from 3 to 60 (about 4.3 million triples) cost rou
 ## Erdős 105 frozen statement
 
 `challenge/erdos105.lean` in the checker repository elaborates at the pin, together with a `sorry` solution of the same statement (build run https://github.com/danielpuri1901/erdos-lean-formalization/actions/runs/37117378033 on a throwaway branch, since deleted).
+
+## Erdős 105 statement audit
+
+Written by Claude (Opus 5.5) on 2026-10-03 after Daniel delegated the launch ("No feedback needed from me. Just fix it until it works.").
+It is not Daniel's own sign-off; spec section 4 item 5 still asks for his reading before any result is published.
+
+- `ℝ²` is `EuclideanSpace ℝ (Fin 2)`, the Euclidean plane: a scoped notation in `FormalConjecturesForMathlib/Geometry/2d.lean`, opened by `open EuclideanGeometry`.
+- `line[ℝ, p, q]` is Mathlib's notation for `affineSpan ℝ {p, q}`, the affine line through p and q when p ≠ q.
+- The English variant (erdosproblems.com/105, and the docstring of `Erdos105.erdos_105.variants.sub_four`) asks whether, for disjoint finite sets A and B in the plane with |A| = |B| + 4 and A not collinear, some line contains at least two points of A and no point of B.
+  The formal variant is `answer(sorry) ↔ ∀ A B, ...`.
+  Xichuan's 10 plus 6 configuration answers it negatively, so the frozen challenge states `¬ ∀ A B, ...` with the inner formula copied verbatim from the pin.

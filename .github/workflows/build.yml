@@ -1,8 +1,7 @@
 name: build
+# Manual only: the checker repository is the CI that decides verdicts, and runs on every
+# push of a busy agent would spend Actions minutes on red work-in-progress commits.
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,11 +28,8 @@ jobs:
           echo "build_seconds=$(( $(date +%s) - start ))" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Axioms of the solution
         run: |
-          cat > /tmp/Axioms.lean <<'EOF2'
-          import Solution
-          /-! Axiom report for the solution. -/
-          #print axioms challenge_trivial
-          EOF2
+          thm=$(sed -n 's/^theorem \([^ :]*\).*/\1/p' Challenge.lean | head -1)
+          printf 'import Solution\n/-! Axiom report for the solution. -/\n#print axioms %s\n' "$thm" > /tmp/Axioms.lean
           lake env lean /tmp/Axioms.lean | tee axioms.txt
           # The statement itself uses classical definitions, so only a subset of the permitted axioms is accepted.
           grep -qE "does not depend on any axioms|depends on axioms: \[((propext|Classical\.choice|Quot\.sound)(, )?)*\]$" axioms.txt
