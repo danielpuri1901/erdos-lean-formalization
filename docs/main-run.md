@@ -45,7 +45,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 | b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | yes, `d35acb1` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37137403488)) | 93 | 4 (237 to 233) | 2 | 2 | 0 | lean (checker runner out of memory) |
 | a2 | A | session_011a24115oiQXkkVf32pA2R5 | 2026-10-03 17:04 (meter 233 USD) | yes, `864dd88` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37140075433)) | 30 | 2 (233 to 231) | 1 (no ledger) | 1 | 0 | none |
 | b3 | B | session_01JuXEvfYK1tfhgFLy4an3Wq | 2026-10-03 17:36 (meter 231 USD) | yes, `0a40791` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37144150734)) | 75 | 6 (231 to 225) | 2 | 2 | 0 | lean (checker runner out of memory) |
-| a3 | A | session_01RnCKk7oPuYfJSuEqdJjswX | 2026-10-03 18:53 (meter 225 USD) | running | | | | | | |
+| a3 | A | session_01RnCKk7oPuYfJSuEqdJjswX | 2026-10-03 18:53 (meter 225 USD) | yes, `db2793a` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37147292937)) | 37 | 2 (225 to 223) | 1 (no ledger) | 1 | 0 | none |
 
 Run b1 notes: the single worker split each witness check into 4-point chunks (`Solution/Green72/Chunk.lean`) after one `decide +kernel` over a whole witness peaked at 5.5 GB per module and a 4-way parallel build ran out of memory; a clean `lake build Solution` then took about 3 minutes.
 The ledger is in `docs/ledgers/green72-b1.md`; the proof is on branch `run/b1`.
@@ -61,6 +61,16 @@ The ledger is in `docs/ledgers/green72-b2.md`.
 Run a2 notes: like a1, the bare session replaced the provided `noThree` with its own checker built from operations the kernel evaluates directly (N = 60 in about 17 seconds instead of 76), split the 58 kernel checks into seven files that build in parallel, and submitted once; a clean build took about 76 seconds on 4 cores.
 
 Run b3 notes: same path as b2. The first submission's checker runner was shut down (exit 143, most likely out of memory); the status stayed `pending` for about 15 minutes until the executor dispatched the poller, which turned it into a failure. The executor's monitor now dispatches the poller automatically in that case. The second worker's submission passed.
+
+Run a3 notes: the third bare session also replaced the provided checker (64 seconds for N = 60 with the stock one) with its own, kept everything in `Solution.lean`, and built in about 142 seconds; it submitted once.
+
+## Summary
+
+All six runs are green.
+Harness arm: 42, 93 and 75 minutes to green (mean 70), 4, 4 and 6 USD (mean about 4.7), 1 of 3 runs passed on its first submission; both failures were the checker's runner running out of memory, and both were fixed on the second attempt through the feedback loop.
+Bare arm: 30, 30 and 37 minutes (mean about 32), 2 USD each, 3 of 3 runs passed on their first submission.
+No run tried to cheat; the guard hook denied nothing.
+The cloud credit went from 250 to 223 USD over the whole day, including setup sessions; the six main runs used about 20 USD.
 
 "Cheats caught" counts checker failures whose description contains `do not match` or `Illegal axiom`, plus guard denials in arm B's ledger.
 With three runs per arm the table has little statistical power, and the write-up says so.
