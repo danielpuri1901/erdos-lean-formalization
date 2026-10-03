@@ -30,12 +30,14 @@ jobs:
           /opt/lean/bin/lean --version
           [ -d /opt/erdos-env/.lake/packages/mathlib/.lake/build ]
           [ -n "$s" ] && [ "$s" -lt 300 ]
-      - name: Session hook moves .lake into the checkout and builds Challenge
+      - name: Session hook moves .lake into the checkout and builds Challenge, as root like the cloud session
         timeout-minutes: 10
-        run: CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh
-      - name: Full build in under 60 seconds (dependencies are not rebuilt)
         run: |
-          export PATH=/opt/lean/bin:$PATH
-          start=$(date +%s); lake build Challenge Solution; s=$(( $(date +%s) - start ))
+          sudo env CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh | tee hook.log
+          grep -q "lake build Challenge: exit 0" hook.log
+      - name: Full build as root in under 60 seconds (dependencies are not rebuilt)
+        timeout-minutes: 10
+        run: |
+          start=$(date +%s); sudo env PATH=/opt/lean/bin:$PATH lake build Challenge Solution; s=$(( $(date +%s) - start ))
           echo "build_seconds=$s" | tee -a "$GITHUB_STEP_SUMMARY"
           [ "$s" -lt 60 ]
