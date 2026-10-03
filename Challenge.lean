@@ -1,10 +1,14 @@
-import FormalConjectures.GreensOpenProblems.«72»
+import FormalConjectures.ErdosProblems.«105»
 
-/-! Frozen statement for the trivial target. The checker overwrites this file before every verdict. -/
+/-! Frozen statement for the erdos105 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
 
-/-- Trivial challenge used to prove the checker pipeline works end to end.
-It unfolds the repository's own definition, so it also tests importing a
-module-system file from formal-conjectures. -/
-theorem challenge_trivial :
-    Green72.NoKInLineFor 3 3 ↔ Green72.AllowedSetSize 3 3 = (3 - 1) * 3 := by
+open EuclideanGeometry
+
+/-- Erdős 105, variant `sub_four`, resolved negatively.
+This is the negation of the universal statement in
+`Erdos105.erdos_105.variants.sub_four` at formal-conjectures commit df3f12d7bd06. -/
+theorem erdos_105_sub_four_false :
+    ¬ ∀ A B : Finset ℝ², Disjoint A B → A.card = B.card + 4 →
+      ¬ Collinear ℝ (A : Set ℝ²) →
+      ∃ p ∈ A, ∃ q ∈ A, p ≠ q ∧ ∀ b ∈ B, b ∉ line[ℝ, p, q] := by
   sorry

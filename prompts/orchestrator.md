@@ -7,7 +7,7 @@ Loop until the kill rule fires or `TASKS.md` has no `todo` tasks:
 1. Read `STATE.json` and `TASKS.md`. Pick the first `todo` task; set it to `running`; commit.
 2. Fill `prompts/worker.md` with the task, the time box (default 25 minutes), the published proof and lemma plan for the task, the `tried` and `blocking` notes from the ledger for that task, and the checker's description of the last failed submission for that task (or "none").
 3. Dispatch one worker subagent (model `opus`, effort `xhigh`) with that prompt. Wait.
-4. If the report says `status: green`: commit with the message `submit(<target>): <task id> attempt <n>` (use `--allow-empty` if nothing changed) and push.
+4. If the report says `status: green`: Before submitting, check yourself that `lake build Challenge Solution` succeeds and `grep -c sorry Solution.lean` prints 0; if not, treat the report as `partial`. Then commit with the message `submit(<target>): <task id> attempt <n>` (use `--allow-empty` if nothing changed) and push.
    The checker repository picks up `submit(` commits on its own every 15 minutes; nobody needs to start it.
    Poll `gh api repos/danielpuri1901/erdos-lean-formalization/commits/<sha>/status` until the context `comparator/<target>` is `success` or `failure` (allow up to 60 minutes).
    - `success`: record `scripts/ledger.sh add --verdict pass --checker <target_url of the status>` and set the task `done`.
