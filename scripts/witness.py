@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""Fetch, decode, verify, and emit no-three-in-line witnesses for N in 3..60.
+
+Sources:
+- Flammenkamp's database lookup (one configuration per N), encoding described at
+  https://wwwhomes.uni-bielefeld.de/achim/no3in/readme.html
+- Prellberg's Table 1 (MIT) for N in {47, 49, 51, 53..60}:
+  https://github.com/ThomasPrellberg/no-three-in-line---CP-SAT
+Every witness is re-verified here with exact integer arithmetic before it is written.
+"""
+import ast, itertools, json, pathlib, re, sys, time, urllib.request, urllib.parse
+
+ALPHABET = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%&@?!()[]<>{}=*+|-/~^_:;,."
+LOOKUP = "https://wwwhomes.uni-bielefeld.de/cgi-bin/cgiwrap/achim/script_lookup?para=FIXED"
+PRELLBERG = "https://raw.githubusercontent.com/ThomasPrellberg/no-three-in-line---CP-SAT/main/Table%201.txt"
+
+def decode(code: str, n: int):
+    """First char is the symmetry class; then 2n chars, column per chosen cell, rows top to bottom."""
+    cols = code[1:1 + 2 * n]
+    if len(cols) != 2 * n:
+        raise ValueError(f"expected {2*n} position chars, got {len(cols)}")
+    pts = []
+    for i, ch in enumerate(cols):
+        pts.append((ALPHABET.index(ch) - 1, i // 2))  # (x=column, y=row); ALPHABET[0] is the space placeholder
+    return pts
+
+def no_three_collinear(pts):
+    for (x1, y1), (x2, y2), (x3, y3) in itertools.combinations(pts, 3):
+        if x1 * y2 + x2 * y3 + x3 * y1 == x1 * y3 + x2 * y1 + x3 * y2:
+            return False
+    return True
+
+def valid(pts, n):
+    return len(pts) == 2 * n and len(set(pts)) == 2 * n and all(0 <= x < n and 0 <= y < n for x, y in pts) and no_three_collinear(pts)
+
+def fetch_flammenkamp(n: int):
+    time.sleep(1)  # one request per second; the lookup is a university CGI script
+    data = urllib.parse.urlencode({"symm": "", "size": str(n), "index": "1", "send": "Do it"}).encode()
+    req = urllib.request.Request(LOOKUP, data=data, headers={"User-Agent": "Mozilla/5.0"})
+    html = urllib.request.urlopen(req, timeout=30).read().decode("latin-1")
+    code = parse_encoding(html)
+    if not code:
+        raise RuntimeError(f"no encoding for n={n}")
+    return decode(code, n), f"Flammenkamp database lookup size={n} index=1, encoding {code}"
+
+def parse_encoding(html: str):
+    """The code after 'Encoding:' on the lookup page, with or without a tag around it."""
+    m = re.search(r"Encoding:\s*(?:<[^>]*>\s*)?([^\s<]+)", html)
+    return m.group(1) if m else None
+
+def fetch_prellberg():
+    return parse_prellberg(urllib.request.urlopen(PRELLBERG, timeout=30).read().decode())
+
+def parse_prellberg(txt: str):
+    out = {}
+    for m in re.finditer(r"N=(\d+):\s*(\[.*?\])", txt, re.S):
+        out[int(m.group(1))] = ast.literal_eval(m.group(2))
+    return out
+
+def lean_list(pts):
+    return "[" + ", ".join(f"({x}, {y})" for x, y in pts) + "]"
+
+def main(out_dir="data/green72", lo=3, hi=60):
+    lo, hi = int(lo), int(hi)
+    out = pathlib.Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+    prell = fetch_prellberg()
+    for n in range(lo, hi + 1):
+        if n in prell:
+            pts, src = [tuple(p) for p in prell[n]], "Prellberg Table 1.txt (MIT), GitHub ThomasPrellberg/no-three-in-line---CP-SAT"
+        else:
+            pts, src = fetch_flammenkamp(n)
+        if not valid(pts, n):
+            raise SystemExit(f"witness for n={n} failed verification")
+        (out / f"{n}.json").write_text(json.dumps({"n": n, "points": pts, "source": src}, indent=0) + "\n")
+        print(n, "ok", src.split(",")[0])
+
+if __name__ == "__main__":
+    main(*(sys.argv[1:]))
