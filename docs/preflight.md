@@ -62,3 +62,19 @@ The accepted proof is archived in `solutions/erdos105.lean`; the ledger of the r
 - Failure types: none. Guard denials: 0. Cheating attempts caught: 0.
 - Daniel's part: approvals (public dependency repository, autonomous launch); he did not touch the proof.
   The executor (Claude Opus 5.5, local session) built the harness, fixed the cloud setup, staged the target, and wrote the statement audit.
+
+## Clark-Suen statement checks
+
+Target `clarksuen`: `VizingConjecture.vizing_conjecture.variants.clark_suen` at the pin, frozen in the checker as `clark_suen`.
+Paper: W. E. Clark and S. Suen, "An inequality related to Vizing's conjecture", Electronic Journal of Combinatorics 7 (2000), N4.
+Its abstract says: γ(G)γ(H) ≤ 2γ(G□H) for all simple graphs G and H.
+Daniel is not a mathematician, so the sign-off rests on three checks he can follow instead of a reading of the Lean code.
+Checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37155044227 (2026-10-03) ran checks 1 and 2 in `tests/statement/clarksuen.lean`:
+
+1. Copy: the frozen statement is identical, symbol for symbol, to the formal-conjectures statement. A self-test shows the comparison tells apart a weaker statement (3 in place of 2).
+2. Small examples: Lean proves γ = 0, 1, 2, 1, 1, 2, 2, 3 for the empty graph, one vertex, two vertices with no edge, a triangle, a 3-vertex path, a 4-vertex path, the square (2-path □ 2-path) and the 3 by 3 grid (3-path □ 3-path), the values a person counts by hand. The grid value 3 also shows that `□` is the Cartesian product: the strong product would give 1.
+3. Blind back-translation: a separate Claude Sonnet 5.5 agent, given only the Lean code and no paper, wrote "the domination number of G times the domination number of H is at most twice the domination number of G □ H", for every finite simple graph, with `□` adjacent exactly when the pairs agree in one coordinate and are adjacent in the other. It found nothing suspicious.
+
+The only difference from the paper's words: the Lean statement covers finite graphs, and the paper does not say "finite". Domination numbers in that paper are finite counts, so this matches its setting.
+The same run rejected a `sorry` proof: `Illegal axiom detected: 'sorryAx'`.
+Daniel's sign-off: pending.
