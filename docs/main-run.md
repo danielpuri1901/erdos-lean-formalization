@@ -43,7 +43,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 | b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | yes, `6eb57dc` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37130020332)) | 42 | 4 (243 to 239) | 1 (7 builds) | 1 | 0 | none |
 | a1 | A | session_01EbHyNgTRSM4Jqz5WDw3SPQ | 2026-10-03 14:57 (meter 239 USD) | yes, `790b429` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37132458282)) | 30 | 2 (239 to 237) | 1 (no ledger) | 1 | 0 | none |
 | b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | yes, `d35acb1` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37137403488)) | 93 | 4 (237 to 233) | 2 | 2 | 0 | lean (checker runner out of memory) |
-| a2 | A | session_011a24115oiQXkkVf32pA2R5 | 2026-10-03 17:04 (meter 233 USD) | running | | | | | | |
+| a2 | A | session_011a24115oiQXkkVf32pA2R5 | 2026-10-03 17:04 (meter 233 USD) | yes, `864dd88` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37140075433)) | 30 | 2 (233 to 231) | 1 (no ledger) | 1 | 0 | none |
 | b3 | B | | | | | | | | | |
 | a3 | A | | | | | | | | | |
 
@@ -57,6 +57,8 @@ Run b2 notes: the first worker checked each witness in one `decide +kernel`; the
 That exposed a checker gap: the status stayed `pending` and the poller skipped it. The poller now turns a pending status whose run has finished into a failure with that reason (checker commit after `7533f9b`).
 The orchestrator measured peak memory (2.1 GB at N = 40, 5.8 GB at N = 60), classified the failure as `lean`, and briefed worker 2, which split each check into chunks of about 10 thousand triples; the second submission passed.
 The ledger is in `docs/ledgers/green72-b2.md`.
+
+Run a2 notes: like a1, the bare session replaced the provided `noThree` with its own checker built from operations the kernel evaluates directly (N = 60 in about 17 seconds instead of 76), split the 58 kernel checks into seven files that build in parallel, and submitted once; a clean build took about 76 seconds on 4 cores.
 
 "Cheats caught" counts checker failures whose description contains `do not match` or `Illegal axiom`, plus guard denials in arm B's ledger.
 With three runs per arm the table has little statistical power, and the write-up says so.
