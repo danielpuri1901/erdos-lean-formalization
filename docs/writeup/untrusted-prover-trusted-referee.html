@@ -1,0 +1,314 @@
+<title>Untrusted Prover, Trusted Referee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,800;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column in the style of an engineering blog post; diagram, tables and code may scroll sideways inside their own boxes. */
+:root {
+  --bg: #fbfbfa; --fg: #1b1f24; --muted: #59616b; --rule: #e1e4e8;
+  --accent: #0c6b77; --code-bg: #f1f3f5; --ok: #1d7446; --bad: #ad2a22; --wait: #8a5a00;
+  --diagram-box: #ffffff;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121519; --fg: #e7e9ec; --muted: #a3abb5; --rule: #2b3037;
+    --accent: #5fbcc7; --code-bg: #1b2026; --ok: #6cc893; --bad: #f08a80; --wait: #e4b25a;
+    --diagram-box: #181c21; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121519; --fg: #e7e9ec; --muted: #a3abb5; --rule: #2b3037;
+  --accent: #5fbcc7; --code-bg: #1b2026; --ok: #6cc893; --bad: #f08a80; --wait: #e4b25a;
+  --diagram-box: #181c21; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.65; }
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; }
+header { border-bottom: 1px solid var(--rule); padding-bottom: 20px; margin-bottom: 28px; }
+.kicker { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 10px; }
+h1 { font-size: clamp(28px, 4.6vw, 40px); line-height: 1.18; font-weight: 800; margin: 0 0 14px; text-wrap: balance; }
+.meta { font-size: 14px; color: var(--muted); margin: 0; }
+.meta span + span::before { content: " | "; color: var(--rule); }
+h2 { font-size: 24px; font-weight: 800; line-height: 1.3; margin: 44px 0 10px; text-wrap: balance; }
+h3 { font-size: 18px; font-weight: 600; margin: 28px 0 6px; }
+p { margin: 0 0 14px; }
+p, li { max-width: 68ch; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+ul, ol { padding-left: 22px; margin: 0 0 14px; }
+li { margin-bottom: 6px; }
+code { font-family: var(--font-mono); font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { font-family: var(--font-mono); font-size: 13.5px; line-height: 1.55; background: var(--code-bg); padding: 14px 16px; border-radius: 6px; overflow-x: auto; margin: 0 0 18px; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.lead { font-size: 19px; }
+.note { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--fg); margin: 18px 0; }
+.scroll { overflow-x: auto; margin: 0 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { text-align: right; white-space: nowrap; }
+.pill { display: inline-block; font-size: 12.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.ok { color: var(--ok); } .bad { color: var(--bad); } .wait { color: var(--wait); }
+figure { margin: 22px 0 26px; }
+figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.diagram { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--diagram-box); padding: 10px; }
+.diagram svg { display: block; min-width: 640px; width: 100%; height: auto; }
+svg .box { fill: var(--diagram-box); stroke: var(--muted); stroke-width: 1.2; }
+svg .lane { fill: var(--code-bg); stroke: var(--rule); stroke-width: 1; }
+svg .lane-label { fill: var(--muted); font: 600 11px var(--font-body); letter-spacing: .06em; text-transform: uppercase; }
+svg .t { fill: var(--fg); font: 600 13px var(--font-body); }
+svg .s { fill: var(--muted); font: 400 11.5px var(--font-body); }
+svg .arrow { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+svg .arrow-head { fill: var(--accent); }
+svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
+.author { border-top: 1px solid var(--rule); margin-top: 44px; padding-top: 18px; font-size: 15px; color: var(--muted); }
+.author strong { color: var(--fg); }
+@media (max-width: 480px) { body { font-size: 16px; } .lead { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+<article>
+<header>
+  <p class="kicker">Formal verification · AI agents</p>
+  <h1>Untrusted prover, trusted referee: kernel-checked proofs from Claude Code agents, judged in GitHub Actions</h1>
+  <p class="meta"><span>by Daniel Puri</span><span>3 October 2026</span><span>Lean 4, Claude Code, GitHub Actions</span></p>
+</header>
+
+<p class="lead">Claude agents running in Claude Code cloud sessions produced Lean 4 proofs of two known results. A separate referee repository, which no agent can see or edit, accepted every finished run. The main result is a kernel-verified computer search result for a Green problem: for every N from 3 to 60, the N by N grid holds 2N points with no three on a line.</p>
+
+<p>The proofs were the easy part. Each agent needed 10 to 15 minutes. Building a referee that a determined agent cannot fool took most of two days, and the attacks we ran against it found four holes in our own design. This post covers how the referee works, what broke, and what the numbers say.</p>
+
+<h2>The problem: an agent that grades itself</h2>
+
+<p><a href="https://lean-lang.org/">Lean</a> is a programming language for proofs. You write a proof like code, and a small trusted program, the kernel, checks every step. Google DeepMind's <a href="https://github.com/google-deepmind/formal-conjectures">formal-conjectures</a> library states hundreds of math problems in Lean. Many of the proofs are a hole, written <code>sorry</code>.</p>
+
+<p>An agent that checks its own work has easy ways to look successful. It can leave a <code>sorry</code>. It can add an <code>axiom</code>, which is an assumption it never proved. It can use <code>native_decide</code>, which trusts compiled code instead of the kernel. It can quietly change the statement, or redefine a word the statement uses. None of this needs bad intent. A model rewarded for "the build is green" can find these paths.</p>
+
+<p>So we set one rule: nothing the agent says counts. The only definition of success is a green commit status named <code>comparator/&lt;target&gt;</code>, written by a repository the agent never sees.</p>
+
+<h2>Solution overview</h2>
+
+<figure>
+<div class="diagram" role="img" aria-label="Architecture: a cloud session with an orchestrator and workers pushes a submit commit to the agent repository; a poller in the checker repository finds it, freezes the statement and build settings, runs Comparator in a sandbox, and writes a green or red commit status back.">
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow-head" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+  <rect class="lane" x="10" y="10" width="230" height="380" rx="8"/>
+  <text class="lane-label" x="24" y="32">Claude Code cloud session</text>
+  <rect class="lane" x="265" y="10" width="230" height="380" rx="8"/>
+  <text class="lane-label" x="279" y="32">Agent repository (GitHub)</text>
+  <rect class="lane" x="520" y="10" width="230" height="380" rx="8"/>
+  <text class="lane-label" x="534" y="32">Checker repository (Actions)</text>
+
+  <rect class="box" x="30" y="52" width="190" height="62" rx="6"/>
+  <text class="t" x="44" y="76">Orchestrator</text>
+  <text class="s" x="44" y="94">reads ledger, briefs workers,</text>
+  <text class="s" x="44" y="108">submits green work</text>
+
+  <rect class="box" x="30" y="140" width="190" height="62" rx="6"/>
+  <text class="t" x="44" y="164">Worker (fresh per attempt)</text>
+  <text class="s" x="44" y="182">25-minute time box,</text>
+  <text class="s" x="44" y="196">commits even when red</text>
+
+  <rect class="box" x="30" y="228" width="190" height="62" rx="6"/>
+  <text class="t" x="44" y="252">Guard hook</text>
+  <text class="s" x="44" y="270">blocks sorry, axiom, edits</text>
+  <text class="s" x="44" y="284">to the statement (feedback only)</text>
+
+  <rect class="box" x="30" y="316" width="190" height="56" rx="6"/>
+  <text class="t" x="44" y="340">Prebuilt Lean + Mathlib</text>
+  <text class="s" x="44" y="358">2.55 GB, restored in 111 s</text>
+
+  <rect class="box" x="285" y="52" width="190" height="80" rx="6"/>
+  <text class="t" x="299" y="76">run/&lt;arm&gt;&lt;n&gt; branch</text>
+  <text class="s" x="299" y="94">Challenge.lean (statement)</text>
+  <text class="s" x="299" y="108">Solution.lean (proof)</text>
+  <text class="s" x="299" y="122">LEDGER.md, STATE.json</text>
+
+  <rect class="box" x="285" y="168" width="190" height="56" rx="6"/>
+  <text class="t" x="299" y="192">submit(green72): commit</text>
+  <text class="s" x="299" y="210">the only way to ask for a verdict</text>
+
+  <rect class="box" x="285" y="300" width="190" height="62" rx="6"/>
+  <text class="t" x="299" y="324">Commit status</text>
+  <text class="s" x="299" y="342">comparator/green72 = success,</text>
+  <text class="s" x="299" y="356">or failure with Comparator's reason</text>
+
+  <rect class="box" x="540" y="52" width="190" height="56" rx="6"/>
+  <text class="t" x="554" y="76">Poller</text>
+  <text class="s" x="554" y="94">finds submits with no verdict</text>
+
+  <rect class="box" x="540" y="132" width="190" height="62" rx="6"/>
+  <text class="t" x="554" y="156">Freeze</text>
+  <text class="s" x="554" y="174">own copies of the statement,</text>
+  <text class="s" x="554" y="188">lakefile, manifest, toolchain</text>
+
+  <rect class="box" x="540" y="218" width="190" height="62" rx="6"/>
+  <text class="t" x="554" y="242">Comparator in landrun</text>
+  <text class="s" x="554" y="260">same statement? 3 axioms only?</text>
+  <text class="s" x="554" y="274">kernel replays the proof</text>
+
+  <path class="arrow" d="M125,114 L125,138" marker-end="url(#ah)"/>
+  <path class="arrow" d="M220,171 C250,171 255,196 283,196" marker-end="url(#ah)"/>
+  <text class="alabel" x="226" y="160">push</text>
+  <path class="arrow" d="M475,196 C505,196 510,80 538,80" marker-end="url(#ah)"/>
+  <text class="alabel" x="486" y="140">scan</text>
+  <path class="arrow" d="M635,108 L635,130" marker-end="url(#ah)"/>
+  <path class="arrow" d="M635,194 L635,216" marker-end="url(#ah)"/>
+  <path class="arrow" d="M590,280 C590,330 520,331 477,331" marker-end="url(#ah)"/>
+  <text class="alabel" x="512" y="320">verdict</text>
+  <path class="arrow" d="M283,345 C200,345 140,345 125,206" marker-end="url(#ah)"/>
+  <text class="alabel" x="150" y="306">orchestrator polls</text>
+</svg>
+</div>
+<figcaption>The agent only pushes commits. The checker repository holds the frozen statements and the only token that can write a verdict.</figcaption>
+</figure>
+
+<p>The system has two repositories. The agent repository is attached to Claude Code cloud sessions, so the agent can change anything in it, and we trust nothing in it. The checker repository holds the frozen statements and a GitHub Actions workflow. It is never attached to a session.</p>
+
+<p>When the agent wants a verdict, it pushes a commit whose message starts with <code>submit(&lt;target&gt;):</code>. A poller in the checker repository finds that commit, rebuilds it, and runs <a href="https://github.com/leanprover/comparator">Comparator</a>, a tool from the Lean FRO that compares a solution against a challenge statement. Comparator runs the build inside <a href="https://github.com/Zouuup/landrun">landrun</a>, a Linux sandbox. The checker then writes a commit status back to the agent repository: green, or red with Comparator's last line as the reason.</p>
+
+<h2>Walkthrough</h2>
+
+<h3>Step 1: freeze everything the agent could change</h3>
+
+<p>Comparator's README lists its trust assumptions. The build configuration must be trusted, and the solution must never have been compiled outside the sandbox. Our first workflow broke both. It built <code>Solution</code> outside landrun, and it used the agent's own <code>lakefile.toml</code>, which can run code at build time. It also left a token that can write commit statuses in the checkout's git config, where agent code could read it.</p>
+
+<p>The fixed workflow replaces every file that steers the build with the checker's own copy, deletes anything prebuilt, and builds only the trusted statement outside the sandbox:</p>
+
+<pre><code>- name: Freeze the challenge and the build configuration
+  run: |
+    cp "challenge/$TARGET.lean" agent/Challenge.lean
+    cp frozen/lakefile.toml frozen/lake-manifest.json frozen/lean-toolchain agent/
+    rm -rf agent/lakefile.lean agent/.lake agent/.claude agent/scripts/hooks</code></pre>
+
+<p>The agent checkout also uses <code>persist-credentials: false</code>, and Docker is stopped before Comparator runs, because Comparator's README warns that landrun does not block Unix sockets on current Linux kernels.</p>
+
+<h3>Step 2: attack the referee before trusting it</h3>
+
+<p>Before any agent ran, we planted cheating solutions against a trivial statement. A correct proof had to pass, and each cheat had to fail for its own reason.</p>
+
+<div class="scroll">
+<table>
+<thead><tr><th>Planted solution</th><th>Comparator's verdict</th></tr></thead>
+<tbody>
+<tr><td>Correct proof</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Proof with <code>sorry</code></td><td><span class="pill bad">rejected</span> illegal axiom <code>sorryAx</code></td></tr>
+<tr><td>New axiom <code>cheat</code></td><td><span class="pill bad">rejected</span> illegal axiom <code>cheat</code></td></tr>
+<tr><td><code>native_decide</code></td><td><span class="pill bad">rejected</span> illegal axiom from <code>native_decide</code></td></tr>
+<tr><td>Proof of a weaker statement</td><td><span class="pill bad">rejected</span> statements do not match</td></tr>
+<tr><td>Own definition of <code>AllowedSetSize</code></td><td><span class="pill bad">rejected</span> constant does not match</td></tr>
+<tr><td>Statement edited in the agent repository</td><td><span class="pill bad">rejected</span> the frozen copy was used</td></tr>
+<tr><td>Prints "Your solution is okay!" while it builds</td><td><span class="pill wait">accepted at first</span>, rejected after the fix</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The last row was a real hole. Our workflow decided the verdict by searching the log for Comparator's success line. But the log also contains the solution's own build output, and a Lean file can print anything. A solution that proved <code>True</code> and printed the line got a green status. Now the verdict comes from Comparator's exit code plus an exact match on its last line, and this attack is a permanent test case:</p>
+
+<pre><code>set -o pipefail
+bash scripts/check.sh "comparator/$TARGET.json" 2&gt;&amp;1 | tee comparator.log
+[ "$(tail -n 1 comparator.log)" = "Your solution is okay!" ]</code></pre>
+
+<h3>Step 3: a cloud environment that starts in two minutes</h3>
+
+<p>Each cloud session needs Lean 4.33.1 and the compiled Mathlib and formal-conjectures libraries: 7.8 GB on disk, 2.55 GB compressed. Building them takes about 10 minutes. The environment's setup script is cached only if it finishes in about five. So we build the libraries once in GitHub Actions and publish them as release assets in a public repository that holds only open-source compiled code. The setup script downloads and unpacks them in 111 seconds.</p>
+
+<p>Three bugs stood between us and that number. Each one was invisible on GitHub's own runners, so we made a smoke-test workflow that copies the cloud's conditions more closely each time it missed something.</p>
+
+<ul>
+<li>The setup body ran as <code>( set -e ... ) || echo</code>. Bash ignores <code>set -e</code> inside a command whose status <code>||</code> tests, so a failed download never stopped the script.</li>
+<li>The cloud image has no <code>zstd</code> command. GitHub runners have one.</li>
+<li>Unpacking as root kept the archive's file owner, the CI user. The cloud session runs as root, git refuses repositories owned by another user, and Lake read that refusal as "URL has changed". It then deleted every package and started compiling Mathlib from source. That cost one session 18 minutes before we caught it.</li>
+</ul>
+
+<h3>Step 4: a feedback loop with no human in it</h3>
+
+<p>The orchestrator, a Claude Opus 5.5 session, reads a task list and a ledger. It sends one fresh worker per attempt with a 25-minute time box. A worker starts with <code>lake build</code>, which shows every error the last worker left. When it stops, it commits its state even if the build is red, so nothing is lost and nobody has to relay error messages.</p>
+
+<p>After a failed attempt, the orchestrator labels it <code>lean</code> (a hard or unfinished proof) or <code>math</code> (the plan itself is wrong). We took this split from the Magenta paper's error attribution (<a href="https://arxiv.org/abs/2609.11319">arXiv 2609.11319</a>). A <code>lean</code> failure sends a fresh worker with the same plan. A <code>math</code> failure makes the orchestrator rewrite the plan first. The ledger records what each attempt tried and why it failed, so the next worker does not repeat it.</p>
+
+<p>Two infrastructure facts shaped this loop. Cloud sessions push to their own branches, so the poller scans every <code>run/*</code> and <code>claude/*</code> branch. And GitHub's scheduled trigger never fired in the first two hours, so the session that ran the experiment also starts the poller whenever a submission has no verdict.</p>
+
+<h2>The experiment</h2>
+
+<p>We ran a warm-up and then the main target.</p>
+
+<h3>Warm-up: Erdős problem 105, variant <code>sub_four</code></h3>
+
+<p>The question: take two disjoint finite sets A and B in the plane, with A four points larger than B and not all on one line. Must some line through two points of A miss B? A forum user, Xichuan, found ten points A and six points B where every one of the 45 lines through two points of A hits B, so the answer is no. formal-conjectures still lists this variant as open at the commit we pinned. The agent formalized the counterexample, and the referee accepted it on the first attempt. The worker needed about four minutes.</p>
+
+<h3>Main target: Green's open problem 72 for 3 ≤ N ≤ 60</h3>
+
+<p>The upper bound of 2N points was already proved in formal-conjectures. The missing half is one explicit witness per N. We took the witnesses from Flammenkamp's no-three-in-line database and Prellberg's published table (MIT licence), and checked all 58 again with exact integer arithmetic. The Lean kernel checks the largest one, N = 60, in 48 seconds with <code>decide +kernel</code>, which adds no axiom.</p>
+
+<p>We compared two arms, both on Claude Opus 5.5 at the same effort. Arm B is the full harness: orchestrator, workers, ledger, guard hook and a five-step lemma outline. Arm A is a bare session with a plain prompt and none of that. Both get the same witness data and the same referee. Runs go one at a time, so the cloud credit meter shows each run's cost.</p>
+
+<h2>Results</h2>
+
+<div class="scroll">
+<table>
+<thead><tr><th>Run</th><th>Arm</th><th>Verdict</th><th class="num">Launch to green</th><th class="num">Cost (USD)</th><th class="num">Submissions</th></tr></thead>
+<tbody>
+<tr><td>Erdős 105</td><td>harness</td><td><span class="pill ok">green</span></td><td class="num">about 50 min</td><td class="num">about 4</td><td class="num">1</td></tr>
+<tr><td>b1</td><td>harness</td><td><span class="pill ok">green</span></td><td class="num">42 min</td><td class="num">4</td><td class="num">1</td></tr>
+<tr><td>a1</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
+<tr><td>b2</td><td>harness</td><td><span class="pill ok">green</span></td><td class="num">93 min</td><td class="num">4</td><td class="num">2</td></tr>
+<tr><td>a2</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
+<tr><td>b3</td><td>harness</td><td><span class="pill wait">running</span></td><td class="num">first submission lost</td><td class="num"></td><td class="num">1 so far</td></tr>
+<tr><td>a3</td><td>bare</td><td><span class="pill wait">not started</span></td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Every finished run is green. No run tried to cheat, and the guard hook denied nothing. The whole day, including the failed setup sessions, used 19 USD of a 250 USD cloud credit by the time run b3 started. Most of the wall-clock time in each run is the checker itself, about 25 minutes per verdict.</p>
+
+<h2>What we learned</h2>
+
+<h3>The target was easier than the harness</h3>
+
+<p>We planned for hours of proving. The agents needed 10 to 15 minutes. The reason is that the hard parts were done before any agent started: verified witness data, a Lean data file, and a timing test that showed the kernel can do the work. What was left was one bridge lemma (if the integer cross-product test passes, the real points are not collinear) and some glue. That is a short job for Opus 5.5.</p>
+
+<p>On this target the bare arm was faster and cheaper. Both bare runs ignored the collinearity checker we supplied, wrote a faster one of their own (N = 60 in 11 to 17 seconds instead of 55 to 76), and passed on the first submission. The harness runs followed our outline and our checker, and that path uses more memory.</p>
+
+<h3>The feedback loop did its job when the infrastructure failed</h3>
+
+<p>Run b2's first proof built in its session, but the checker's runner was shut down after 36 minutes, almost certainly out of memory. Because the runner died, it never wrote a verdict. The status stayed "pending", and the poller skips commits that already have a status. Nobody would ever have told the agent.</p>
+
+<p>We changed the poller: a pending status whose checker run has already finished now becomes a failure with the reason "checker run ended without a verdict (runner shut down, often out of memory)". From there the loop worked as designed. The orchestrator measured peak memory itself (2.1 GB at N = 40, 5.8 GB at N = 60), labelled the failure <code>lean</code>, and briefed a second worker to split each check into chunks. The second submission passed. Run b3 is on the same path as this post goes out.</p>
+
+<h3>Smaller lessons</h3>
+
+<ul>
+<li>A smoke test is only as good as its copy of production. Ours passed three times while the real cloud failed, because GitHub runners have <code>zstd</code>, run builds as a non-root user, and mark every directory safe for git.</li>
+<li>Scheduled GitHub workflows are best effort. Do not build a loop on them alone.</li>
+<li>Plan limits are separate from the cloud credit. Our Fable 5.1 weekly limit was used up, so every orchestrator ran on Opus 5.5 instead.</li>
+</ul>
+
+<h2>What this does not show</h2>
+
+<ul>
+<li>Three runs per arm is a demonstration, not a statistic.</li>
+<li>The witness data and, for arm B, the lemma outline were prepared before the runs. The agents formalized; they did not search.</li>
+<li>Workers ran at default effort, because the session could not pin a subagent's effort level.</li>
+<li>The statement audit for Erdős 105 was written by Claude. I still have to read the Lean statement against the English problem myself before this result goes anywhere public.</li>
+</ul>
+
+<p>The next step is a known result whose proof is conceptual rather than computational, so that planning and the failure loop have real work to do.</p>
+
+<h2>Who did what</h2>
+
+<p>I set the goal, approved the design, and made the calls that needed a human, such as publishing the dependency repository and letting the runs launch on their own. I did not write any proof or harness code. A local Claude Code session on Claude Opus 5.5 built the harness, the checker and the cloud environment, fixed the bugs above, and started each cloud session through the browser. The cloud sessions, also Claude Opus 5.5, wrote every Lean proof. An earlier session on Claude Fable 5.1 wrote the design and the plan with me.</p>
+
+<p>Borrowed work: the statements come from formal-conjectures, the referee is Comparator, the sandbox is landrun, the workflow started from the <a href="https://github.com/nick-kuhn/erdos-619">nick-kuhn/erdos-619</a> checker, the Erdős 105 counterexample is Xichuan's, the Green 72 witnesses are Flammenkamp's and Prellberg's, and the lean-or-math failure split comes from Magenta.</p>
+
+<h2>Conclusion</h2>
+
+<p>If you let an agent work alone, put the verdict somewhere it cannot reach. Freeze every input that steers the build. Take the verdict from the tool's exit code, never from text the agent can print. And make sure a crashed check still produces an answer, because silence looks exactly like "still running". With those pieces in place, the agents did the formalization in minutes, and the referee is the part I trust.</p>
+
+<div class="author"><strong>Daniel Puri</strong> ran this project. The harness, the checker and every run record are in the repositories <code>erdos-lean-formalization</code> and <code>erdos-lean-checker</code>.</div>
+</article>
+</div>
