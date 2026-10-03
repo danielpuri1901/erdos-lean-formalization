@@ -75,3 +75,10 @@ echo "get private asset -> $code"
 code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 https://api.github.com/repos/danielpuri1901/erdos-lean-formalization/releases/tags/probe-v0 2>&1 | tail -c 3)
 echo "get private release api -> $code"
 ```
+
+## Environment artifact, 2026-10-03
+
+`build-env` (run https://github.com/danielpuri1901/erdos-lean-formalization/actions/runs/37117487984) built the project with Lean at `/opt/lean`.
+The full `.lake` is 7.8 GB and compresses with zstd level 3 to 2.55 GB in two parts (1.99 GB and 0.56 GB).
+Fetching dependencies, the Mathlib cache, and the formal-conjectures closure took about 10 minutes on the runner, so building in the setup script does not fit the five-minute limit, and the decision above falls to the public `erdos-lean-env` repository.
+That release (`env-v1` here) is private and only measured the size; the setup script will download from the public repository once Daniel approves it.
