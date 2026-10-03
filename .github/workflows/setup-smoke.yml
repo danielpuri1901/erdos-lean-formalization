@@ -30,14 +30,21 @@ jobs:
           /opt/lean/bin/lean --version
           [ -d /opt/erdos-env/.lake/packages/mathlib/.lake/build ]
           [ -n "$s" ] && [ "$s" -lt 300 ]
+      - name: Git can read every package as plain root (cloud session 2026-10-03)
+        # sudo sets SUDO_UID, which makes git trust the runner's files; a cloud session is root without it.
+        run: |
+          for p in /opt/erdos-env/.lake/packages/*; do
+            sudo env -u SUDO_UID -u SUDO_GID -u SUDO_USER git -C "$p" remote get-url origin
+          done
       - name: Session hook moves .lake into the checkout and builds Challenge, as root like the cloud session
         timeout-minutes: 10
         run: |
-          sudo env CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh | tee hook.log
+          sudo env -u SUDO_UID -u SUDO_GID -u SUDO_USER CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh | tee hook.log
+          ! grep -q "URL has changed" /tmp/lake-check.log
           grep -q "lake build Challenge: exit 0" hook.log
       - name: Full build as root in under 60 seconds (dependencies are not rebuilt)
         timeout-minutes: 10
         run: |
-          start=$(date +%s); sudo env PATH=/opt/lean/bin:$PATH lake build Challenge Solution; s=$(( $(date +%s) - start ))
+          start=$(date +%s); sudo env -u SUDO_UID -u SUDO_GID -u SUDO_USER PATH=/opt/lean/bin:$PATH lake build Challenge Solution; s=$(( $(date +%s) - start ))
           echo "build_seconds=$s" | tee -a "$GITHUB_STEP_SUMMARY"
           [ "$s" -lt 60 ]
