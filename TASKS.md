@@ -6,7 +6,7 @@ One line per task. Status is one of: todo, running, blocked, done.
 |----|--------|-------|--------|
 | T0 | trivial | checker pipeline proof | done |
 | E105 | erdos105 | prove `erdos_105_sub_four_false` with the lemma plan below | done |
-| G72 | green72 | prove `green72_no_three_in_line_le` with the lemma plan below | todo |
+| G72 | green72 | prove `green72_no_three_in_line_le` with the lemma plan below | running |
 
 ## erdos105
 
