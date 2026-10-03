@@ -1,14 +1,9 @@
-import FormalConjectures.ErdosProblems.«105»
+import FormalConjectures.GreensOpenProblems.«72»
 
-/-! Frozen statement for the erdos105 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the green72 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
 
-open EuclideanGeometry
-
-/-- Erdős 105, variant `sub_four`, resolved negatively.
-This is the negation of the universal statement in
-`Erdos105.erdos_105.variants.sub_four` at formal-conjectures commit df3f12d7bd06. -/
-theorem erdos_105_sub_four_false :
-    ¬ ∀ A B : Finset ℝ², Disjoint A B → A.card = B.card + 4 →
-      ¬ Collinear ℝ (A : Set ℝ²) →
-      ∃ p ∈ A, ∃ q ∈ A, p ≠ q ∧ ∀ b ∈ B, b ∉ line[ℝ, p, q] := by
+/-- Green's Open Problem 72 for small grids: for 3 ≤ N ≤ 60 the pigeonhole bound 2N is attained.
+This is `Green72.no_three_in_line_le` at formal-conjectures commit df3f12d7bd06, renamed so it does not clash with the imported declaration. -/
+theorem green72_no_three_in_line_le {N : ℕ} (hN : 3 ≤ N) (hN' : N ≤ 60) :
+    Green72.NoKInLineFor 3 N := by
   sorry
