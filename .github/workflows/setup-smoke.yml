@@ -1,0 +1,32 @@
+name: setup-smoke
+# Runs the cloud setup path on a fresh runner: setup script as root with no GitHub token
+# (like the cloud VM), then the session hook, then a timed build. Pass criteria from plan Task 5 step 6.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Run the setup script as root
+        run: |
+          sudo env -u GITHUB_TOKEN bash scripts/setup-cloud.sh
+          cat /tmp/cloud-setup.log
+      - name: Setup finished in under 300 seconds
+        run: |
+          s=$(sed -n 's/^setup_seconds=//p' /tmp/cloud-setup.log)
+          echo "setup_seconds=${s:-missing}" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ -n "$s" ] && [ "$s" -lt 300 ]
+      - name: Session hook moves .lake into the checkout and builds Challenge
+        run: CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh
+      - name: Full build in under 60 seconds (dependencies are not rebuilt)
+        run: |
+          export PATH=/opt/lean/bin:$PATH
+          start=$(date +%s); lake build Challenge Solution; s=$(( $(date +%s) - start ))
+          echo "build_seconds=$s" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$s" -lt 60 ]
