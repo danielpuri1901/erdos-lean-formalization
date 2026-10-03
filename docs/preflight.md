@@ -77,4 +77,4 @@ Checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37
 
 The only difference from the paper's words: the Lean statement covers finite graphs, and the paper does not say "finite". Domination numbers in that paper are finite counts, so this matches its setting.
 The same run rejected a `sorry` proof: `Illegal axiom detected: 'sorryAx'`.
-Daniel's sign-off: pending.
+Daniel signed off on 2026-10-03, after the three checks and a visual page where he checked the eight small graphs by hand (https://claude.ai/artifact/NsEoGB13HnaZHG9kvnUKMK).
