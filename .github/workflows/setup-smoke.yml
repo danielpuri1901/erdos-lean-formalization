@@ -16,7 +16,8 @@ jobs:
       - name: Remove zstd, which the cloud image lacks (smoke session 2026-10-03)
         run: |
           sudo apt-get purge -y -qq zstd
-          ! command -v unzstd
+          sudo rm -f /usr/local/bin/*zstd*
+          ! command -v unzstd && ! sudo bash -c 'command -v unzstd'
       - name: Run the setup script as root
         run: |
           sudo env -u GITHUB_TOKEN bash scripts/setup-cloud.sh
