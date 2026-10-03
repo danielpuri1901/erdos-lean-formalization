@@ -7,9 +7,9 @@ for line in (root / "LEDGER.md").read_text().splitlines():
     if not line.startswith("|") or line.startswith("| time") or line.startswith("|---"):
         continue
     cells = [c.strip() for c in line.strip().strip("|").split("|")]
-    if len(cells) < 9 or cells[1] == "guard":
+    if len(cells) < 10 or cells[1] == "guard":
         continue
-    rows.append(dict(zip(["time", "task", "attempt", "commit", "verdict", "minutes", "cost_usd", "checker", "note"], cells)))
+    rows.append(dict(zip(["time", "task", "attempt", "commit", "verdict", "class", "minutes", "cost_usd", "checker", "note"], cells)))
 tasks = {}
 for r in rows:
     t = tasks.setdefault(r["task"], {"attempts": 0, "last_verdict": None, "done": False, "minutes": 0.0, "cost_usd": 0.0})
