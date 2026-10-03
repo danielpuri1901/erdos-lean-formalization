@@ -13,6 +13,10 @@ jobs:
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Free disk space (the runner ran out while packaging)
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h / | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Install the toolchain into /opt/lean (no elan), the same path the cloud setup script uses
         run: |
           sudo mkdir -p /opt/lean
@@ -26,14 +30,14 @@ jobs:
           git diff --exit-code lake-manifest.json
           lake exe cache get
           lake build Challenge Solution
+          rm -rf ~/.cache/mathlib
       - name: Package the project .lake (the toolchain comes from the public Lean release)
         run: |
-          tar --use-compress-program="zstd -T0 -3" -cf env.tar.zst .lake
-          split -b 1900m env.tar.zst env.tar.zst.part-
-          rm env.tar.zst
+          du -sh .lake .lake/packages/* | tee -a "$GITHUB_STEP_SUMMARY"
+          # Stream straight into parts, so the archive is never on disk twice.
+          tar -cf - .lake | zstd -T0 -3 | split -b 1900m - env.tar.zst.part-
           # One line per part, so the setup script learns the part names from this file alone.
           sha256sum env.tar.zst.part-* > env.sha256
-          du -sh .lake | tee -a "$GITHUB_STEP_SUMMARY"
           ls -la env.tar.zst.part-* env.sha256 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish release
         env:
