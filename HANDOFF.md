@@ -64,7 +64,13 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 Done: checker token, cloud environment `erdos-lean` (setup script now pasted by the executor through Chrome), smoke sessions, usage-credit check (usage credits on, 0 EUR balance, 43 EUR monthly cap, auto-reload off; cloud credit 247 of 250 USD at launch, expires 2026-11-05).
 
-Next decision (Daniel): a harder second round (a known result with a conceptual proof, so the harness has work to do) or publish the write-up as it is.
+Next decision (Daniel): the target for a harder second round, a known result with a conceptual proof so the harness has work to do.
+Finding on 2026-10-03: every solved Erdős problem that formal-conjectures states now has a public Lean proof (plby/lean-proofs, or a `formal_proof` link), so a cloud agent could copy one.
+Shortlist with no public Lean proof found (GitHub code search, plby tree, formal-conjectures pull requests), all present at the pin:
+1. `vizing_conjecture.variants.clark_suen` (Wikipedia/VizingConjecture.lean): γ(G)γ(H) ≤ 2γ(G□H) for all finite graphs, Clark and Suen 2000, a one-page double-counting proof. Recommended. The only other Lean file that names it states it as an axiom.
+2. `GaussCircleProblem.error_le`: |N(r) - πr²| ≤ 2√2πr for large r, a one-page unit-square argument.
+3. `Hall.danilov`: Danilov 1982, an explicit infinite family through a Pell equation; the mod-125 step is unverified.
+4. `PowerfulNumbersDensity.asymptotic_erdos_szekeres`: needs ζ-function sums; higher risk.
 
 Still Daniel's, whenever he wants:
 
@@ -93,7 +99,8 @@ Still Daniel's, whenever he wants:
 ## Open risks
 
 - Does the setup script restore the 2.55 GB artifact in under five minutes (Task 5 step 6 answers it)?
-- Every push to `main` runs `build.yml` (about 7 minutes of Actions time on a private repository); a busy run pushes often.
-- The checker's 15-minute poller bills about 96 Actions minutes a day on a private repository; disable it between runs (checker README).
+- The checker's poller is a loop that bills every minute it runs and stops after 2 hours without a push; start it by hand when a run begins (checker README).
+- Fixed 2026-10-03: the checker's private runner (7.8 GB of memory) was killed by large parallel kernel checks; verify.yml now frees disk and adds swap, and the killed b2 submission passes (checker run 37151232633).
+- Fixed 2026-10-03: the poller loop crashed after its first dispatch (empty 204 response); fixed and re-tested end to end.
 - Answered 2026-10-03: a cloud session cannot write commit statuses (proxy 403) or read the checker (403), so a green `comparator/<target>` status is still proof. Re-check if the GitHub connection method changes (for example `/web-setup` with a broader token).
 - Does `promptCacheTtl: "1h"` hold in cloud sessions on usage credits (Task 9 observes it)?

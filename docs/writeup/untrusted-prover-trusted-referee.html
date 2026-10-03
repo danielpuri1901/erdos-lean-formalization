@@ -227,8 +227,8 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <tr><td>5</td><td>A tool was missing in the cloud</td><td>The cloud has no zstd unpack tool. GitHub's machines have it.</td><td><span class="pill ok">fixed</span> setup installs it</td></tr>
 <tr><td>6</td><td>Lean rebuilt everything from scratch</td><td>The unpacked files belonged to another user. Git refused them, so Lean deleted and rebuilt its libraries.</td><td><span class="pill ok">fixed</span></td></tr>
 <tr><td>7</td><td>The checker did not see the AI's work</td><td>Cloud sessions save work to their own branches.</td><td><span class="pill ok">fixed</span> the checker watches those branches</td></tr>
-<tr><td>8</td><td>The checker never started on schedule</td><td>GitHub's timer fired only twice in 7.5 hours.</td><td><span class="pill ok">fixed</span> the checker runs its own loop and restarts itself</td></tr>
-<tr><td>9</td><td>The checker ran out of memory</td><td>Large checks built in parallel needed more memory than the machine had. The machine died without a verdict.</td><td><span class="pill wait">fix in test</span> a dead check now gives a clear failure, and extra memory is being tested</td></tr>
+<tr><td>8</td><td>The checker never started on schedule</td><td>GitHub's timer fired only twice in 7.5 hours.</td><td><span class="pill ok">fixed</span> the checker runs its own loop every 2 minutes and restarts itself</td></tr>
+<tr><td>9</td><td>The checker ran out of memory</td><td>The checker runs on GitHub's small machine, with 7.8 GB of memory. Large checks built in parallel needed more, and the machine died without a verdict.</td><td><span class="pill ok">fixed</span> the checker frees disk space and adds extra memory on disk (swap). The proof that killed it now passes. A dead check also gives a clear failure.</td></tr>
 <tr><td>10</td><td>My Fable allowance ran out</td><td>The weekly limit for Fable was used up, and the cloud credit does not cover it.</td><td><span class="pill wait">worked around</span> all runs used Opus</td></tr>
 </tbody>
 </table>
