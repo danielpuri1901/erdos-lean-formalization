@@ -1,8 +1,16 @@
 {
   "denials": 0,
-  "tasks": {},
+  "tasks": {
+    "G72": {
+      "attempts": 1,
+      "cost_usd": 5.0,
+      "done": false,
+      "last_verdict": "fail",
+      "minutes": 7.0
+    }
+  },
   "totals": {
-    "cost_usd": 0,
-    "minutes": 0
+    "cost_usd": 5.0,
+    "minutes": 7.0
   }
 }
