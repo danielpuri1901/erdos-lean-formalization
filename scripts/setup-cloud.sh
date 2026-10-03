@@ -22,7 +22,9 @@ start=$(date +%s)
   awk '{print $2}' env.sha256 | xargs -P 8 -I{} curl -sSfL -o {} "$BASE/{}"
   sha256sum -c env.sha256
   echo "download_seconds=$(( $(date +%s) - start ))"
-  cat $(awk '{print $2}' env.sha256) | tar --use-compress-program=unzstd -xf - -C /opt/erdos-env
+  # --no-same-owner: the archive's files belong to the CI user; git (and so lake) refuses repositories
+  # owned by another user, and lake then deletes and re-clones every package (smoke session 2026-10-03).
+  cat $(awk '{print $2}' env.sha256) | tar --use-compress-program=unzstd --no-same-owner -xf - -C /opt/erdos-env
   echo 'export PATH=/opt/lean/bin:$PATH' > /etc/profile.d/lean.sh
   chmod -R a+rwX /opt/erdos-env /opt/lean
   rm -rf /tmp/env
