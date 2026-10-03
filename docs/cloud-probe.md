@@ -102,3 +102,11 @@ The script now checks the subshell's exit code separately.
   GitHub runners ship zstd, which is why `setup-smoke` passed. The smoke workflow now removes zstd first, reproduced the failure (run 37123268614), and the setup script installs zstd with apt when it is missing (run 37123320215: zstd in 6 seconds, `setup_seconds=115`, full build 27 seconds).
 - Probe, write a commit status through the session's GitHub access: HTTP 403, `Write access to this GitHub API path is not permitted through this proxy.` A session cannot post a fake `comparator/<target>` verdict.
 - Probe, read the checker repository: HTTP 403, `GitHub access to this repository is not enabled for this session.` The checker stays out of reach while it is not attached.
+
+## Smoke session 3, 2026-10-03 (cloud, Haiku 4.5): pass
+
+Smoke session 2 found the last bug: the archive's files belonged to the CI user (uid 1001), the cloud session runs as root, git refused those repositories ("dubious ownership"), and lake read the failed `git remote get-url` as a changed URL, deleted every package, re-cloned, and started compiling Mathlib.
+The setup script now unpacks with `--no-same-owner`; `setup-smoke` reproduces the cloud by running git as root with no runner git config (RED run 37125809479, GREEN run 37125998943).
+
+Session 3 after the fix: `zstd_seconds=6`, `lean_seconds=23`, `download_seconds=54`, `setup_seconds=111`; no `URL has changed` line in `/tmp/lake-check.log`; `lake build Challenge Solution` took 13.5 seconds.
+Plan Task 5 step 6 passes (setup under 300 seconds, build under 60 seconds).
