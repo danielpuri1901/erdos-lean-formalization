@@ -82,3 +82,16 @@ echo "get private release api -> $code"
 The full `.lake` is 7.8 GB and compresses with zstd level 3 to 2.55 GB in two parts (1.99 GB and 0.56 GB).
 Fetching dependencies, the Mathlib cache, and the formal-conjectures closure took about 10 minutes on the runner, so building in the setup script does not fit the five-minute limit, and the decision above falls to the public `erdos-lean-env` repository.
 That release (`env-v1` here) is private and only measured the size; the setup script will download from the public repository once Daniel approves it.
+
+## Public dependency release and setup smoke test, 2026-10-03
+
+Daniel approved the public repository https://github.com/danielpuri1901/erdos-lean-env.
+It holds only the pins and a workflow; its release `env-v1` holds `.lake/packages` (formal-conjectures, Mathlib, and their dependencies, compiled with Lean 4.33.1 at `/opt/lean`): 2.55 GB in two parts.
+Unauthenticated downloads work (HTTP 200), unlike this private repository's release (404).
+
+The `setup-smoke` workflow runs the cloud path on a fresh GitHub runner: `scripts/setup-cloud.sh` as root with no token, then `scripts/session-start.sh`, then a timed build.
+Run https://github.com/danielpuri1901/erdos-lean-formalization/actions/runs/37121304784 passed: Lean in 28 seconds, download done at 63 seconds, `setup_seconds=161`; the session hook's first `lake build Challenge` took 72 seconds (well inside the hook's 600-second default timeout); `lake build Challenge Solution` then took 20 seconds.
+The cloud VM's network may differ, so the smoke session in `docs/cloud-environment.md` still measures it there.
+
+The first smoke run found a bug: the setup body ran as `( set -e ... ) || echo`, and bash ignores `set -e` inside a command whose status `||` tests, so a failed download never stopped the script and it still printed `setup_seconds` (run 37121258598).
+The script now checks the subshell's exit code separately.

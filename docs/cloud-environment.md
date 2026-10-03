@@ -20,7 +20,15 @@ From the browser: open claude.ai/code, pick the repository `danielpuri1901/erdos
 From the desktop app: start a new session, choose Cloud instead of Local, pick the repository and the environment.
 From a terminal inside the repository: `claude --cloud "<prompt>"` after `/remote-env` has selected `erdos-lean` once.
 
-## Probe session (plan Task 4)
+## Smoke session (plan Task 5)
 
-Prompt: `Print the file /tmp/cloud-probe.log and stop.`
+Paste the current `scripts/setup-cloud.sh` into the environment's setup script field first.
+Attach only `erdos-lean-formalization`.
+Prompt:
+
+```
+Print /tmp/cloud-setup.log. Then run: export PATH=/opt/lean/bin:$PATH; time lake build Challenge Solution. Then run these two probes and print their output: gh api -X POST repos/danielpuri1901/erdos-lean-formalization/statuses/$(git rev-parse HEAD) -f state=pending -f context=probe/session-can-write-statuses; gh api repos/danielpuri1901/erdos-lean-checker --jq .full_name. Then stop.
+```
+
+The two probes answer a security question: can the agent's GitHub access write a commit status (a fake verdict) or read the checker repository?
 Copy the output into `docs/cloud-probe.md`.
