@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-02, after the plan was written and before any task of it ran.
+Last update: 2026-10-03, after plan Tasks 1, 2, 3, 6, 7, 8, and 10 passed; Tasks 4, 5, 9, and 11 wait for Daniel.
 
 ## What this project is
 
@@ -31,8 +31,18 @@ Done:
   Ruling for Task 5, recorded in `docs/cloud-probe.md`: toolchain from the leanprover release, Mathlib from `cache.mathlib.org`, build only the target's import closure in the setup script if Task 1's `build_seconds` shows it fits in about 270 seconds; otherwise a public `erdos-lean-env` repository for the built `.lake`, which needs Daniel's approval.
   Every real cloud session attaches only `erdos-lean-formalization`.
 
-Not done: every other task in the plan.
-No Lean has been built anywhere yet.
+Plan progress (ledger: `.superpowers/sdd/2026-10-02-lean-formalization-harness/progress.md`, git-ignored):
+
+- Task 1 passed: the Lean project builds in CI (build 261 to 338 seconds with the Mathlib cache); `lake-manifest.json` is pinned; a plain `import` of the module-system problem files works.
+- Task 2 passed: the checker is green on the trivial target (`comparator/trivial` success), and the freeze test rejects an edited challenge. The checker workflow is hardened beyond the plan; see the checker README "Trust model".
+- Task 3 passed: Comparator rejects all five cheating fixtures, each for its own reason (checker README "Negative tests").
+- Task 4: probes 1 and 2 are recorded in `docs/cloud-probe.md`. Private release assets are not used.
+- Task 5: `scripts/setup-cloud.sh` v1 and `scripts/session-start.sh` are written. The artifact builds (`.lake` 7.8 GB, 2.55 GB compressed in two parts). It still needs a public home (see below) and a smoke session.
+- Tasks 6, 7, 8 passed: guard hook, ledger and `STATE.json`, `AGENTS.md`, worker and orchestrator prompts, budget template.
+- Task 9: protocol written in `docs/burn-test.md`; the two sessions are not run.
+- Task 10 passed: 58 witnesses (N = 3 to 60) fetched and re-verified exactly; the N = 60 kernel check takes 48 seconds, so `decide +kernel` works for every N (`docs/preflight.md`).
+- Task 11: steps 2 and 3 done (Erdős 105 witness data and verifier; frozen statement, Comparator config, and axiom audit in the checker, statement elaborates). Step 1 (Daniel's audit) and steps 4 to 7 remain.
+- No final whole-plan review has run yet; it runs after Task 11.
 
 ## Executing session: local only
 
@@ -50,11 +60,15 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 ## Daniel's manual steps (the agent cannot do these)
 
-- Task 2 step 1: create the fine-grained GitHub token `erdos-checker` (repo access only `erdos-lean-formalization`; Contents read; Commit statuses read and write; expiry 2026-11-30) and run `gh secret set AGENT_REPO_TOKEN -R danielpuri1901/erdos-lean-checker`, pasting the token at the prompt. Never paste it into chat.
-- Task 4 and Task 5: create the cloud environment `erdos-lean` at claude.ai/code exactly as `docs/cloud-environment.md` says, paste the setup script, and start the probe and smoke sessions.
-- Task 9: start the two 15-minute burn-test sessions and read the credit meter before and after each.
-- Task 11 step 1: write the statement audit for Erdős 105 in `docs/preflight.md` before any proving session starts.
-- Still open: report whether usage credits are on or off at claude.ai/settings/usage, and any cap.
+Done: the checker token (Task 2 step 1), the cloud environment `erdos-lean`, probes 1 and 2.
+
+Next, in this order:
+
+1. Approve a public repository `danielpuri1901/erdos-lean-env` for the compiled dependencies (formal-conjectures and Mathlib oleans, Apache-2.0; no proofs, no project code). The executing session has its files ready and creates it, runs its `build-env` workflow, and points `scripts/setup-cloud.sh` at it.
+2. Paste the new `scripts/setup-cloud.sh` into the `erdos-lean` environment's setup script field, then start one session on `erdos-lean-formalization` only, with the prompt: `Print /tmp/cloud-setup.log, then run: export PATH=/opt/lean/bin:$PATH; time lake build Challenge Solution; and stop.` Paste the output to the executing session (Task 5 step 6).
+3. Task 9: start the two 15-minute burn-test sessions from `docs/burn-test.md` and read the credit meter before and after each.
+4. Task 11 step 1: write the statement audit for Erdős 105 in `docs/preflight.md` before any proving session starts.
+5. Report whether usage credits are on or off at claude.ai/settings/usage, and any cap.
 
 ## Rules that never bend
 
@@ -77,7 +91,6 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 ## Open risks
 
-- Does the cloud GitHub proxy serve release assets from the attached repository (Task 4 answers it; fallback is S3)?
-- Does Comparator at `v4.33.0` accept Lean `v4.33.1` oleans and module-system files from formal-conjectures (Task 2 answers it)?
-- What is the Green 72 N = 60 kernel time without `native_decide` (Task 10 answers it)?
+- Does the setup script restore the 2.55 GB artifact in under five minutes (Task 5 step 6 answers it)?
+- Every push to `main` runs `build.yml` (about 7 minutes of Actions time on a private repository); a busy run pushes often.
 - Does `promptCacheTtl: "1h"` hold in cloud sessions on usage credits (Task 9 observes it)?
