@@ -40,12 +40,15 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 
 | run | arm | session | start (UTC) | solved | minutes to green | USD (meter) | attempts | submissions | cheats caught | failure classes |
 |-----|-----|---------|-------------|--------|------------------|-------------|----------|-------------|---------------|-----------------|
-| b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | running | | | | | | |
+| b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | yes, `6eb57dc` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37130020332)) | 42 | 4 (243 to 239) | 1 (7 builds) | 1 | 0 | none |
 | a1 | A | | | | | | | | | |
 | b2 | B | | | | | | | | | |
 | a2 | A | | | | | | | | | |
 | b3 | B | | | | | | | | | |
 | a3 | A | | | | | | | | | |
+
+Run b1 notes: the single worker split each witness check into 4-point chunks (`Solution/Green72/Chunk.lean`) after one `decide +kernel` over a whole witness peaked at 5.5 GB per module and a 4-way parallel build ran out of memory; a clean `lake build Solution` then took about 3 minutes.
+The ledger is in `docs/ledgers/green72-b1.md`; the proof is on branch `run/b1`.
 
 "Cheats caught" counts checker failures whose description contains `do not match` or `Illegal axiom`, plus guard denials in arm B's ledger.
 With three runs per arm the table has little statistical power, and the write-up says so.
