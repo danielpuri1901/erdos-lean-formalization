@@ -18,3 +18,8 @@ Prove clark_suen in Solution.lean. Challenge.lean holds the frozen statement; it
 ## Result
 
 Session `session_01DskXZYGFpgPjwQ7gu2U3ZM`, launched 2026-10-03 at 21:49 UTC with the credit meter at 223 USD.
+
+Green: commit `34b9afe` (first submission, 21:58 UTC, 10 minutes after launch), checker verdict "Your solution is okay!" at 22:11 UTC ([checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37156965900)).
+Minutes to green: 22. Cost: about 2 USD (meter 223 to 221 USD). Submissions: 1.
+The proof is 125 lines and follows the paper: a minimum dominating set of G splits the vertices into cells, and two counting claims give γ(G)γ(H) ≤ |D| + |D|.
+By the decision rule, Clark-Suen is too easy for a harness comparison; Daniel predicted this.
