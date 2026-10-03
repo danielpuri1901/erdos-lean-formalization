@@ -1,0 +1,16 @@
+{
+  "denials": 0,
+  "tasks": {
+    "E105": {
+      "attempts": 1,
+      "cost_usd": 5.0,
+      "done": true,
+      "last_verdict": "pass",
+      "minutes": 4.0
+    }
+  },
+  "totals": {
+    "cost_usd": 5.0,
+    "minutes": 4.0
+  }
+}
