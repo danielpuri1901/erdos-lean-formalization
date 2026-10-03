@@ -95,3 +95,10 @@ The cloud VM's network may differ, so the smoke session in `docs/cloud-environme
 
 The first smoke run found a bug: the setup body ran as `( set -e ... ) || echo`, and bash ignores `set -e` inside a command whose status `||` tests, so a failed download never stopped the script and it still printed `setup_seconds` (run 37121258598).
 The script now checks the subshell's exit code separately.
+
+## Smoke session 1, 2026-10-03 (cloud, environment `erdos-lean`, only the agent repository attached)
+
+- Setup failed: the cloud image has no `zstd` command, so `tar` could not unpack the Lean archive (`unzstd: Cannot exec: No such file or directory`, `setup failed (exit 2)`). Nothing reached `/opt/lean`, so `lake` was not found.
+  GitHub runners ship zstd, which is why `setup-smoke` passed. The smoke workflow now removes zstd first, reproduced the failure (run 37123268614), and the setup script installs zstd with apt when it is missing (run 37123320215: zstd in 6 seconds, `setup_seconds=115`, full build 27 seconds).
+- Probe, write a commit status through the session's GitHub access: HTTP 403, `Write access to this GitHub API path is not permitted through this proxy.` A session cannot post a fake `comparator/<target>` verdict.
+- Probe, read the checker repository: HTTP 403, `GitHub access to this repository is not enabled for this session.` The checker stays out of reach while it is not attached.

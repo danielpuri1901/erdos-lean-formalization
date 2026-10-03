@@ -95,5 +95,5 @@ Next, in this order:
 - Does the setup script restore the 2.55 GB artifact in under five minutes (Task 5 step 6 answers it)?
 - Every push to `main` runs `build.yml` (about 7 minutes of Actions time on a private repository); a busy run pushes often.
 - The checker's 15-minute poller bills about 96 Actions minutes a day on a private repository; disable it between runs (checker README).
-- If the smoke session shows the agent can write commit statuses through the GitHub proxy, a green status alone is no longer proof; verdicts must then be read from the checker's run list.
+- Answered 2026-10-03: a cloud session cannot write commit statuses (proxy 403) or read the checker (403), so a green `comparator/<target>` status is still proof. Re-check if the GitHub connection method changes (for example `/web-setup` with a broader token).
 - Does `promptCacheTtl: "1h"` hold in cloud sessions on usage credits (Task 9 observes it)?
