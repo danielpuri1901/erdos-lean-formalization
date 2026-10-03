@@ -1,0 +1,22 @@
+{
+  "promptCacheTtl": "1h",
+  "subagentPromptCacheTtl": "1h",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/scripts/hooks/guard.sh" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/scripts/session-start.sh" }
+        ]
+      }
+    ]
+  }
+}
