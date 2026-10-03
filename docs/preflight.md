@@ -78,3 +78,10 @@ Checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37
 The only difference from the paper's words: the Lean statement covers finite graphs, and the paper does not say "finite". Domination numbers in that paper are finite counts, so this matches its setting.
 The same run rejected a `sorry` proof: `Illegal axiom detected: 'sorryAx'`.
 Daniel signed off on 2026-10-03, after the three checks and a visual page where he checked the eight small graphs by hand (https://claude.ai/artifact/NsEoGB13HnaZHG9kvnUKMK).
+
+## Suen-Tarr statement check
+
+Target `suentarr`: `VizingConjecture.vizing_conjecture.variants.suen_tarr` at the pin, frozen in the checker as `suen_tarr`: γ(G)γ(H) + min(γ(G), γ(H)) ≤ 2γ(G□H) for all finite simple graphs (Suen and Tarr, 2012).
+It uses the same domination number and box product that the Clark-Suen examples checked on small graphs.
+Checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37157854927 (2026-10-03): the frozen statement is identical to formal-conjectures, the comparison tells it apart from the weaker Clark-Suen form, and a `sorry` proof is rejected (`Illegal axiom detected: 'sorryAx'`).
+Daniel approved a bare pilot on it on 2026-10-03, after the Clark-Suen pilot went green in 22 minutes.
