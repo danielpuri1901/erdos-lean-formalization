@@ -14,7 +14,9 @@ check deny_sorry 2 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lea
 check deny_native 2 '{"tool_name":"Edit","tool_input":{"file_path":"/w/erdos-lean-formalization/solutions/a.lean","old_string":"","new_string":"by native_decide"}}'
 check deny_axiom 2 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lean-formalization/Solution.lean","content":"axiom bad : False"}}'
 check deny_multiedit 2 '{"tool_name":"MultiEdit","tool_input":{"file_path":"/w/erdos-lean-formalization/Solution.lean","edits":[{"old_string":"a","new_string":"b"},{"old_string":"c","new_string":"by sorry"}]}}'
+check deny_axiom_submodule 2 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lean-formalization/Solution/Green72/Lemmas.lean","content":"axiom bad : False"}}'
+check allow_submodule 0 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lean-formalization/Solution/Green72/Lemmas.lean","content":"theorem x : True := trivial"}}'
 check allow_solution 0 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lean-formalization/Solution.lean","content":"theorem x : True := trivial"}}'
 check allow_other 0 '{"tool_name":"Write","tool_input":{"file_path":"/w/erdos-lean-formalization/LEDGER.md","content":"sorry is a word here"}}'
-[ "$(grep -c '| guard |' "$CLAUDE_PROJECT_DIR/LEDGER.md" 2>/dev/null)" = 5 ] && echo "ok   denials_logged" || { echo "FAIL denials_logged: expected 5 guard rows"; fail=1; }
+[ "$(grep -c '| guard |' "$CLAUDE_PROJECT_DIR/LEDGER.md" 2>/dev/null)" = 6 ] && echo "ok   denials_logged" || { echo "FAIL denials_logged: expected 6 guard rows"; fail=1; }
 exit $fail
