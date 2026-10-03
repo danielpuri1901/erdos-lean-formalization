@@ -23,3 +23,9 @@ Green: commit `34b9afe` (first submission, 21:58 UTC, 10 minutes after launch), 
 Minutes to green: 22. Cost: about 2 USD (meter 223 to 221 USD). Submissions: 1.
 The proof is 125 lines and follows the paper: a minimum dominating set of G splits the vertices into cells, and two counting claims give γ(G)γ(H) ≤ |D| + |D|.
 By the decision rule, Clark-Suen is too easy for a harness comparison; Daniel predicted this.
+
+## Suen-Tarr pilot
+
+Same setup on branch `run/st-pilot` and target `suentarr`, with the same prompt adapted to `suen_tarr` and `submit(suentarr): bare pilot`.
+Session `session_014VGamm5mVYUGQH3wXG8xwt`, launched 2026-10-03 at about 22:36 UTC with the credit meter at 221 USD.
+
