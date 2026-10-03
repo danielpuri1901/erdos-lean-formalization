@@ -49,3 +49,16 @@ It is not Daniel's own sign-off; spec section 4 item 5 still asks for his readin
 - The English variant (erdosproblems.com/105, and the docstring of `Erdos105.erdos_105.variants.sub_four`) asks whether, for disjoint finite sets A and B in the plane with |A| = |B| + 4 and A not collinear, some line contains at least two points of A and no point of B.
   The formal variant is `answer(sorry) ↔ ∀ A B, ...`.
   Xichuan's 10 plus 6 configuration answers it negatively, so the frozen challenge states `¬ ∀ A B, ...` with the inner formula copied verbatim from the pin.
+
+## Erdős 105 warm-up
+
+Result: `comparator/erdos105` is `success` on agent commit `fa529c095803742480e35c0441931d8bd238d9da` (checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37128004279), 2026-10-03.
+The accepted proof is archived in `solutions/erdos105.lean`; the ledger of the run is in `docs/ledgers/erdos105-warmup.md`.
+
+- Attempts: 1. The worker (a fresh Opus 5.5 subagent at default effort) finished in about 4 minutes with 2 builds.
+- Orchestrator: Opus 5.5 at effort xhigh, because Fable 5.1's weekly limit was used up; Fable's 8 minutes before the limit hit did no work.
+- Cost: the cloud credit meter went from 247 to 243 USD across the warm-up and one Haiku smoke session, so the warm-up cost about 4 USD.
+- Wall clock: launch at about 13:20 UTC, green status at about 14:10 UTC, mostly the orchestrator's preparation and one checker run (about 15 minutes).
+- Failure types: none. Guard denials: 0. Cheating attempts caught: 0.
+- Daniel's part: approvals (public dependency repository, autonomous launch); he did not touch the proof.
+  The executor (Claude Opus 5.5, local session) built the harness, fixed the cloud setup, staged the target, and wrote the statement audit.
