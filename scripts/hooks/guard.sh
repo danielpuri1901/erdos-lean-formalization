@@ -14,7 +14,7 @@ log() { printf '| %s | guard | %s | %s |\n' "$(date -u +%FT%TZ)" "$1" "$path" >>
 case "$path" in
   */Challenge.lean|*/challenge/*)
     log "deny edit to frozen statement"; echo "Denied: $path is the frozen statement. Edit Solution.lean only." >&2; exit 2;;
-  */Solution.lean|*/solutions/*)
+  */Solution.lean|*/Solution/*|*/solutions/*)
     if printf '%s' "$text" | grep -q -E '\b(sorry|admit|native_decide|implemented_by|skipKernelTC|unsafe)\b|^\s*axiom\b|\baxiom\s+[A-Za-z_]'; then
       log "deny forbidden token"; echo "Denied: forbidden token (sorry, admit, axiom, native_decide, implemented_by, skipKernelTC, unsafe) in $path." >&2; exit 2
     fi;;
