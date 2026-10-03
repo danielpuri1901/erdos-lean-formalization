@@ -33,8 +33,10 @@ jobs:
       - name: Git can read every package as plain root (cloud session 2026-10-03)
         # sudo sets SUDO_UID, which makes git trust the runner's files; a cloud session is root without it.
         run: |
+          # Also hide the runner's own git config, which may mark every directory safe.
+          mkdir -p "$RUNNER_TEMP/emptyhome"
           for p in /opt/erdos-env/.lake/packages/*; do
-            sudo env -u SUDO_UID -u SUDO_GID -u SUDO_USER git -C "$p" remote get-url origin
+            sudo env -i HOME="$RUNNER_TEMP/emptyhome" PATH=/usr/bin:/bin GIT_CONFIG_NOSYSTEM=1 git -C "$p" remote get-url origin
           done
       - name: Session hook moves .lake into the checkout and builds Challenge, as root like the cloud session
         timeout-minutes: 10
