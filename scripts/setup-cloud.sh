@@ -1,27 +1,25 @@
 #!/bin/bash
-# v0: probe only. Records facts about the cloud VM; never fails the session.
-LOG=/tmp/cloud-probe.log
-{
-  echo "date=$(date -u +%FT%TZ)"
-  echo "pwd=$PWD"; echo "user=$(whoami)"; echo "home=$HOME"
-  echo "nproc=$(nproc)"; echo "mem=$(free -g | awk '/Mem/{print $2}')G"
-  echo "disk=$(df -h / | awk 'NR==2{print $4}') free"
-  echo "lakefile_in_pwd=$([ -f lakefile.toml ] && echo yes || echo no)"
-  echo "curl_version=$(curl --version | head -1)"
-  for u in \
-    https://github.com/danielpuri1901/erdos-lean-formalization/releases/download/probe-v0/probe.txt \
-    https://github.com/leanprover/lean4/releases/download/v4.33.1/lean-4.33.1-linux.tar.zst \
-    https://cache.mathlib.org/ \
-    https://release.lean-lang.org/ ; do
-    code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 20 --head "$u" 2>&1 | tail -c 3)
-    echo "head $u -> $code"
-  done
-  echo "env_remote=$CLAUDE_CODE_REMOTE"
-  echo "home_user_ls=$(ls /home/user 2>/dev/null | tr '\n' ' ')"
-  echo "find_lakefile=$(find / -maxdepth 4 -name lakefile.toml 2>/dev/null | tr '\n' ' ')"
-  code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 https://github.com/danielpuri1901/erdos-lean-formalization/releases/download/probe-v0/probe.txt 2>&1 | tail -c 3)
-  echo "get private asset -> $code"
-  code=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 https://api.github.com/repos/danielpuri1901/erdos-lean-formalization/releases/tags/probe-v0 2>&1 | tail -c 3)
-  echo "get private release api -> $code"
-} > "$LOG" 2>&1 || true
+# v1: restore Lean at /opt/lean and the prebuilt project .lake at /opt/erdos-env/.lake.
+# The setup script does not run inside the checkout, so scripts/session-start.sh moves .lake into it.
+# Must finish in under 5 minutes; never fails the session.
+LOG=/tmp/cloud-setup.log
+BASE="https://github.com/danielpuri1901/erdos-lean-formalization/releases/download/env-v1"
+LEAN_URL="https://github.com/leanprover/lean4/releases/download/v4.33.1/lean-4.33.1-linux.tar.zst"
+start=$(date +%s)
+(
+  set -euo pipefail
+  echo "pwd=$PWD user=$(whoami)"
+  rm -rf /tmp/env /opt/erdos-env && mkdir -p /tmp/env /opt/lean /opt/erdos-env && cd /tmp/env
+  curl -sSfL "$LEAN_URL" | tar --use-compress-program=unzstd -xf - -C /opt/lean --strip-components=1
+  echo "lean_seconds=$(( $(date +%s) - start ))"
+  curl -sSfL -O "$BASE/env.sha256"
+  awk '{print $2}' env.sha256 | xargs -P 8 -I{} curl -sSfL -o {} "$BASE/{}"
+  sha256sum -c env.sha256
+  echo "download_seconds=$(( $(date +%s) - start ))"
+  cat $(awk '{print $2}' env.sha256) | tar --use-compress-program=unzstd -xf - -C /opt/erdos-env
+  echo 'export PATH=/opt/lean/bin:$PATH' > /etc/profile.d/lean.sh
+  chmod -R a+rwX /opt/erdos-env /opt/lean
+  rm -rf /tmp/env
+  echo "setup_seconds=$(( $(date +%s) - start ))"
+) > "$LOG" 2>&1 || echo "setup failed, see above" >> "$LOG"
 exit 0
