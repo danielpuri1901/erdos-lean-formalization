@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-03, after plan Tasks 1, 2, 3, 6, 7, 8, and 10 passed, the public dependency repository went live, and the submit( loop ran end to end; Tasks 5, 9, and 11 wait for Daniel.
+Last update: 2026-10-03, the Erdős 105 warm-up run is live in a cloud session (Fable 5.1 orchestrator, Opus workers), launched by the executor after Daniel delegated ("No feedback needed from me. Just fix it until it works.").
 
 ## What this project is
 
@@ -41,9 +41,9 @@ Plan progress (ledger: `.superpowers/sdd/2026-10-02-lean-formalization-harness/p
 - Verdict hole fixed (2026-10-03): a solution that printed `Your solution is okay!` during its own build got a green status, because the checker searched its log for that line. The verdict is now Comparator's exit code; `tests/bad/print_ok.lean` pins it (checker README).
 - No human step to ask the checker: the orchestrator pushes a `submit(<target>):` commit, and the checker's `check-submits` workflow verifies it within 15 minutes. Tested end to end on commit `00ef7c0`. On failure the status description is Comparator's last line.
 - Tasks 6, 7, 8 passed: guard hook, ledger and `STATE.json`, `AGENTS.md`, worker and orchestrator prompts, budget template.
-- Task 9: protocol written in `docs/burn-test.md`; the two sessions are not run.
+- Task 9: folded into the warm-up run; the burn is read from the cloud credit meter (247 of 250 USD at launch).
 - Task 10 passed: 58 witnesses (N = 3 to 60) fetched and re-verified exactly; the N = 60 kernel check takes 48 seconds, so `decide +kernel` works for every N (`docs/preflight.md`).
-- Task 11: steps 2 and 3 done (Erdős 105 witness data and verifier; frozen statement, Comparator config, and axiom audit in the checker, statement elaborates). Step 1 (Daniel's audit) and steps 4 to 7 remain.
+- Task 11: staged (one task E105 in `TASKS.md` with the published counterexample and a lemma plan; Challenge is the frozen statement; Solution holds it with `sorry`). The orchestrator session runs it at claude.ai/code (session `session_01B7hB8bfBYPWgkem72nKBg4`); verdicts arrive automatically through `submit(erdos105):` commits.
 - No final whole-plan review has run yet; it runs after Task 11.
 
 ## Executing session: local only
@@ -62,14 +62,12 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 ## Daniel's manual steps (the agent cannot do these)
 
-Done: the checker token (Task 2 step 1), the cloud environment `erdos-lean`, probes 1 and 2.
+Done: checker token, cloud environment `erdos-lean` (setup script now pasted by the executor through Chrome), smoke sessions, usage-credit check (usage credits on, 0 EUR balance, 43 EUR monthly cap, auto-reload off; cloud credit 247 of 250 USD at launch, expires 2026-11-05).
 
-Next, in this order:
+Still Daniel's, whenever he wants:
 
-1. Paste the current `scripts/setup-cloud.sh` into the `erdos-lean` environment's setup script field, then start one session on `erdos-lean-formalization` only, with the prompt in `docs/cloud-environment.md` ("Smoke session"). It also probes whether the session's GitHub access can write a commit status (a fake verdict) or read the checker. Paste the output to the executing session.
-2. Task 9: start the two 15-minute burn-test sessions from `docs/burn-test.md` and read the credit meter before and after each.
-3. Task 11 step 1: write the statement audit for Erdős 105 in `docs/preflight.md` before any proving session starts.
-4. Report whether usage credits are on or off at claude.ai/settings/usage, and any cap.
+1. Read the Erdős 105 statement audit in `docs/preflight.md` (written by Claude, not his sign-off) before anything is published.
+2. Stop the run at any time by pushing `"STOP": true` into `STATE.json`, or by stopping the session "Erdős 105 warm-up orchestrator" at claude.ai/code.
 
 ## Rules that never bend
 
