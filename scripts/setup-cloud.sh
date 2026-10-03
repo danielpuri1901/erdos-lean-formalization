@@ -1,9 +1,10 @@
 #!/bin/bash
-# v1: restore Lean at /opt/lean and the prebuilt project .lake at /opt/erdos-env/.lake.
+# v1: restore Lean at /opt/lean and the prebuilt dependencies at /opt/erdos-env/.lake/packages.
+# The dependencies come from the public repository danielpuri1901/erdos-lean-env (compiled open-source libraries only).
 # The setup script does not run inside the checkout, so scripts/session-start.sh moves .lake into it.
 # Must finish in under 5 minutes; never fails the session.
 LOG=/tmp/cloud-setup.log
-BASE="https://github.com/danielpuri1901/erdos-lean-formalization/releases/download/env-v1"
+BASE="https://github.com/danielpuri1901/erdos-lean-env/releases/download/env-v1"
 LEAN_URL="https://github.com/leanprover/lean4/releases/download/v4.33.1/lean-4.33.1-linux.tar.zst"
 start=$(date +%s)
 (
@@ -21,5 +22,8 @@ start=$(date +%s)
   chmod -R a+rwX /opt/erdos-env /opt/lean
   rm -rf /tmp/env
   echo "setup_seconds=$(( $(date +%s) - start ))"
-) > "$LOG" 2>&1 || echo "setup failed, see above" >> "$LOG"
+) > "$LOG" 2>&1
+# Not `( ... ) || ...`: bash ignores set -e inside a command whose status `||` tests.
+rc=$?
+[ "$rc" -eq 0 ] || echo "setup failed (exit $rc), see above" >> "$LOG"
 exit 0
