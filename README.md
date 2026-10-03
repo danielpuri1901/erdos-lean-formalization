@@ -19,6 +19,8 @@ To be filled during the run: what the model did, what Daniel did, what was borro
 
 To be filled during the run: which published source each harness idea and each proof idea came from.
 
+- Worker rule "translate the supplied published proof, do not invent a new one", and the `lean` or `math` classification of failed attempts that routes them to a Lean repair or to a re-plan: Magenta, arXiv 2609.11319, Appendix B.1.
+
 ## Decision log
 
 See section 10 of the design document.

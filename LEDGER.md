@@ -1,4 +1,4 @@
 # Ledger (append only)
 
-| time | task | attempt | commit | verdict | minutes | cost_usd | checker | note |
-|------|------|---------|--------|---------|---------|----------|---------|------|
+| time | task | attempt | commit | verdict | class | minutes | cost_usd | checker | note |
+|------|------|---------|--------|---------|-------|---------|----------|---------|------|
