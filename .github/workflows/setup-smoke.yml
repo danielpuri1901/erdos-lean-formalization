@@ -17,12 +17,16 @@ jobs:
         run: |
           sudo env -u GITHUB_TOKEN bash scripts/setup-cloud.sh
           cat /tmp/cloud-setup.log
-      - name: Setup finished in under 300 seconds
+      - name: Setup restored Lean and the packages in under 300 seconds
         run: |
           s=$(sed -n 's/^setup_seconds=//p' /tmp/cloud-setup.log)
           echo "setup_seconds=${s:-missing}" | tee -a "$GITHUB_STEP_SUMMARY"
+          ! grep -q "setup failed" /tmp/cloud-setup.log
+          /opt/lean/bin/lean --version
+          [ -d /opt/erdos-env/.lake/packages/mathlib/.lake/build ]
           [ -n "$s" ] && [ "$s" -lt 300 ]
       - name: Session hook moves .lake into the checkout and builds Challenge
+        timeout-minutes: 10
         run: CLAUDE_CODE_REMOTE=true CLAUDE_PROJECT_DIR="$PWD" bash scripts/session-start.sh
       - name: Full build in under 60 seconds (dependencies are not rebuilt)
         run: |
