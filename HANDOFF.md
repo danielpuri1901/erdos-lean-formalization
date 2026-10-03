@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-03, the Erdős 105 warm-up run is live in a cloud session (Fable 5.1 orchestrator, Opus workers), launched by the executor after Daniel delegated ("No feedback needed from me. Just fix it until it works.").
+Last update: 2026-10-03 14:15 UTC. The Erdős 105 warm-up is green (attempt 1, about 4 USD). The Green 72 main run is live: run b1 (harness arm) started at 14:14 UTC; the executor chains the remaining runs b1, a1, b2, a2, b3, a3 (`docs/main-run.md`).
 
 ## What this project is
 
