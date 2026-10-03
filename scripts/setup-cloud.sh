@@ -10,6 +10,11 @@ start=$(date +%s)
 (
   set -euo pipefail
   echo "pwd=$PWD user=$(whoami)"
+  # The cloud image has no zstd command (smoke session 2026-10-03); both archives need it.
+  if ! command -v unzstd >/dev/null; then
+    apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq zstd >/dev/null
+    echo "zstd_seconds=$(( $(date +%s) - start ))"
+  fi
   rm -rf /tmp/env /opt/erdos-env && mkdir -p /tmp/env /opt/lean /opt/erdos-env && cd /tmp/env
   curl -sSfL "$LEAN_URL" | tar --use-compress-program=unzstd -xf - -C /opt/lean --strip-components=1
   echo "lean_seconds=$(( $(date +%s) - start ))"
