@@ -42,7 +42,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 |-----|-----|---------|-------------|--------|------------------|-------------|----------|-------------|---------------|-----------------|
 | b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | yes, `6eb57dc` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37130020332)) | 42 | 4 (243 to 239) | 1 (7 builds) | 1 | 0 | none |
 | a1 | A | session_01EbHyNgTRSM4Jqz5WDw3SPQ | 2026-10-03 14:57 (meter 239 USD) | yes, `790b429` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37132458282)) | 30 | 2 (239 to 237) | 1 (no ledger) | 1 | 0 | none |
-| b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | running | | | | | | |
+| b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | yes, `d35acb1` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37137403488)) | 93 | 4 (237 to 233) | 2 | 2 | 0 | lean (checker runner out of memory) |
 | a2 | A | | | | | | | | | |
 | b3 | B | | | | | | | | | |
 | a3 | A | | | | | | | | | |
@@ -52,6 +52,11 @@ The ledger is in `docs/ledgers/green72-b1.md`; the proof is on branch `run/b1`.
 
 Run a1 notes: the bare session ignored the provided `noThree` and wrote its own checker on raw `Nat` operations and recursors, which cut the N = 60 kernel check from about 55 to about 11 seconds; the whole proof sits in `Solution.lean` and builds in about 2.5 minutes.
 It submitted once, about 15 minutes after launch.
+
+Run b2 notes: the first worker checked each witness in one `decide +kernel`; the build passed in the session but the checker's runner (16 GB, 4 parallel module builds) was shut down after 36 minutes, most likely out of memory, and never wrote a verdict.
+That exposed a checker gap: the status stayed `pending` and the poller skipped it. The poller now turns a pending status whose run has finished into a failure with that reason (checker commit after `7533f9b`).
+The orchestrator measured peak memory (2.1 GB at N = 40, 5.8 GB at N = 60), classified the failure as `lean`, and briefed worker 2, which split each check into chunks of about 10 thousand triples; the second submission passed.
+The ledger is in `docs/ledgers/green72-b2.md`.
 
 "Cheats caught" counts checker failures whose description contains `do not match` or `Illegal axiom`, plus guard denials in arm B's ledger.
 With three runs per arm the table has little statistical power, and the write-up says so.
