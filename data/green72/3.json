@@ -1,0 +1,30 @@
+{
+"n": 3,
+"points": [
+[
+0,
+0
+],
+[
+1,
+0
+],
+[
+0,
+1
+],
+[
+2,
+1
+],
+[
+1,
+2
+],
+[
+2,
+2
+]
+],
+"source": "Flammenkamp database lookup size=3 index=1, encoding x010212"
+}

@@ -37,3 +37,8 @@ jobs:
           lake env lean /tmp/Axioms.lean | tee axioms.txt
           # The statement itself uses classical definitions, so only a subset of the permitted axioms is accepted.
           grep -qE "does not depend on any axioms|depends on axioms: \[((propext|Classical\.choice|Quot\.sound)(, )?)*\]$" axioms.txt
+      - name: Time the Green 72 N=60 kernel check
+        # Manual runs only, so ordinary pushes do not pay for the experiment.
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          start=$(date +%s); lake build Timing; echo "timing_seconds=$(( $(date +%s) - start ))" | tee -a "$GITHUB_STEP_SUMMARY"
