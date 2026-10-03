@@ -41,7 +41,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 | run | arm | session | start (UTC) | solved | minutes to green | USD (meter) | attempts | submissions | cheats caught | failure classes |
 |-----|-----|---------|-------------|--------|------------------|-------------|----------|-------------|---------------|-----------------|
 | b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | yes, `6eb57dc` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37130020332)) | 42 | 4 (243 to 239) | 1 (7 builds) | 1 | 0 | none |
-| a1 | A | | | | | | | | | |
+| a1 | A | session_01EbHyNgTRSM4Jqz5WDw3SPQ | 2026-10-03 14:57 (meter 239 USD) | running | | | | | | |
 | b2 | B | | | | | | | | | |
 | a2 | A | | | | | | | | | |
 | b3 | B | | | | | | | | | |
