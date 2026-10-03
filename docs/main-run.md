@@ -64,6 +64,10 @@ Run b3 notes: same path as b2. The first submission's checker runner was shut do
 
 Run a3 notes: the third bare session also replaced the provided checker (64 seconds for N = 60 with the stock one) with its own, kept everything in `Solution.lean`, and built in about 142 seconds; it submitted once.
 
+Checker fixes after the runs (2026-10-03): the checker runner has 7.8 GB of memory, and its disk is 99 percent full after the Mathlib cache.
+`verify.yml` now frees about 18 GB of unused SDKs and adds swap; b2's first submission, which killed the runner, passes with 14 GB of swap in 24 minutes of Comparator time (checker run 37151232633).
+The poller is now a self-restarting loop; its first version crashed after one dispatch and is fixed.
+
 ## Summary
 
 All six runs are green.
