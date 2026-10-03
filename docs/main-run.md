@@ -44,7 +44,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 | a1 | A | session_01EbHyNgTRSM4Jqz5WDw3SPQ | 2026-10-03 14:57 (meter 239 USD) | yes, `790b429` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37132458282)) | 30 | 2 (239 to 237) | 1 (no ledger) | 1 | 0 | none |
 | b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | yes, `d35acb1` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37137403488)) | 93 | 4 (237 to 233) | 2 | 2 | 0 | lean (checker runner out of memory) |
 | a2 | A | session_011a24115oiQXkkVf32pA2R5 | 2026-10-03 17:04 (meter 233 USD) | yes, `864dd88` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37140075433)) | 30 | 2 (233 to 231) | 1 (no ledger) | 1 | 0 | none |
-| b3 | B | | | | | | | | | |
+| b3 | B | session_01JuXEvfYK1tfhgFLy4an3Wq | 2026-10-03 17:36 (meter 231 USD) | running | | | | | | |
 | a3 | A | | | | | | | | | |
 
 Run b1 notes: the single worker split each witness check into 4-point chunks (`Solution/Green72/Chunk.lean`) after one `decide +kernel` over a whole witness peaked at 5.5 GB per module and a 4-way parallel build ran out of memory; a clean `lake build Solution` then took about 3 minutes.
