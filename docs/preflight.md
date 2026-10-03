@@ -27,3 +27,14 @@ Every audit therefore accepts any subset of the permitted axioms, not only the e
 On a throwaway branch, `Challenge.lean` was edited to `theorem challenge_trivial : True := by sorry` and `Solution.lean` proved `True`.
 The checker overwrote the challenge with its frozen copy and rejected the solution: `Challenge and solution theorem statement do not match: 'challenge_trivial'`.
 Run: https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37028790977 (agent commit `13b56eb29960d4c30080e202534536bb4d831a54`, branch deleted afterwards).
+
+## Green 72 kernel time
+
+`lake build Timing` checked the N = 60 witness (120 points, about 280 thousand triples) by kernel reduction in 48 seconds (`Built Timing (48s)`, step total 49 seconds), run https://github.com/danielpuri1901/erdos-lean-formalization/actions/runs/37117333636, 2026-10-03.
+The check is `decide +kernel` on a Nat-only collinearity test, with no `native_decide` and no extra axiom.
+Decision (plan Task 10 step 6): under 600 seconds, so `decide +kernel` is viable for every N.
+Scaling by triple count, all N from 3 to 60 (about 4.3 million triples) cost roughly 12 minutes of kernel time in one process, before Comparator's replay doubles it; one file per N lets `lake build` run them in parallel.
+
+## Erdős 105 frozen statement
+
+`challenge/erdos105.lean` in the checker repository elaborates at the pin, together with a `sorry` solution of the same statement (build run https://github.com/danielpuri1901/erdos-lean-formalization/actions/runs/37117378033 on a throwaway branch, since deleted).
