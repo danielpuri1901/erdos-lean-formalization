@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-03 14:15 UTC. The Erdős 105 warm-up is green (attempt 1, about 4 USD). The Green 72 main run is live: run b1 (harness arm) started at 14:14 UTC; the executor chains the remaining runs b1, a1, b2, a2, b3, a3 (`docs/main-run.md`).
+Last update: 2026-10-03 19:40 UTC. The Erdős 105 warm-up and all six Green 72 main runs are green (`docs/main-run.md`); the write-up is published privately at https://claude.ai/artifact/3x7der745TqJWx4sYaPkKH (copy in `docs/writeup/`). The checker's `check-submits` schedule is disabled until the next run.
 
 ## What this project is
 
@@ -63,6 +63,8 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 ## Daniel's manual steps (the agent cannot do these)
 
 Done: checker token, cloud environment `erdos-lean` (setup script now pasted by the executor through Chrome), smoke sessions, usage-credit check (usage credits on, 0 EUR balance, 43 EUR monthly cap, auto-reload off; cloud credit 247 of 250 USD at launch, expires 2026-11-05).
+
+Next decision (Daniel): a harder second round (a known result with a conceptual proof, so the harness has work to do) or publish the write-up as it is.
 
 Still Daniel's, whenever he wants:
 

@@ -76,9 +76,9 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
   <p class="meta"><span>by Daniel Puri</span><span>3 October 2026</span><span>Lean 4, Claude Code, GitHub Actions</span></p>
 </header>
 
-<p class="lead">Claude agents running in Claude Code cloud sessions produced Lean 4 proofs of two known results. A separate referee repository, which no agent can see or edit, accepted every finished run. The main result is a kernel-verified computer search result for a Green problem: for every N from 3 to 60, the N by N grid holds 2N points with no three on a line.</p>
+<p class="lead">Claude agents running in Claude Code cloud sessions produced Lean 4 proofs of two known results. A separate referee repository, which no agent can see or edit, accepted every run: the Erdős 105 warm-up and all six Green 72 runs. The main result is a kernel-verified computer search result for a Green problem: for every N from 3 to 60, the N by N grid holds 2N points with no three on a line.</p>
 
-<p>The proofs were the easy part. Each agent needed 10 to 15 minutes. Building a referee that a determined agent cannot fool took most of two days, and the attacks we ran against it found four holes in our own design. This post covers how the referee works, what broke, and what the numbers say.</p>
+<p>The proofs were the easy part. Each agent needed 10 to 25 minutes. Building a referee that a determined agent cannot fool took most of two days, and the attacks we ran against it found four holes in our own design. This post covers how the referee works, what broke, and what the numbers say.</p>
 
 <h2>The problem: an agent that grades itself</h2>
 
@@ -258,27 +258,27 @@ bash scripts/check.sh "comparator/$TARGET.json" 2&gt;&amp;1 | tee comparator.log
 <tr><td>a1</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
 <tr><td>b2</td><td>harness</td><td><span class="pill ok">green</span></td><td class="num">93 min</td><td class="num">4</td><td class="num">2</td></tr>
 <tr><td>a2</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
-<tr><td>b3</td><td>harness</td><td><span class="pill wait">running</span></td><td class="num">first submission lost</td><td class="num"></td><td class="num">1 so far</td></tr>
-<tr><td>a3</td><td>bare</td><td><span class="pill wait">not started</span></td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td>b3</td><td>harness</td><td><span class="pill ok">green</span></td><td class="num">75 min</td><td class="num">6</td><td class="num">2</td></tr>
+<tr><td>a3</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">37 min</td><td class="num">2</td><td class="num">1</td></tr>
 </tbody>
 </table>
 </div>
 
-<p>Every finished run is green. No run tried to cheat, and the guard hook denied nothing. The whole day, including the failed setup sessions, used 19 USD of a 250 USD cloud credit by the time run b3 started. Most of the wall-clock time in each run is the checker itself, about 25 minutes per verdict.</p>
+<p>All six runs are green. The harness arm took 70 minutes on average and about 4.70 USD; one of its three runs passed on the first submission. The bare arm took 32 minutes on average and 2 USD per run; all three passed on the first submission. No run tried to cheat, and the guard hook denied nothing. The six runs used about 20 USD, and the whole day, including the failed setup sessions, used 27 USD of a 250 USD cloud credit. Most of the wall-clock time in each run is the checker itself, about 25 minutes per verdict.</p>
 
 <h2>What we learned</h2>
 
 <h3>The target was easier than the harness</h3>
 
-<p>We planned for hours of proving. The agents needed 10 to 15 minutes. The reason is that the hard parts were done before any agent started: verified witness data, a Lean data file, and a timing test that showed the kernel can do the work. What was left was one bridge lemma (if the integer cross-product test passes, the real points are not collinear) and some glue. That is a short job for Opus 5.5.</p>
+<p>We planned for hours of proving. The agents needed 10 to 25 minutes. The reason is that the hard parts were done before any agent started: verified witness data, a Lean data file, and a timing test that showed the kernel can do the work. What was left was one bridge lemma (if the integer cross-product test passes, the real points are not collinear) and some glue. That is a short job for Opus 5.5.</p>
 
-<p>On this target the bare arm was faster and cheaper. Both bare runs ignored the collinearity checker we supplied, wrote a faster one of their own (N = 60 in 11 to 17 seconds instead of 55 to 76), and passed on the first submission. The harness runs followed our outline and our checker, and that path uses more memory.</p>
+<p>On this target the bare arm was faster and cheaper. All three bare runs ignored the collinearity checker we supplied, wrote a faster one of their own (for example N = 60 in 11 to 17 seconds instead of 55 to 76), and passed on the first submission. The harness runs followed our outline and our checker, and that path uses more memory.</p>
 
 <h3>The feedback loop did its job when the infrastructure failed</h3>
 
 <p>Run b2's first proof built in its session, but the checker's runner was shut down after 36 minutes, almost certainly out of memory. Because the runner died, it never wrote a verdict. The status stayed "pending", and the poller skips commits that already have a status. Nobody would ever have told the agent.</p>
 
-<p>We changed the poller: a pending status whose checker run has already finished now becomes a failure with the reason "checker run ended without a verdict (runner shut down, often out of memory)". From there the loop worked as designed. The orchestrator measured peak memory itself (2.1 GB at N = 40, 5.8 GB at N = 60), labelled the failure <code>lean</code>, and briefed a second worker to split each check into chunks. The second submission passed. Run b3 is on the same path as this post goes out.</p>
+<p>We changed the poller: a pending status whose checker run has already finished now becomes a failure with the reason "checker run ended without a verdict (runner shut down, often out of memory)". From there the loop worked as designed. The orchestrator measured peak memory itself (2.1 GB at N = 40, 5.8 GB at N = 60), labelled the failure <code>lean</code>, and briefed a second worker to split each check into chunks. The second submission passed. Run b3 hit the same failure and recovered the same way.</p>
 
 <h3>Smaller lessons</h3>
 
