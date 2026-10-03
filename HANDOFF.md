@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-03, after plan Tasks 1, 2, 3, 6, 7, 8, and 10 passed; Tasks 4, 5, 9, and 11 wait for Daniel.
+Last update: 2026-10-03, after plan Tasks 1, 2, 3, 6, 7, 8, and 10 passed, the public dependency repository went live, and the submit( loop ran end to end; Tasks 5, 9, and 11 wait for Daniel.
 
 ## What this project is
 
@@ -37,7 +37,9 @@ Plan progress (ledger: `.superpowers/sdd/2026-10-02-lean-formalization-harness/p
 - Task 2 passed: the checker is green on the trivial target (`comparator/trivial` success), and the freeze test rejects an edited challenge. The checker workflow is hardened beyond the plan; see the checker README "Trust model".
 - Task 3 passed: Comparator rejects all five cheating fixtures, each for its own reason (checker README "Negative tests").
 - Task 4: probes 1 and 2 are recorded in `docs/cloud-probe.md`. Private release assets are not used.
-- Task 5: `scripts/setup-cloud.sh` v1 and `scripts/session-start.sh` are written. The artifact builds (`.lake` 7.8 GB, 2.55 GB compressed in two parts). It still needs a public home (see below) and a smoke session.
+- Task 5: dependencies are public in https://github.com/danielpuri1901/erdos-lean-env (release `env-v1`, 2.55 GB). The `setup-smoke` workflow runs the whole cloud setup path on a fresh runner and passes: setup 161 seconds, full build 20 seconds (`docs/cloud-probe.md`). Only the real cloud smoke session remains.
+- Verdict hole fixed (2026-10-03): a solution that printed `Your solution is okay!` during its own build got a green status, because the checker searched its log for that line. The verdict is now Comparator's exit code; `tests/bad/print_ok.lean` pins it (checker README).
+- No human step to ask the checker: the orchestrator pushes a `submit(<target>):` commit, and the checker's `check-submits` workflow verifies it within 15 minutes. Tested end to end on commit `00ef7c0`. On failure the status description is Comparator's last line.
 - Tasks 6, 7, 8 passed: guard hook, ledger and `STATE.json`, `AGENTS.md`, worker and orchestrator prompts, budget template.
 - Task 9: protocol written in `docs/burn-test.md`; the two sessions are not run.
 - Task 10 passed: 58 witnesses (N = 3 to 60) fetched and re-verified exactly; the N = 60 kernel check takes 48 seconds, so `decide +kernel` works for every N (`docs/preflight.md`).
@@ -64,11 +66,10 @@ Done: the checker token (Task 2 step 1), the cloud environment `erdos-lean`, pro
 
 Next, in this order:
 
-1. Approve a public repository `danielpuri1901/erdos-lean-env` for the compiled dependencies (formal-conjectures and Mathlib oleans, Apache-2.0; no proofs, no project code). The executing session has its files ready and creates it, runs its `build-env` workflow, and points `scripts/setup-cloud.sh` at it.
-2. Paste the new `scripts/setup-cloud.sh` into the `erdos-lean` environment's setup script field, then start one session on `erdos-lean-formalization` only, with the prompt: `Print /tmp/cloud-setup.log, then run: export PATH=/opt/lean/bin:$PATH; time lake build Challenge Solution; and stop.` Paste the output to the executing session (Task 5 step 6).
-3. Task 9: start the two 15-minute burn-test sessions from `docs/burn-test.md` and read the credit meter before and after each.
-4. Task 11 step 1: write the statement audit for Erdős 105 in `docs/preflight.md` before any proving session starts.
-5. Report whether usage credits are on or off at claude.ai/settings/usage, and any cap.
+1. Paste the current `scripts/setup-cloud.sh` into the `erdos-lean` environment's setup script field, then start one session on `erdos-lean-formalization` only, with the prompt in `docs/cloud-environment.md` ("Smoke session"). It also probes whether the session's GitHub access can write a commit status (a fake verdict) or read the checker. Paste the output to the executing session.
+2. Task 9: start the two 15-minute burn-test sessions from `docs/burn-test.md` and read the credit meter before and after each.
+3. Task 11 step 1: write the statement audit for Erdős 105 in `docs/preflight.md` before any proving session starts.
+4. Report whether usage credits are on or off at claude.ai/settings/usage, and any cap.
 
 ## Rules that never bend
 
@@ -93,4 +94,6 @@ Next, in this order:
 
 - Does the setup script restore the 2.55 GB artifact in under five minutes (Task 5 step 6 answers it)?
 - Every push to `main` runs `build.yml` (about 7 minutes of Actions time on a private repository); a busy run pushes often.
+- The checker's 15-minute poller bills about 96 Actions minutes a day on a private repository; disable it between runs (checker README).
+- If the smoke session shows the agent can write commit statuses through the GitHub proxy, a green status alone is no longer proof; verdicts must then be read from the checker's run list.
 - Does `promptCacheTtl: "1h"` hold in cloud sessions on usage credits (Task 9 observes it)?
