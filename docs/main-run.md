@@ -42,7 +42,7 @@ Prove green72_no_three_in_line_le in Solution.lean. Challenge.lean holds the fro
 |-----|-----|---------|-------------|--------|------------------|-------------|----------|-------------|---------------|-----------------|
 | b1 | B | session_01DxRLN4TsM7X6ciQ45Q3EzQ | 2026-10-03 14:14 (meter 243 USD) | yes, `6eb57dc` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37130020332)) | 42 | 4 (243 to 239) | 1 (7 builds) | 1 | 0 | none |
 | a1 | A | session_01EbHyNgTRSM4Jqz5WDw3SPQ | 2026-10-03 14:57 (meter 239 USD) | yes, `790b429` ([checker](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37132458282)) | 30 | 2 (239 to 237) | 1 (no ledger) | 1 | 0 | none |
-| b2 | B | | | | | | | | | |
+| b2 | B | session_01CQDEgySRWdZ197F4N5U264 | 2026-10-03 15:29 (meter 237 USD) | running | | | | | | |
 | a2 | A | | | | | | | | | |
 | b3 | B | | | | | | | | | |
 | a3 | A | | | | | | | | | |
