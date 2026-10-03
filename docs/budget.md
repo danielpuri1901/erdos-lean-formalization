@@ -7,6 +7,7 @@ Until it is measured, the orchestrator records 5 USD per 25-minute Opus worker a
 Caps:
 - Session cost cap: 60 USD (min of 60 and a quarter of the remaining credit); the orchestrator stops dispatching when `STATE.json` `totals.cost_usd` exceeds it, and Daniel's executor sets `"STOP": true` if the credit meter shows more than 60 USD spent.
 - Session wall-clock cap: 6 hours for the warm-up.
+- Green 72 main run: 35 USD and 4 hours per arm B run, 20 USD and 4 hours per arm A run (`docs/main-run.md`).
 - Fable escalations: at most 3 per run, 20 minutes each.
 - Worker time box: 25 minutes.
 - Reserve: 20 USD of the credit is never scheduled.

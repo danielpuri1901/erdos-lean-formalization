@@ -26,3 +26,13 @@ def test_parse_prellberg_tolerates_leading_space():
     # Table 1.txt indents the N=60 list with one space (checked 2026-10-03)
     txt = "N=59:\n[(0, 1), (2, 3)]\n\nN=60:\n [(4, 5), (6, 7)]\n"
     assert witness.parse_prellberg(txt) == {59: [(0, 1), (2, 3)], 60: [(4, 5), (6, 7)]}
+
+def test_emit_lean_matches_json(tmp_path):
+    out = tmp_path / "W.lean"
+    root = pathlib.Path(__file__).resolve().parent.parent
+    witness.emit_lean(out_file=out, data_dir=root / "data/green72")
+    text = out.read_text()
+    for n in (3, 17, 60):
+        pts = json.load(open(root / f"data/green72/{n}.json"))["points"]
+        assert f"def w{n} : List (Nat × Nat) := {witness.lean_list([tuple(p) for p in pts])}" in text
+    assert "def noThree" in text and "namespace Green72Data" in text and "end Green72Data" in text
