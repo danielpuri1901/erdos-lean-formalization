@@ -33,6 +33,7 @@ jobs:
           rm -rf ~/.cache/mathlib
       - name: Package the project .lake (the toolchain comes from the public Lean release)
         run: |
+          set -o pipefail
           du -sh .lake .lake/packages/* | tee -a "$GITHUB_STEP_SUMMARY"
           # Stream straight into parts, so the archive is never on disk twice.
           tar -cf - .lake | zstd -T0 -3 | split -b 1900m - env.tar.zst.part-
