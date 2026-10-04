@@ -120,3 +120,13 @@ Add one line for each problem that cost you time, with the fix.
 - a000224 (deep): `Nat.dvd_sub'` is gone (use `Nat.dvd_sub`); `Nat.odd_pow.mp` does not exist (use `Nat.odd_mul` after `pow_succ`/`pow_two`); `Nat.Coprime.dvd_of_dvd_mul_left` accepts `p ∣ 2 * (A - 1)` directly.
 - a000224 (deep): the Python family search needs `#include <math.h>` for `sqrtl`; an implicit declaration returns garbage silently. Cross-check new search code against the previous run's exact counts (pairs/roots) before trusting it.
 - a000224 (deep): the 10-attempt budget, not the 4 hours, was the binding limit (9 attempts in 60 minutes). Plan the attempt count: each attempt may hold two parallel workers, so pair independent items.
+- a000224 run 2: a formula written in the notebook from memory (F = 4(2cw−p−1)² for k = 16) was wrong; recompute every
+  closed form with a two-line Python check before building a brief on it (the crude bound |F| ≤ Σ|terms| was enough).
+- a000224 run 2: while two workers run, the manager can draft the assembly against `sorry`-stubs of the briefed
+  statements in a scratch file compiled with `lake env lean <file>`; when the workers return with the exact statements
+  (check with a script diff), the assembly builds first time and saves a worker round.
+- a000224 run 2: one Bool `(List.range 33).all fun p => (List.range 30).all fun e => (List.range 29).all fun k => chk p e k`
+  (28,710 cases, inner loops to 3,027) ran in 28 s and 4 GB under `decide +kernel`; nested bounded `∀` of that size
+  hit deep recursion in run 1. Order the `||` disjuncts cheapest first: the kernel short-circuits `or`.
+- a000224 run 2: `convert h using 1` on an `Int` divisibility can leave the side goal `Int.instDvd = semigroupDvd`;
+  `rfl` closes it. `Nat.Coprime p 4` for odd p: `rw [Nat.coprime_comm, Nat.Coprime, Nat.gcd_rec]` and p % 4 ∈ {1, 3}.

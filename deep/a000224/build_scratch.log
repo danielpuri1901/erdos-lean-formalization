@@ -1,0 +1,68 @@
+1791134323
+⚠ [8936/8958] Built Solution.A224.UniformBounds (15s)
+warning: Solution/A224/UniformBounds.lean:10:85: Variable name `hX` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hX
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Solution/A224/UniformBounds.lean:29:85: Variable name `hX` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hX
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [8937/8958] Built Solution.A224.P2QAlg (22s)
+warning: Solution/A224/P2QAlg.lean:41:40: Variable name `hw` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hw
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [8938/8958] Built Solution.A224.P2QCheck (54s)
+✔ [8939/8958] Built Solution.A224.Sweep (34s)
+✔ [8940/8958] Built Solution.A224.P3QCheck (43s)
+✔ [8941/8958] Built Solution.A224.Units (19s)
+✔ [8942/8958] Built Solution.A224.P4QCheck (74s)
+⚠ [8943/8958] Built Solution.A224.Uniform (18s)
+warning: Solution/A224/Uniform.lean:10:71: Variable name `hA1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hA1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [8944/8958] Built Solution.A224.P3QAlg (18s)
+warning: Solution/A224/P3QAlg.lean:85:59: Variable name `hw` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hw
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [8945/8958] Built Solution.A224.Recursion (5.9s)
+⚠ [8946/8958] Built Solution.A224.P4QAlg (15s)
+warning: Solution/A224/P4QAlg.lean:85:43: Variable name `hw` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hw
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [8947/8958] Built Solution.A224.PrimePow (13s)
+✔ [8948/8958] Built Solution.A224.Summary (5.2s)
+⚠ [8949/8958] Built Solution.A224.UniformE (23s)
+warning: Solution/A224/UniformE.lean:34:38: Variable name `hodd` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hodd
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [8950/8958] Built Solution.A224.Reduction (26s)
+✔ [8951/8958] Built Solution.A224.P3Q (10s)
+✔ [8952/8958] Built Solution.A224.P2Q (10s)
+✔ [8953/8958] Built Solution.A224.P4Q (11s)
+✔ [8954/8958] Built Solution.A224.Summary2 (4.0s)
+✔ [8955/8958] Built Solution.A224.Summary3 (5.1s)
+✔ [8956/8958] Built Solution.A224.Summary4 (5.8s)
+✔ [8957/8958] Built Solution (5.5s)
+Build completed successfully (8958 jobs).
+BUILD_EXIT=0
+1791134461
