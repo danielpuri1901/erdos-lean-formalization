@@ -77,4 +77,71 @@ theorem moduleAffine_eq677_imp_eq255 (R V : Type) [CommRing R] [AddCommGroup V] 
   rw [h255, hT, hH]
   simp only [add_smul, one_smul, mul_smul, hg1, hg2, hK, smul_zero, add_zero]
 
+/-- Key relation (★) for non-commuting affine models: in any ring, if `B` is a unit and
+`BA + B²AB = 1`, `A + B²A² + B³ = 0` (the linear part of Equation 677), then
+`q(B) (B(B²+1)A - 1) = 0` with `q(t) = t³ - t - 1`. -/
+theorem star_relation {R : Type} [Ring R] (A : R) (B : Rˣ)
+    (g1 : (B : R) * A + (B : R) * B * A * B = 1)
+    (g2 : A + (B : R) * B * A * A + (B : R) * B * B = 0) :
+    ((B : R) ^ 3 - B - 1) * ((B : R) ^ 3 * A + B * A - 1) = 0 := by
+  set b : R := (B : R) with hbdef
+  set c : R := ((B⁻¹ : Rˣ) : R) with hcdef
+  have hbc : b * c = 1 := B.mul_inv
+  have hcb : c * b = 1 := B.inv_mul
+  have ecb : ∀ x : R, c * (b * x) = x := fun x => by rw [← mul_assoc, hcb, one_mul]
+  have ebc : ∀ x : R, b * (c * x) = x := fun x => by rw [← mul_assoc, hbc, one_mul]
+  -- r0 : A + bAb = b⁻¹
+  have r0 : A + b * A * b = c := by
+    have : c * (b * A + b * b * A * b) = c := by rw [g1, mul_one]
+    rw [← this, mul_add, ecb, show b * b * A * b = b * (b * A * b) by noncomm_ring, ecb]
+  -- r1 : A b = b⁻² - b⁻¹ A
+  have r1 : A * b = c * c - c * A := by
+    have : c * (A + b * A * b) = c * c := by rw [r0]
+    rw [mul_add, show b * A * b = b * (A * b) by noncomm_ring, ecb] at this
+    rw [← this]; noncomm_ring
+  -- r2 : A b⁻¹ = b⁻² - b A
+  have r2 : A * c = c * c - b * A := by
+    have : (A + b * A * b) * c = c * c := by rw [r0]
+    rw [add_mul, show b * A * b * c = b * A * (b * c) by noncomm_ring, hbc, mul_one] at this
+    rw [← this]; noncomm_ring
+  -- r3 : A² = -b⁻²A - b
+  have r3 : A * A = -(c * c * A) - b := by
+    have h : b * (b * (A * A)) = -A - b * b * b := by
+      rw [← sub_eq_zero, ← g2]; noncomm_ring
+    have : c * (c * (b * (b * (A * A)))) = c * (c * (-A - b * b * b)) := by rw [h]
+    rw [ecb, ecb] at this
+    rw [this, show b * b * b = b * (b * b) by noncomm_ring, mul_sub, mul_sub, ecb, ecb]
+    noncomm_ring
+  -- Compute A²b in two ways.
+  have way1 : A * (A * b) = c * c * c - c + b * b * A - c * c * A - c * A - b * b := by
+    rw [r1, show A * (c * c - c * A) = (A * c) * c - (A * c) * A by noncomm_ring, r2,
+      show (c * c - b * A) * c - (c * c - b * A) * A
+        = c * c * c - b * (A * c) - c * c * A + b * (A * A) by noncomm_ring, r2, r3]
+    rw [show b * (c * c - b * A) = b * (c * c) - b * b * A by noncomm_ring, ebc,
+      show b * (-(c * c * A) - b) = -(b * (c * (c * A))) - b * b by noncomm_ring, ebc]
+    noncomm_ring
+  have way2 : (A * A) * b = -(c * c * c * c) + c * c * c * A - b * b := by
+    rw [r3, show (-(c * c * A) - b) * b = -(c * c * (A * b)) - b * b by noncomm_ring, r1]
+    noncomm_ring
+  have key : c * c * c + c * c * c * c - c + (b * b - c * c * c - c * c - c) * A = 0 := by
+    have h := way1
+    rw [← mul_assoc, way2] at h
+    rw [← sub_eq_zero] at h
+    rw [← neg_eq_zero, ← h]; noncomm_ring
+  -- Multiply by b⁴ on the left.
+  have key4 : b * (b * (b * (b * (c * c * c + c * c * c * c - c
+      + (b * b - c * c * c - c * c - c) * A)))) = 0 := by
+    rw [key]; simp
+  have expand : b * (b * (b * (b * (c * c * c + c * c * c * c - c
+      + (b * b - c * c * c - c * c - c) * A))))
+      = b * (b * (b * (b * (c * (c * (c * 1)))))) + b * (b * (b * (b * (c * (c * (c * (c * 1)))))))
+        - b * (b * (b * (b * (c * 1))))
+        + (b * (b * (b * (b * (b * (b * A)))))) - b * (b * (b * (b * (c * (c * (c * A))))))
+        - b * (b * (b * (b * (c * (c * A))))) - b * (b * (b * (b * (c * A)))) := by
+    noncomm_ring
+  rw [expand] at key4
+  simp only [ebc] at key4
+  rw [← key4]
+  noncomm_ring
+
 end Eq677Sweep
