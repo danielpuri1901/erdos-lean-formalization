@@ -16,6 +16,10 @@ import Solution.A224.Uniform
 import Solution.A224.Summary3
 import Solution.A224.P4QAlg
 import Solution.A224.UniformBounds
+import Solution.A224.P4QCheck
+import Solution.A224.UniformE
+import Solution.A224.P4Q
+import Solution.A224.Summary4
 
 /-! a000224 deep attempt. Stage 1 results are in `Solution.A224.Sweep` (namespace `A224Sweep`);
 stage 2 results are in `Solution/A224/*.lean` (namespace `A224Deep`). See `deep/a000224/NOTEBOOK.md`. -/

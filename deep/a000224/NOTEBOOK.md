@@ -273,6 +273,38 @@ Stage 2 route B (general reduction, then more families):
     propext, Classical.choice, Quot.sound. Minutes: 5 + 3 (workers), 6 (manager). Wall clock: 69 min.
     Ten attempts are logged: stop.
 
+## Run 2 (continuation, 2026-10-04): finish Q4
+
+start: 1791133370 (date -u +%s); limits of this run: at most 5 attempts (11..15), at most 90 minutes (hard stop 1791138770),
+stop when Q4 is proved in Lean. Manager decisions (no questions asked):
+
+- Correction to the Q4 idea above: for k = 16, F = 16(cw−p−1)² − 12(p+1)², NOT 4(2cw−p−1)². The e-bound still follows
+  from the crude estimate |F| ≤ k c² w² + 2k(p+1)cw + 4(p+1)²: with 2w ≤ p+5 and c ≤ 2p+1, p⁵ ≤ X ≤ |F| ≤ G(p) :=
+  16p⁴ + 208p³ + 776p² + 704p + 184 fails for p ≥ 27, so e ≥ 5 forces p ≤ 26, and then |F| ≤ 10,802,196 < 3¹⁵ gives e ≤ 14.
+- k ≤ 15: w ≤ 15 (in Lean), p ∣ N(e,k,w) with N = kw(w−1)+1 (e even) or kw(w−2)+4 (e odd) from p ∣ X ∣ F and
+  F ≡ 4N resp. N (mod p); so p ≤ 3151 and |F| ≤ 143,061,270,991 < 3²⁴, e ≤ 23.
+- k ≥ 17: k ≤ 28, p ≤ 32 (in Lean). New: δ > 0 forces kp² < 16(p+1)², so 4(p+1)²δ = (16(p+1)²−kp²)X² − 2kpcX − kc²
+  ≥ X² − 116480X − 118300 ≥ X²/2 for X ≥ 262144, hence w < 32(p+1)² ≤ 34848 and |F| < 3³⁰, e ≤ 29;
+  for X < 262144, e ≤ 11 directly.
+- Three Bool finite checks (Python mirror with exact truncated-Nat semantics, all odd p not only primes,
+  `deep/a000224/q4_checkers.py`): k ≤ 15 (8,080 (E)-evaluations), k = 16 with p ≤ 25, 5 ≤ e ≤ 14 (1,020),
+  k ≥ 17 with p ≤ 31, 4 ≤ e ≤ 29, w ≤ B/δ (58,781; max B/δ = 3027): no solution anywhere.
+- Plan: attempt 11 = two parallel workers, Q = `Solution/A224/P4QCheck.lean` (definitions q4c, q4A, q4N, q4E and the
+  three checks, unpacked as `q4_small`, `q4_k16_small_p`, `q4_large`), R = `Solution/A224/UniformE.lean`
+  (`q4_dvd_N_even`, `q4_dvd_N_odd`, `q4_absF_le`, `q4_e_bound`, `q4_k16_p_le`, `q4_w_bound_large`).
+  The manager drafts the assembly `P4Q.lean` (`two_mul_a_pow`, `q4A_eq`, `q4_A4`, `not_modEq_pow_mul_prime`,
+  `conjecture_pow_mul_prime`) and `Summary4.lean` (clause `¬ ∃ p q e, p.Prime ∧ q.Prime ∧ n = p^e * q`) meanwhile.
+
+### Attempts of run 2
+
+11. Items Q (worker: finite checks, `Solution/A224/P4QCheck.lean`) and R (worker: bound lemmas,
+    `Solution/A224/UniformE.lean`), in parallel. Q: proved-in-lean, first build; definitions `q4c`, `q4A`, `q4N`, `q4E`,
+    checks `q4ChkSmall_all` (49 s kernel), `q4ChkK16_all` (9 s), `q4ChkLargeAll_true` (one Bool over 33×30×29, 28 s,
+    about 4 GB), unpacked as `q4_small`, `q4_k16_small_p`, `q4_large`; worker reports `#print axioms`: propext, Quot.sound.
+    Manager check of Q: the three unpacked statements and the three definitions are character-for-character the ones in
+    the brief (script diff); forbidden-word grep empty. Meanwhile the manager drafted the assembly against sorry-stubs of
+    the Q and R statements (scratch file, `lake env lean`: only the stub sorries), and wrote `P4Q.lean` and `Summary4.lean`.
+
 ## 5. Dead ends
 
 - Blind enumeration beyond 4·10⁹ (a hit needs a modulus ≈ n²/16 to divide n² − 1; heuristically pointless).
