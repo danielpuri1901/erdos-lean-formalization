@@ -1,0 +1,35 @@
+# N = 16; position ([1..16], 0) is a draw
+# ge root: Cert.pick 1 (Cert.all cs), total nodes 212094; the all-node certifies chkLe [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] 1; keys of cs = 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+# le root: Cert.all cs, total nodes 316289; keys of cs = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+# format: name | file | checker | l | g | nodes (Cert constructors) | certlist_nodes (CertList constructors) | max_paren_depth
+cert16ge_2 | file Ge2.lean | checker chkGe | l = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 1 | nodes 56154 | certlist_nodes 39460 | max_paren_depth 46
+cert16ge_3 | file Ge3.lean | checker chkGe | l = [2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 2 | nodes 40629 | certlist_nodes 28717 | max_paren_depth 44
+cert16ge_4 | file Ge4.lean | checker chkGe | l = [2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 3 | nodes 24626 | certlist_nodes 17347 | max_paren_depth 43
+cert16ge_5 | file Ge5.lean | checker chkGe | l = [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 4 | nodes 19727 | certlist_nodes 13894 | max_paren_depth 42
+cert16ge_6 | file Ge6.lean | checker chkGe | l = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 5 | nodes 16439 | certlist_nodes 11572 | max_paren_depth 41
+cert16ge_7 | file Ge7.lean | checker chkGe | l = [2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 6 | nodes 10885 | certlist_nodes 7665 | max_paren_depth 39
+cert16ge_8 | file Ge8.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16] | g = 7 | nodes 9328 | certlist_nodes 6525 | max_paren_depth 38
+cert16ge_9 | file Ge9.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16] | g = 8 | nodes 7164 | certlist_nodes 5045 | max_paren_depth 38
+cert16ge_10 | file Ge10.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16] | g = 9 | nodes 6073 | certlist_nodes 4249 | max_paren_depth 38
+cert16ge_11 | file Ge11.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16] | g = 10 | nodes 4505 | certlist_nodes 3166 | max_paren_depth 36
+cert16ge_12 | file Ge12.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16] | g = 11 | nodes 3954 | certlist_nodes 2731 | max_paren_depth 35
+cert16ge_13 | file Ge13.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16] | g = 12 | nodes 3851 | certlist_nodes 2645 | max_paren_depth 35
+cert16ge_14 | file Ge14.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16] | g = 13 | nodes 3287 | certlist_nodes 2275 | max_paren_depth 35
+cert16ge_15 | file Ge15.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16] | g = 14 | nodes 3042 | certlist_nodes 2098 | max_paren_depth 35
+cert16ge_16 | file Ge16.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] | g = 15 | nodes 2428 | certlist_nodes 1675 | max_paren_depth 34
+cert16le_1 | file Le1.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 1 | nodes 104181 | certlist_nodes 73172 | max_paren_depth 48
+cert16le_2 | file Le2.lean | checker chkGe | l = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 2 | nodes 56155 | certlist_nodes 39460 | max_paren_depth 47
+cert16le_3 | file Le3.lean | checker chkGe | l = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 3 | nodes 40630 | certlist_nodes 28717 | max_paren_depth 45
+cert16le_4 | file Le4.lean | checker chkGe | l = [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 4 | nodes 24627 | certlist_nodes 17347 | max_paren_depth 44
+cert16le_5 | file Le5.lean | checker chkGe | l = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 5 | nodes 19728 | certlist_nodes 13894 | max_paren_depth 43
+cert16le_6 | file Le6.lean | checker chkGe | l = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 6 | nodes 16440 | certlist_nodes 11572 | max_paren_depth 42
+cert16le_7 | file Le7.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16] | g = 7 | nodes 10886 | certlist_nodes 7665 | max_paren_depth 40
+cert16le_8 | file Le8.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16] | g = 8 | nodes 9329 | certlist_nodes 6525 | max_paren_depth 39
+cert16le_9 | file Le9.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16] | g = 9 | nodes 7165 | certlist_nodes 5045 | max_paren_depth 39
+cert16le_10 | file Le10.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16] | g = 10 | nodes 6074 | certlist_nodes 4249 | max_paren_depth 39
+cert16le_11 | file Le11.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16] | g = 11 | nodes 4506 | certlist_nodes 3166 | max_paren_depth 37
+cert16le_12 | file Le12.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16] | g = 12 | nodes 3955 | certlist_nodes 2731 | max_paren_depth 36
+cert16le_13 | file Le13.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16] | g = 13 | nodes 3852 | certlist_nodes 2645 | max_paren_depth 36
+cert16le_14 | file Le14.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16] | g = 14 | nodes 3288 | certlist_nodes 2275 | max_paren_depth 36
+cert16le_15 | file Le15.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16] | g = 15 | nodes 3043 | certlist_nodes 2098 | max_paren_depth 36
+cert16le_16 | file Le16.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] | g = 16 | nodes 2429 | certlist_nodes 1675 | max_paren_depth 35

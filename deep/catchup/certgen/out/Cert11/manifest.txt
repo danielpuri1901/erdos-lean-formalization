@@ -1,0 +1,25 @@
+# N = 11; position ([1..11], 0) is a draw
+# ge root: Cert.pick 1 (Cert.all cs), total nodes 2097; the all-node certifies chkLe [2, 3, 4, 5, 6, 7, 8, 9, 10, 11] 1; keys of cs = 2 3 4 5 6 7 8 9 10 11 
+# le root: Cert.all cs, total nodes 3129; keys of cs = 1 2 3 4 5 6 7 8 9 10 11 
+# format: name | file | checker | l | g | nodes (Cert constructors) | certlist_nodes (CertList constructors) | max_paren_depth
+cert11ge_2 | file Ge2.lean | checker chkGe | l = [3, 4, 5, 6, 7, 8, 9, 10, 11] | g = 1 | nodes 546 | certlist_nodes 380 | max_paren_depth 24
+cert11ge_3 | file Ge3.lean | checker chkGe | l = [2, 4, 5, 6, 7, 8, 9, 10, 11] | g = 2 | nodes 425 | certlist_nodes 293 | max_paren_depth 23
+cert11ge_4 | file Ge4.lean | checker chkGe | l = [2, 3, 5, 6, 7, 8, 9, 10, 11] | g = 3 | nodes 280 | certlist_nodes 196 | max_paren_depth 21
+cert11ge_5 | file Ge5.lean | checker chkGe | l = [2, 3, 4, 6, 7, 8, 9, 10, 11] | g = 4 | nodes 223 | certlist_nodes 150 | max_paren_depth 21
+cert11ge_6 | file Ge6.lean | checker chkGe | l = [2, 3, 4, 5, 7, 8, 9, 10, 11] | g = 5 | nodes 172 | certlist_nodes 115 | max_paren_depth 20
+cert11ge_7 | file Ge7.lean | checker chkGe | l = [2, 3, 4, 5, 6, 8, 9, 10, 11] | g = 6 | nodes 112 | certlist_nodes 76 | max_paren_depth 18
+cert11ge_8 | file Ge8.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 9, 10, 11] | g = 7 | nodes 102 | certlist_nodes 67 | max_paren_depth 18
+cert11ge_9 | file Ge9.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 10, 11] | g = 8 | nodes 89 | certlist_nodes 56 | max_paren_depth 18
+cert11ge_10 | file Ge10.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 11] | g = 9 | nodes 87 | certlist_nodes 56 | max_paren_depth 18
+cert11ge_11 | file Ge11.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10] | g = 10 | nodes 59 | certlist_nodes 42 | max_paren_depth 17
+cert11le_1 | file Le1.lean | checker chkGe | l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11] | g = 1 | nodes 1023 | certlist_nodes 701 | max_paren_depth 26
+cert11le_2 | file Le2.lean | checker chkGe | l = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11] | g = 2 | nodes 547 | certlist_nodes 380 | max_paren_depth 25
+cert11le_3 | file Le3.lean | checker chkGe | l = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11] | g = 3 | nodes 426 | certlist_nodes 293 | max_paren_depth 24
+cert11le_4 | file Le4.lean | checker chkGe | l = [1, 2, 3, 5, 6, 7, 8, 9, 10, 11] | g = 4 | nodes 281 | certlist_nodes 196 | max_paren_depth 22
+cert11le_5 | file Le5.lean | checker chkGe | l = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11] | g = 5 | nodes 224 | certlist_nodes 150 | max_paren_depth 22
+cert11le_6 | file Le6.lean | checker chkGe | l = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11] | g = 6 | nodes 173 | certlist_nodes 115 | max_paren_depth 21
+cert11le_7 | file Le7.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11] | g = 7 | nodes 113 | certlist_nodes 76 | max_paren_depth 19
+cert11le_8 | file Le8.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11] | g = 8 | nodes 103 | certlist_nodes 67 | max_paren_depth 19
+cert11le_9 | file Le9.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 10, 11] | g = 9 | nodes 90 | certlist_nodes 56 | max_paren_depth 19
+cert11le_10 | file Le10.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11] | g = 10 | nodes 88 | certlist_nodes 56 | max_paren_depth 19
+cert11le_11 | file Le11.lean | checker chkGe | l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] | g = 11 | nodes 60 | certlist_nodes 42 | max_paren_depth 18

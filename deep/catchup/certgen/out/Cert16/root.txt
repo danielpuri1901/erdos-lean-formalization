@@ -1,0 +1,43 @@
+Catch-Up, N = 16. Both roots certify the position l = [1, ..., 16], gap g = 0 (a draw).
+
+GE ROOT (chkGe [1..16] 0 rootGe = true; 212094 Cert constructors in total):
+  The mover picks x0 = 1; the opponent then faces l = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], g = 1, certified by chkLe with an all-node over the keys 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16.
+  rootGe := Cert.pick 1 (Cert.all
+    (CertList.cons 2 cert16ge_2
+    (CertList.cons 3 cert16ge_3
+    (CertList.cons 4 cert16ge_4
+    (CertList.cons 5 cert16ge_5
+    (CertList.cons 6 cert16ge_6
+    (CertList.cons 7 cert16ge_7
+    (CertList.cons 8 cert16ge_8
+    (CertList.cons 9 cert16ge_9
+    (CertList.cons 10 cert16ge_10
+    (CertList.cons 11 cert16ge_11
+    (CertList.cons 12 cert16ge_12
+    (CertList.cons 13 cert16ge_13
+    (CertList.cons 14 cert16ge_14
+    (CertList.cons 15 cert16ge_15
+    (CertList.cons 16 cert16ge_16
+    CertList.nil))))))))))))))))
+  i.e. keys in increasing order, each key k paired with the definition cert16ge_k from file Ge<k>.lean.
+
+LE ROOT (chkLe [1..16] 0 rootLe = true; 316289 Cert constructors in total):
+  rootLe := Cert.all
+    (CertList.cons 1 cert16le_1
+    (CertList.cons 2 cert16le_2
+    (CertList.cons 3 cert16le_3
+    (CertList.cons 4 cert16le_4
+    (CertList.cons 5 cert16le_5
+    (CertList.cons 6 cert16le_6
+    (CertList.cons 7 cert16le_7
+    (CertList.cons 8 cert16le_8
+    (CertList.cons 9 cert16le_9
+    (CertList.cons 10 cert16le_10
+    (CertList.cons 11 cert16le_11
+    (CertList.cons 12 cert16le_12
+    (CertList.cons 13 cert16le_13
+    (CertList.cons 14 cert16le_14
+    (CertList.cons 15 cert16le_15
+    (CertList.cons 16 cert16le_16
+    CertList.nil))))))))))))))))
+  i.e. keys 1..16 in increasing order, each key k paired with cert16le_k from file Le<k>.lean (checked by chkGe on l = [1..16] minus k, g = k).

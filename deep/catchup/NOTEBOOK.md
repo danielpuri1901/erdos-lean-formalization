@@ -159,7 +159,19 @@ Manager check: build exit 0, no banned words, axioms propext/Classical.choice/Qu
 Files: `Solution/Reduction.lean`, `Solution.lean` (import line).
 
 ### Attempt 4 — certificate apparatus (`Solution/Cert.lean`) + N = 11, 12 — running (deadline 1791111433)
-### Attempt 5 — C generator for N = 15, 16 certificates in the agreed `Cert` syntax, staged in `deep/catchup/certgen/out/` — running (deadline 1791111433)
+### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
+Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
+`check.py` (independent Python implementation of the checkers with a parser; mutation-tested). Emitted and verified
+`out/Cert{11,12,15,16}/`: ge root = `Cert.pick 1 (Cert.all cs)` with one `def cert{N}ge_k` per key k = 2..N (checked by
+chkLe at (l−{1,k}, k−1)); le root = `Cert.all cs` with one `def cert{N}le_k` per key k = 1..N (checked by chkGe at (l−k, k)).
+Node counts equal the manager's minimal sizes (F9). Largest children: N=15 ge 21,229 / le 39,243; N=16 ge 56,154 / le 104,181
+(Le1). Source sizes: N=15 4.9 MB, N=16 13 MB. Max parenthesis depth 44 (N=15), 48 (N=16).
+N = 19, 20 sizes computed: 4,476,241 / 6,673,524 and 12,797,969 / 19,075,858 nodes (280–800 MB of source): out of reach (D6).
+Manager check: `deep/catchup/mycheck.py` (written independently): N=11 and N=12 roots pass chkGe/chkLe with nodes 2,097/3,129 and
+4,937/7,442; N=15, 16 running in the background.
+Files: `deep/catchup/certgen/{gen.c, check.py, out/Cert*/}`.
+
+Decision D6: the Lean target is N ∈ {11, 12, 15, 16}; N = 19, 20 are not attempted (certificate too large for the kernel and the repo).
 
 ## 5. Dead ends
 

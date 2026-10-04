@@ -1,0 +1,9 @@
+ℹ [8936/8942] Replayed Solution.Gap
+info: Solution/Gap.lean:131:0: 'CatchUpDeep.value_eq_gv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:132:0: 'CatchUpDeep.valueAux_eq_gv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:133:0: 'CatchUpDeep.gv_eq_win_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:134:0: 'CatchUpDeep.best_eq_loss_iff' depends on axioms: [propext]
+ℹ [8938/8942] Replayed Solution.Reduction
+info: Solution/Reduction.lean:119:0: 'CatchUpDeep.catchup_of_pairsConj' depends on axioms: [propext, Classical.choice, Quot.sound]
+ℹ [8939/8942] Built Solution.Cert11 (28s)
+info: Solution/Cert11.lean:26:0: 'CatchUpDeep.catchup_draw_11' depends on axioms: [propext, Classical.choice, Quot.sound]

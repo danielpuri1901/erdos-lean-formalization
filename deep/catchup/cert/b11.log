@@ -1,0 +1,9 @@
+ℹ [8936/8938] Replayed Solution.Gap
+info: Solution/Gap.lean:131:0: 'CatchUpDeep.value_eq_gv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:132:0: 'CatchUpDeep.valueAux_eq_gv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:133:0: 'CatchUpDeep.gv_eq_win_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution/Gap.lean:134:0: 'CatchUpDeep.best_eq_loss_iff' depends on axioms: [propext]
+✔ [8937/8938] Built Solution.Cert (10s)
+✔ [8938/8938] Built Solution.Cert11 (27s)
+Build completed successfully (8938 jobs).
+exit 0 1791109922
