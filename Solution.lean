@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Wikipedia.RamseyNumbers
 
-open SimpleGraph
+/-! Solution for the ramsey44 target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem ramsey_4_4 : type_of% @RamseyNumbers.ramsey_number_four_four := by
   sorry
