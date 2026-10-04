@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Wikipedia.AgohGiuga
 
-open SimpleGraph
+/-! Solution for the giuga target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem strong_giuga_iff : type_of% @AgohGiuga.isStrongGiuga_iff := by
   sorry
