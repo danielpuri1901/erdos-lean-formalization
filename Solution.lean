@@ -1,3 +1,9 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.OEIS.«4290»
 
-theorem solution_placeholder : True := trivial
+/-! Sweep work for a004290. -/
+
+namespace SweepA4290
+
+open OeisA4290
+
+end SweepA4290
