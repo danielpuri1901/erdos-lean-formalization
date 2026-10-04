@@ -1,15 +1,10 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Arxiv.«1609.08688».sIncreasingrTuples
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the triplespow target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+If F(n) = n^e for some n > 1, then F(m) >= m^e for arbitrarily large m, where F(n) is the longest 2-increasing sequence of triples with entries in 1..n (Gowers and Long, arXiv 1609.08688).
+The statement is taken with `type_of%` from `Arxiv.«1609.08688».maximalLength_pow` at formal-conjectures commit df3f12d7bd06, so it is that statement by construction.
+`tests/statement/triplespow.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem increasing_triples_power : type_of% @Arxiv.«1609.08688».maximalLength_pow := by
   sorry
