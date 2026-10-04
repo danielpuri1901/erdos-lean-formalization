@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-03 19:40 UTC. The Erdős 105 warm-up and all six Green 72 main runs are green (`docs/main-run.md`); the write-up is published privately at https://claude.ai/artifact/3x7der745TqJWx4sYaPkKH (copy in `docs/writeup/`). The checker's `check-submits` schedule is disabled until the next run.
+Last update: 2026-10-04 20:35 UTC. The cloud credit is used: 6 of 250 USD are left. No open problem was solved; 26 known results have Lean proofs that the checker accepted, and two open problems have partial results (`docs/sweep.md`). The write-up is published privately at https://claude.ai/artifact/3x7der745TqJWx4sYaPkKH (copy in `docs/writeup/`). The checker repository is public since 2026-10-04, because GitHub Actions stopped starting jobs in private repositories on this account.
 
 ## What this project is
 
@@ -71,7 +71,10 @@ Current work (2026-10-04, details in `docs/sweep.md`): Daniel changed the scope 
 Stage 1 is a sweep of 16 open statements, one bounded cloud session each, following `SWEEP.md` on branch `sweep/base`.
 Stage 2 goes deep on the few that show progress, with Fable 5.1.
 The home-built orchestrator harness is parked; its notebook idea returns in stage 2.
-Still open for Daniel: whether to publish the four finished proofs in a public repository and link them from formal-conjectures.
+Evening of 2026-10-04 (details in `docs/sweep.md`, last section): 23 known results with a hole in the library got one bare session each; the checker accepted 21 and two ended partial.
+The proofs are on the branches `run/<id>` of this repository, which is still private.
+To start the checker again: `gh workflow run check-submits.yml -R danielpuri1901/erdos-lean-checker`; it stops by itself after two idle hours.
+Still open for Daniel: whether to publish the proofs in a public repository and offer them to formal-conjectures (26 results, among them the disproofs of TxGraffiti conjectures 2 and 3, which had no Lean proof); nothing has been posted anywhere.
 
 Still Daniel's, whenever he wants:
 

@@ -72,11 +72,12 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <article>
 <header>
   <p class="kicker">Lean · AI agents · Claude Code</p>
-  <h1>AI agents proved two known math results, and a checker they could not touch confirmed every one</h1>
-  <p class="meta"><span>by Daniel Puri</span><span>3 October 2026</span></p>
+  <h1>AI agents wrote computer-checked proofs of known math. They did not solve an open problem.</h1>
+  <p class="meta"><span>by Daniel Puri</span><span>3 and 4 October 2026</span></p>
 </header>
 
-<p class="lead">Two math results were already known to be true. I did not find new math. I had AI agents rewrite the known results as proofs that a computer checks step by step. A separate checker, which the AI could not see or change, confirmed every proof. Nobody had done that for these two results before.</p>
+<p class="lead">I gave AI agents two kinds of math problems. The first kind was already solved on paper. The AI rewrote 26 of those results as proofs that a computer checks step by step, and a separate checker confirmed each one. The second kind was open: 16 problems that a public library marks as unsolved. The AI solved none of them. On two of them it proved new special cases.</p>
+<p>The whole project used 244 USD of a 250 USD cloud credit.</p>
 
 <h2>What Lean is</h2>
 <p><a href="https://lean-lang.org/">Lean</a> is a programming language for proofs.</p>
@@ -88,23 +89,7 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <p>So "checking it" and "turning it into code" are the same thing here. Writing the proof as Lean code is how the computer checks it.</p>
 
 <h2>Where the problems came from</h2>
-<p>Google DeepMind keeps a library called <a href="https://github.com/google-deepmind/formal-conjectures">formal-conjectures</a>. It writes hundreds of math problems as Lean claims. Most of them have no proof yet: the proof is a hole, written <code>sorry</code>. I picked two holes whose answers were already known on paper.</p>
-
-<h2>Problem 1: Erdős 105 (the warm-up)</h2>
-<ul>
-<li><strong>The question.</strong> Take two separate groups of points in the plane, A and B. A has four more points than B, and A's points are not all on one line. Must some line through two A points miss every B point?</li>
-<li><strong>What was known.</strong> A person on the Erdős problems forum, Xichuan, found 10 points for A and 6 points for B where every line through two A points hits a B point. So the answer is no.</li>
-<li><strong>What the AI did.</strong> It wrote those 16 points into Lean. Then it proved in Lean that they meet every condition, and that all 45 lines hit B.</li>
-</ul>
-
-<h2>Problem 2: Green's problem 72 for small grids (the main target)</h2>
-<ul>
-<li><strong>The question.</strong> In an N by N grid, how many points can you place so that no three are on one line?</li>
-<li><strong>The easy part.</strong> You can never place more than 2N. The library already had a proof of that.</li>
-<li><strong>What was known.</strong> For every N from 3 to 60, computer searches found a set with exactly 2N points. They are in Flammenkamp's public database and in Prellberg's published table.</li>
-<li><strong>What the AI did.</strong> It took the 58 known point sets. It proved in Lean that each one really has no three points on a line; for N = 60 that is about 280,000 groups of three points. Then it proved the general step: one valid set of 2N points means 2N is the maximum.</li>
-<li><strong>The result.</strong> The claim "for every N from 3 to 60, the maximum is exactly 2N" now has a complete proof that the Lean kernel checks.</li>
-</ul>
+<p>Google DeepMind keeps a library called <a href="https://github.com/google-deepmind/formal-conjectures">formal-conjectures</a>. It writes hundreds of math problems as Lean claims. Most of them have no proof yet: the proof is a hole, written <code>sorry</code>. Some holes are results that people already proved on paper. Other holes are open problems. I used both kinds.</p>
 
 <h2>Why I needed a separate checker</h2>
 <p>An AI that checks its own work can fake success, even without meaning to. It can leave a hole in the proof. It can add an assumption that it never proved. It can quietly change the question to an easier one.</p>
@@ -122,7 +107,7 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
   <rect class="lane" x="265" y="10" width="230" height="310" rx="8"/>
   <text class="lane-label" x="279" y="32">The AI's repository</text>
   <rect class="lane" x="520" y="10" width="230" height="310" rx="8"/>
-  <text class="lane-label" x="534" y="32">Checker: AI cannot see it</text>
+  <text class="lane-label" x="534" y="32">Checker: AI cannot change it</text>
 
   <rect class="box" x="30" y="56" width="190" height="62" rx="6"/>
   <text class="t" x="44" y="80">Manager AI</text>
@@ -177,18 +162,46 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <ol>
 <li>The AI works in its own GitHub repository. It can change anything there, so I trust nothing there.</li>
 <li>When the AI thinks it is done, it saves its work with a special message that starts with "submit".</li>
-<li>A second repository, the checker, finds that message. The AI cannot see or change the checker.</li>
+<li>A second repository, the checker, finds that message. The AI cannot change the checker.</li>
 <li>The checker throws away the AI's copy of the question and uses its own frozen copy.</li>
 <li>A tool from the Lean team, <a href="https://github.com/leanprover/comparator">Comparator</a>, runs in a locked sandbox. It checks that the proof answers exactly the frozen question, uses only the three basic assumptions that all of normal math uses, and passes the kernel.</li>
 <li>The checker writes a green or red mark on the AI's work. If the mark is red, it also writes the reason.</li>
 </ol>
 
-<h2>I tried to fool the checker first</h2>
+<p class="note">The checker was private until the evening of 4 October. It is public now, because GitHub runs public repositories for free and my free minutes for private ones ran out. The checker does not need to be secret: it rejects a cheat even when the cheater knows its rules.</p>
+
+<h3>I tried to fool the checker first</h3>
 <p>Before the real runs, I gave the checker one correct proof and seven cheating ones. The correct proof passed. The checker rejected six of the cheats at once, each for the right reason.</p>
 <p>The seventh cheat got through. It was a proof of an easier question that also printed the checker's own success message while it was built. The checker looked for that message in its log, and the fake proof had written it there itself. I changed the checker to read the real result instead of the log. That fake proof is now a permanent test.</p>
 
-<h2>The experiment</h2>
-<p>I compared two setups on problem 2. Both used the same AI model, Claude Opus 5.5.</p>
+<h3>How I know the frozen question is the right question</h3>
+<p>I am not a mathematician, so I cannot read a Lean claim and say that it matches the English problem. I use three checks instead.</p>
+<ol>
+<li>The frozen question is not typed by hand. It is built from the library's own claim, and the checker confirms by computer that the two are identical.</li>
+<li>The checker runs the definitions on small examples, and I compare the answers with the published ones.</li>
+<li>For each problem I get a small page where I can play the problem by hand on a small case.</li>
+</ol>
+
+<h2>Part 1: results that were already known</h2>
+
+<h3>Erdős problem 105 (the warm-up)</h3>
+<ul>
+<li><strong>The question.</strong> Take two separate groups of points in the plane, A and B. A has four more points than B, and A's points are not all on one line. Must some line through two A points miss every B point?</li>
+<li><strong>What was known.</strong> A person on the Erdős problems forum, Xichuan, found 10 points for A and 6 points for B where every line through two A points hits a B point. So the answer is no.</li>
+<li><strong>What the AI did.</strong> It wrote those 16 points into Lean. Then it proved in Lean that they meet every condition, and that all 45 lines hit B.</li>
+</ul>
+
+<h3>Green's problem 72 for small grids</h3>
+<ul>
+<li><strong>The question.</strong> In an N by N grid, how many points can you place so that no three are on one line?</li>
+<li><strong>The easy part.</strong> You can never place more than 2N. The library already had a proof of that.</li>
+<li><strong>What was known.</strong> For every N from 3 to 60, computer searches found a set with exactly 2N points. They are in Flammenkamp's public database and in Prellberg's published table.</li>
+<li><strong>What the AI did.</strong> It took the 58 known point sets. It proved in Lean that each one really has no three points on a line; for N = 60 that is about 280,000 groups of three points. Then it proved the general step: one valid set of 2N points means 2N is the maximum.</li>
+<li><strong>The result.</strong> The claim "for every N from 3 to 60, the maximum is exactly 2N" now has a complete proof that the Lean kernel checks.</li>
+</ul>
+
+<h3>Does a manager AI help?</h3>
+<p>I compared two setups on Green's problem 72. Both used the same AI model, Claude Opus 5.5.</p>
 <ul>
 <li><strong>With harness.</strong> A manager AI gives the work to fresh helper AIs. It keeps a log of what each helper tried and gives the next helper the reason the last one failed.</li>
 <li><strong>Bare.</strong> One AI with a plain instruction and nothing else.</li>
@@ -199,21 +212,147 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <table>
 <thead><tr><th>Run</th><th>Setup</th><th>Result</th><th class="num">Time to green</th><th class="num">Cost (USD)</th><th class="num">Tries</th></tr></thead>
 <tbody>
-<tr><td>Problem 1</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">about 50 min</td><td class="num">about 4</td><td class="num">1</td></tr>
-<tr><td>Problem 2, run 1</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">42 min</td><td class="num">4</td><td class="num">1</td></tr>
-<tr><td>Problem 2, run 2</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
-<tr><td>Problem 2, run 3</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">93 min</td><td class="num">4</td><td class="num">2</td></tr>
-<tr><td>Problem 2, run 4</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
-<tr><td>Problem 2, run 5</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">75 min</td><td class="num">6</td><td class="num">2</td></tr>
-<tr><td>Problem 2, run 6</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">37 min</td><td class="num">2</td><td class="num">1</td></tr>
+<tr><td>Erdős 105</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">about 50 min</td><td class="num">about 4</td><td class="num">1</td></tr>
+<tr><td>Green 72, run 1</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">42 min</td><td class="num">4</td><td class="num">1</td></tr>
+<tr><td>Green 72, run 2</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
+<tr><td>Green 72, run 3</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">93 min</td><td class="num">4</td><td class="num">2</td></tr>
+<tr><td>Green 72, run 4</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">30 min</td><td class="num">2</td><td class="num">1</td></tr>
+<tr><td>Green 72, run 5</td><td>with harness</td><td><span class="pill ok">green</span></td><td class="num">75 min</td><td class="num">6</td><td class="num">2</td></tr>
+<tr><td>Green 72, run 6</td><td>bare</td><td><span class="pill ok">green</span></td><td class="num">37 min</td><td class="num">2</td><td class="num">1</td></tr>
 </tbody>
 </table>
 </div>
-<p>All runs passed. No AI tried to cheat. On this problem the bare setup was faster and cheaper: 32 minutes and 2 USD on average, against 70 minutes and about 4.70 USD with the harness. The whole day, including setup and failed tests, used 27 USD of a 250 USD credit.</p>
+<p>All runs passed. No AI tried to cheat. The bare setup was faster and cheaper: 32 minutes and 2 USD on average, against 70 minutes and about 4.70 USD with the harness.</p>
+<p>The proving took the AI 10 to 25 minutes. Most of the rest of each run was the checker, which needs about 25 minutes per verdict. So this problem was too easy to show whether the harness helps.</p>
 
-<h2>Why it was so fast</h2>
-<p>I planned for hours of work. The proving took the AI 10 to 25 minutes. Most of the rest of each run was the checker, which needs about 25 minutes per verdict. The hard part was done before the AI started: the known point sets were already checked and ready to use, and a test had shown that the computer can check the largest grid in under a minute. The AI only had to write one general step and connect the pieces.</p>
-<p>This also means the problem was too easy to show whether the harness helps. The next round needs a harder problem, one where the proof is an idea and not a computer check.</p>
+<h3>Two harder known results</h3>
+<p>I then picked results where the proof is an idea and not a computer check. Both are about Vizing's conjecture from 1963, which is still open. The conjecture is about guards on a network: how many guards a product of two networks needs, compared with the two networks alone.</p>
+<ul>
+<li><strong>Clark and Suen (2000)</strong> proved a weaker form of the conjecture. One bare AI session proved it in Lean. The checker accepted the first submission after 22 minutes. Cost: about 2 USD.</li>
+<li><strong>Suen and Tarr (2012)</strong> proved a slightly stronger form. One bare AI session proved it in Lean. The checker accepted the first submission after about 31 minutes. Cost: about 3 USD.</li>
+</ul>
+<p>So short known proofs, one to three pages on paper, are also too easy to need a harness. That is why I moved to open problems.</p>
+
+<h2>Part 2: open problems</h2>
+
+<h3>The method comes from Terence Tao</h3>
+<p>Terence Tao, one of the best-known living mathematicians, published two videos in 2026 where he uses Claude Code to write Lean proofs. I read both transcripts and used his recipe.</p>
+<ol>
+<li>Do not ask for the whole proof at once. His one-shot attempt ran 45 minutes and finished nothing. Step by step took about 25 minutes.</li>
+<li>Write the argument in plain words before any Lean.</li>
+<li>Build a skeleton first: state every step in Lean with a hole, make it compile, then fill the holes one at a time.</li>
+<li>Put the instructions in a file. Keep a second file of lessons that every session reads and updates.</li>
+<li>One side creates and the other side checks. The AI is safe for creating only where the checking keeps up.</li>
+</ol>
+<p>He also says that he does not hand the AI a step that is mathematically hard. He expects it to fail there. That turned out to describe my results.</p>
+
+<h3>Stage 1: one hour on each of 16 open problems</h3>
+<p>I took 16 claims that the library marks as open. Each got one AI session with a one-hour limit and four phases: understand the claim, try to break it by computer search, try to prove it, report. The 16 sessions ran at the same time and finished in under an hour. Cost: 83 USD, about 5 USD per problem.</p>
+
+<div class="scroll">
+<table>
+<thead><tr><th>Problem</th><th>What the AI established</th><th>Was it really open?</th></tr></thead>
+<tbody>
+<tr><td>Add up the divisors of x and divide by x. The remainder is never 5.</td><td>Any such x has a special form. None exists below 10<sup>21</sup>.</td><td>yes</td></tr>
+<tr><td>Start at 103 in base 3, reverse the digits and add, repeat. You never reach a palindrome.</td><td>None in the first 1,000 steps (Lean) and 1,000,000 steps (computed).</td><td>yes</td></tr>
+<tr><td>Smallest multiple of n that uses only the digits 0 and 1: a claim about where it is largest.</td><td>True for small cases. A simpler equivalent form.</td><td>yes</td></tr>
+<tr><td>Count the remainders of squares modulo n. A formula with that count is true exactly for odd primes.</td><td>True for even n and for products of two odd primes.</td><td>yes</td></tr>
+<tr><td>The game Catch-Up ends in a draw when 1 + 2 + ... + N is even.</td><td>True for N up to 8 (Lean) and up to 28 (computed).</td><td>yes, small cases were known</td></tr>
+<tr><td>A sum built from tan and arctan is never a whole number.</td><td>True for n from 5 to 50,000 (Lean).</td><td>yes, partial results were known</td></tr>
+<tr><td>In finite systems with one operation, rule 677 forces rule 255.</td><td>One family of possible counterexamples cannot work.</td><td>yes, a known hard problem</td></tr>
+<tr><td>Smallest possible modulus for a certain kind of number set.</td><td>A lower bound for every n, and the claim for n up to 4.</td><td>yes, partial results were known</td></tr>
+<tr><td>Graph conjecture 40 made by the program Graffiti.pc</td><td>True for two families of graphs.</td><td>yes, partial results were known</td></tr>
+<tr><td>Graph conjecture 61 made by Graffiti.pc</td><td>Special cases, given one classical result. A stronger form is false.</td><td>yes, partial results were known</td></tr>
+<tr><td>Graph conjecture 133 made by Graffiti.pc</td><td>Reduced to a smaller family of graphs.</td><td>yes, partial results were known</td></tr>
+<tr><td>Graph conjecture 198a made by Graffiti.pc</td><td>True except for two families of graphs.</td><td><span class="pill bad">no</span> proved by someone else in 2026</td></tr>
+<tr><td>Graph conjecture 19 made by Graffiti.pc</td><td>Full Lean proof in 11 minutes. The checker accepted it.</td><td><span class="pill bad">no</span> proved by others in July 2026</td></tr>
+<tr><td>Graph conjecture 100 made by Graffiti.pc</td><td>Full Lean proof in 11 minutes. The checker accepted it.</td><td><span class="pill bad">no</span> proved by someone else in August 2026</td></tr>
+<tr><td>Graph conjecture 2 made by the program TxGraffiti</td><td>No counterexample among graphs with up to 17 points.</td><td><span class="pill bad">no</span> disproved by someone else with a 24-point graph</td></tr>
+<tr><td>Graph conjecture 3 made by TxGraffiti</td><td>True for two families of graphs.</td><td><span class="pill bad">no</span> disproved by others with a 48-point graph</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>My mistake: "open" in the library did not mean open</h3>
+<p>Two sessions reported a full proof, and the checker accepted both. For a moment that looked like two solved open problems. It was not. Other people had proved both conjectures months earlier, and the library's "open" label was out of date.</p>
+<p>My scan had read only that label. I then searched for earlier work on all 16 problems. Five of them were already settled: three proved and two disproved. Since then, every problem gets a search for earlier work before any credit goes to it.</p>
+
+<h3>Stage 2: ten attempts on each of two problems</h3>
+<p>I picked the two problems where stage 1 made the most progress and where I found no solution by anyone. Each got one long session. A manager AI (Claude Fable 5.1) kept a notebook and gave single steps to fresh helper AIs (Claude Opus 5.5). A second helper attacked every paper argument before it went into Lean. Each session stopped after ten attempts. Cost: 68 USD.</p>
+<ul>
+<li><strong>Catch-Up.</strong> Two players take turns to take numbers from 1 to N. The player who is behind keeps taking until they catch up. The claim: if 1 + 2 + ... + N is even, perfect play ends in a draw. The AI proved the claim in Lean for every N up to 16. It also proved that the full claim follows from four smaller statements. A computer check supports the four statements, but nobody has proved them.</li>
+<li><strong>Squares modulo n.</strong> The AI proved the claim in Lean for four kinds of n: even numbers, primes, powers of a prime, and a power of one prime times a second prime. So a counterexample, if one exists, has a more complex form. The smallest family that is still open is p²q². A computer search found no counterexample below 16 billion.</li>
+</ul>
+<p>Both sets of Lean proofs build on a clean machine with no holes. They are partial results. Neither problem is solved.</p>
+
+<h3>Why the AI did not solve an open problem</h3>
+<p>It was not a lack of computer power, and it was not a lack of attempts.</p>
+<ul>
+<li>The AI did the routine work fast: small cases, computer searches, reductions to simpler statements, and Lean proofs of all of those.</li>
+<li>Each problem then stopped at one step that needs a new idea. For Catch-Up, ten attempts in a row ended at the same step.</li>
+<li>More attempts gave more cases around that step. They did not give the idea.</li>
+<li>Other teams report the same result. A <a href="https://arxiv.org/abs/2608.11941">public benchmark</a> ran AI models on the same number-sequence problems, and those runs failed too.</li>
+</ul>
+<p>This matches what Tao says in his videos. The AI is good at the steps you can check. The hard step still needs a person or a new method.</p>
+
+<h2>Part 3: what worked better, known results with no computer-checked proof</h2>
+<p>The search for earlier work showed a more useful kind of task. Some results are settled on paper, or by a computer search, but have no Lean proof. A Lean proof of such a result is new, small, and useful to the people who keep the library.</p>
+
+<h3>A disproof: TxGraffiti conjecture 3</h3>
+<p>A program called TxGraffiti made a conjecture about graphs where every point has the same number of neighbours. Other people found a graph with 48 points that breaks it, and published it with their own computer check. The library still listed the conjecture as open, with a request to fix it.</p>
+<p>I gave the AI only the list of the graph's connections. In about 20 minutes it wrote a Lean proof that the graph breaks the conjecture. The longest part is a search with 124,512 steps, which the Lean kernel checks in 36 pieces. The checker accepted the first submission. I found no Lean proof of this disproof before the run. The graph is not mine: its authors found it.</p>
+
+<h3>Twenty-three more holes in the library</h3>
+<p>I spent the rest of the credit on 23 more results. The library lists each one as solved on paper, with a hole where the proof belongs. Each result got one AI session with a time limit of 15 to 90 minutes.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>Result</th><th>In plain words</th><th>Outcome</th></tr></thead>
+<tbody>
+<tr><td>Green's problem 66, the easy bound</td><td>Just below every large number X there is a sum of two squares, at most about X<sup>1/4</sup> away.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Danilov's theorem (1982)</td><td>Squares and cubes come close again and again: for infinitely many pairs the gap is at most a fixed multiple of the square root of x.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Gauss's circle bound</td><td>Count the grid points inside a circle of radius r. The count differs from the area by at most about 9 times r.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>TxGraffiti conjecture 2 is false</td><td>A graph with 24 points, found by M. Fischer, breaks the conjecture.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>The Witt design exists (1938)</td><td>Among 24 points there are 759 groups of 8 such that every 5 points lie in exactly one group.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Giuga's theorem (1950)</td><td>A description of the numbers that would break a test for primes.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>R(4, 4) = 18</td><td>Among 18 people, 4 all know each other or 4 are all strangers. With 17 people that can fail.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>A non-abelian Leinster group exists</td><td>A group with 30 elements where the sizes of the normal subgroups add up to twice the size of the group.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>No cycle decomposition of the small cube (1982)</td><td>The 24 arrows of a cube network cannot be split into three round trips that each visit every corner.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>R(3, 5) = 14</td><td>Among 14 people, 3 all know each other or 5 are all strangers. With 13 people that can fail.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Chen and Saito (1994)</td><td>If every point of a network has at least 3 connections, some loop has a length divisible by 3.</td><td><span class="pill wait">partial</span> One lemma about a longest path is proved. The main theorem is not.</td></tr>
+<tr><td>Dihedral Leinster groups</td><td>The symmetry group of a regular polygon with n corners is a Leinster group exactly when n is an odd perfect number.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Giuga numbers have 9 prime factors</td><td>A number that breaks the prime test has at least 9 different prime factors.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Weak Giuga numbers</td><td>A second description of Giuga numbers, through the sum of 1/p over the prime factors.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Long lists of triples (Gowers and Long)</td><td>A list of number triples where every later triple is larger than every earlier one in at least two places can be long.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Exact formula for the circle count</td><td>An exact formula for the number of grid points in a circle. The AI had to prove a classical theorem of Jacobi first, because the Lean library does not have it.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Snake in the box bound (1967)</td><td>A path in the n-dimensional cube that never comes back next to itself has at most 2<sup>n-1</sup> steps.</td><td><span class="pill wait">partial</span> The case n = 1 and the weaker bound 2<sup>n</sup> - 1 are proved. The main bound is not.</td></tr>
+<tr><td>R(3, 4) = 9</td><td>Among 9 people, 3 all know each other or 4 are all strangers. With 8 people that can fail.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Complexity of powers of 3</td><td>To write 3<sup>n</sup> with only the number 1, plus and times, you need exactly 3n ones.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>A number sequence at powers of 2</td><td>A formula for the value of the sequence A112970 at every power of 2.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>R(3, 3) = 6</td><td>Among 6 people, 3 all know each other or 3 are all strangers. With 5 people that can fail.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Giuga numbers are Carmichael numbers</td><td>Every number that breaks the prime test also fools an older, simpler prime test.</td><td><span class="pill ok">accepted</span></td></tr>
+<tr><td>Lists of triples, second result</td><td>One long list of triples gives long lists for infinitely many larger sizes.</td><td><span class="pill ok">accepted</span></td></tr>
+</tbody>
+</table>
+</div>
+<p>The checker accepted 21 of the 23 proofs, each on its first submission. Two runs ended with a partial result. Most proofs took the AI less than 20 minutes.</p>
+<p>I gave the AI no proof idea for three tasks, only the claim. It finished one of them, the first result on lists of triples, and got stuck on the other two. That fits the pattern from the open problems: the AI writes down a known argument fast, and it can get stuck where it has to find the argument.</p>
+<p>These 23 were holes in the library, not open problems. Other people run AI on the same library, and I did not check every result for an earlier Lean proof somewhere else. At least two have one, as far as I can tell: R(4, 4) = 18 and the complexity of powers of 3.</p>
+
+<h2>What it cost</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>Step</th><th class="num">Cost (USD)</th><th>What I got</th></tr></thead>
+<tbody>
+<tr><td>Checker, cloud setup, Erdős 105, six runs on Green 72</td><td class="num">27</td><td>2 known results proved, 7 green runs</td></tr>
+<tr><td>Clark-Suen and Suen-Tarr</td><td class="num">5</td><td>2 known results proved</td></tr>
+<tr><td>Stage 1: 16 open problems, one hour each</td><td class="num">83</td><td>2 proofs of results that were already proved, 14 partial results</td></tr>
+<tr><td>Stage 2: two problems, ten attempts each</td><td class="num">68</td><td>partial results on both, no solution</td></tr>
+<tr><td>One more attempt on squares modulo n, and the TxGraffiti 3 disproof</td><td class="num">17</td><td>one more family of cases, 1 disproof with a Lean proof</td></tr>
+<tr><td>Twenty-three more known results</td><td class="num">44</td><td>21 proofs accepted, 2 partial</td></tr>
+</tbody>
+</table>
+</div>
+<p>In the last round a Lean proof of a known result cost about 2 USD. The open problems took more than 150 USD and gave no solution.</p>
 
 <h2>What went wrong along the way</h2>
 <div class="scroll">
@@ -228,31 +367,37 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <tr><td>6</td><td>Lean rebuilt everything from scratch</td><td>The unpacked files belonged to another user. Git refused them, so Lean deleted and rebuilt its libraries.</td><td><span class="pill ok">fixed</span></td></tr>
 <tr><td>7</td><td>The checker did not see the AI's work</td><td>Cloud sessions save work to their own branches.</td><td><span class="pill ok">fixed</span> the checker watches those branches</td></tr>
 <tr><td>8</td><td>The checker never started on schedule</td><td>GitHub's timer fired only twice in 7.5 hours.</td><td><span class="pill ok">fixed</span> the checker runs its own loop every 2 minutes and restarts itself</td></tr>
-<tr><td>9</td><td>The checker ran out of memory</td><td>The checker runs on GitHub's small machine, with 7.8 GB of memory. Large checks built in parallel needed more, and the machine died without a verdict.</td><td><span class="pill ok">fixed</span> the checker frees disk space and adds extra memory on disk (swap). The proof that killed it now passes. A dead check also gives a clear failure.</td></tr>
-<tr><td>10</td><td>My Fable allowance ran out</td><td>The weekly limit for Fable was used up, and the cloud credit does not cover it.</td><td><span class="pill wait">worked around</span> all runs used Opus</td></tr>
+<tr><td>9</td><td>The checker ran out of memory</td><td>The checker runs on GitHub's small machine, with 7.8 GB of memory. Large checks built in parallel needed more, and the machine died without a verdict.</td><td><span class="pill ok">fixed</span> the checker frees disk space and adds extra memory on disk (swap). The proof that killed it now passes.</td></tr>
+<tr><td>10</td><td>The checker's loop stopped after its first job</td><td>GitHub answered with an empty reply, and the loop tried to read it as data.</td><td><span class="pill ok">fixed</span> permanent test</td></tr>
+<tr><td>11</td><td>My Fable allowance ran out on day one</td><td>The weekly limit for Fable was used up, and the cloud credit does not cover it.</td><td><span class="pill wait">worked around</span> day-one runs used Opus</td></tr>
+<tr><td>12</td><td>Two "solved open problems" were not open</td><td>I trusted the library's "open" label and did not search for earlier work.</td><td><span class="pill ok">fixed</span> a search for earlier work comes first</td></tr>
+<tr><td>13</td><td>GitHub stopped starting the checker</td><td>The checker repository was private, and my free GitHub minutes for private repositories ran out on the second evening.</td><td><span class="pill ok">fixed</span> the checker repository is public now, where GitHub's machines are free. Six proofs waited up to 30 minutes for their verdict.</td></tr>
 </tbody>
 </table>
 </div>
-<p>Problem 9 also gave the harness its best moment. When the checker died from lack of memory, the manager AI measured the memory itself, told the next helper to split the work into smaller pieces, and the next try passed. That happened in two of the three harness runs.</p>
 
 <h2>What this is not</h2>
 <ul>
-<li>It is not a new discovery. The big question behind problem 2, what happens for very large grids, is still open. We covered grids up to 60.</li>
-<li>Three runs per setup is a small sample.</li>
-<li>I prepared the data before the runs. The AI turned it into a proof; it did not search for it.</li>
-<li>Claude wrote the check that the Lean question for problem 1 matches the English problem. I still need to read it myself before this result is shared.</li>
+<li>It is not a new discovery. No open problem was solved.</li>
+<li>The partial results on Catch-Up and on squares modulo n are Lean proofs that build with no holes. The checker did not judge them, because the checker only judges a full frozen question. No mathematician has looked at them.</li>
+<li>The graphs that break the two TxGraffiti conjectures were found by other people. My runs add the Lean proofs.</li>
+<li>The last 23 results were holes in the library. Some have earlier Lean proofs elsewhere, and I did not check all of them.</li>
+<li>My search for earlier work used the web and may have missed something.</li>
+<li>Three runs per setup is a small sample for the harness comparison.</li>
+<li>Claude wrote the checks that each frozen question matches the library. I checked them with small examples and playable pages, not by reading the Lean.</li>
+<li>Nothing is posted yet to the Erdős problems site or to formal-conjectures.</li>
 </ul>
 
 <h2>Who did what</h2>
 <ul>
-<li><strong>Me.</strong> I set the goal, approved the plan, and made the decisions that needed a person.</li>
-<li><strong>Claude Opus 5.5 on my laptop.</strong> It built the checker and the cloud setup, fixed the problems above, and started each run.</li>
-<li><strong>Claude Opus 5.5 in the cloud.</strong> It wrote every Lean proof.</li>
-<li><strong>Borrowed.</strong> The problems come from formal-conjectures (Google DeepMind). The checking tool is Comparator (the Lean team). The sandbox is <a href="https://github.com/Zouuup/landrun">landrun</a>. The counterexample for problem 1 is Xichuan's. The point sets for problem 2 are Flammenkamp's and Prellberg's.</li>
+<li><strong>Me.</strong> I set the goal, chose the problems, approved each stage, and made the decisions that needed a person.</li>
+<li><strong>Claude on my laptop</strong> (Opus 5.5 on day one, Fable 5.1 on day two). It built the checker and the cloud setup, fixed the problems above, searched for earlier work, and started each run.</li>
+<li><strong>Claude Opus 5.5 in the cloud.</strong> It wrote almost every Lean proof. Claude Fable 5.1 was the manager in stage 2.</li>
+<li><strong>Borrowed.</strong> The problems come from formal-conjectures (Google DeepMind). The checking tool is Comparator (the Lean team). The sandbox is <a href="https://github.com/Zouuup/landrun">landrun</a>. The working method is Terence Tao's. The counterexample for Erdős 105 is Xichuan's. The point sets for Green 72 are Flammenkamp's and Prellberg's. The 48-point graph is from the <a href="https://github.com/ipitchford/txgraffiti-order48-successor">txgraffiti-order48-successor</a> repository. The 24-point graph is from M. Fischer's paper (arXiv 2607.23664).</li>
 </ul>
 
 <h2>In one line</h2>
-<p>We took two math results people already knew were true. AI agents rewrote them as proofs that a computer checks step by step. A separate checker the AI couldn't touch confirmed every one.</p>
+<p>AI agents turn known math into computer-checked proofs quickly and for a few dollars each. They did not solve an open problem: the missing piece there is an idea, and more attempts did not produce one.</p>
 
 <div class="author"><strong>Daniel Puri</strong> ran this project. The code and every run record are in the repositories <code>erdos-lean-formalization</code> and <code>erdos-lean-checker</code>.</div>
 </article>

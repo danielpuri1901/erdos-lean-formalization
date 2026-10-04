@@ -134,3 +134,68 @@ The counterexample graph was found by the authors of the source repository; this
 No Lean proof of this disproof was found before the run, and formal-conjectures still tags the statement as open.
 The credit meter read 50 USD after both runs.
 
+## Known results with a hole in the library (2026-10-04, evening)
+
+Daniel's instruction: finish the credit and the write-up.
+The method that worked on TxGraffiti 3 was repeated: one bare cloud session (Claude Opus 5.5, effort Extra) per result, on a branch `run/<id>` cut from the bare pilot commit `df37326`.
+Each branch holds the frozen challenge, a `Solution.lean` with `sorry`, `LESSONS.md` from the sweep, and a `TASK.md` with the goal, the known mathematics, the working rules and the submit rule.
+Each frozen challenge takes its statement from formal-conjectures with `type_of%`, and the checker's statement test compares the two types, so no statement is typed by hand.
+
+How the results were chosen: statements with the tag `research solved` and a `sorry` at the pin (474 outside the Erdős folder), without universe variables, with a proof route that fits one session.
+Three tasks got no proof sketch, only the claim: `dean3`, `snakeupper` and `sqtuples`.
+The other sketches were written from memory and marked as unchecked.
+
+Earlier Lean proofs: a GitHub code search on the statement names (2026-10-04) found copies of the library in benchmark repositories, a Lean file without `sorry` for `complexity_three_pow` in `BrettKnox/open-problems-lab`, and the name `ramsey_number_four_four` in `b-mehta/exponential-ramsey`.
+So these runs fill holes in the library; they are not claimed as first Lean proofs.
+The two disproofs (TxGraffiti 2 and 3) are the exception: no Lean proof was found for either.
+
+| id | statement in formal-conjectures | batch | session | submit commit | result |
+|----|---------------------------------|-------|---------|---------------|--------|
+| green66 | `Green66.green_66.variants.trivial_bound` | 1 | session_01EL5E5XGLhQ3TeNf4rtQzRV | `0d83e9e` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37224600096) |
+| danilov | `Hall.danilov` | 1 | session_01MrKSYuRbwFXxhxDtcfLfeX | `7db3bbc` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37224744394) |
+| gausscircle | `GaussCircleProblem.error_le` | 1 | session_01EaGkVAchVFbL2gVKPTuBPj | `60cbba7` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37225020000) |
+| txgraffiti2 | `Arxiv.«2507.17780».tx_graffiti_conjecture_2 (negated)` | 1 | session_01PQYGpCRTEaje4JY8Enmjxc | `054976a` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37225577063) |
+| witt24 | `SteinerSystems.steiner_system_5_8_24` | 2 | session_019AGBnMRXJx3VbsTdcYa84P | `07e67ad` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37226893860) |
+| giuga | `AgohGiuga.isStrongGiuga_iff` | 2 | session_0173kBWfz9nc8WdMEZEcDotV | `ba3ffba` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37226747642) |
+| ramsey44 | `RamseyNumbers.ramsey_number_four_four` | 2 | session_01Tjkqx8fRVZZuTLAbVsRXja | `4f8fbae` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37227176635) |
+| leinster | `LeinsterGroup.exists_nonabelian_leinster_group` | 2 | session_01CsRofLNxPHC7jJ5s3JurF9 | `fbeaa29` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37226892771) |
+| claudecycles2 | `ClaudesCycles.cube_hamiltonian_arc_decomposition_impossible_m2` | 2 | session_019727EgE1wGDLRsAoBKxYMz | `9701f66` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229130348) |
+| ramsey35 | `RamseyNumbers.ramsey_number_three_five` | 2 | session_01Wgypm1VuPHV7EFvvYuxs22 | `1a4f0ed` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229134566) |
+| dean3 | `Arxiv.«2605.02731».dean_conjecture.variants.three` | 2 | session_01CN9AWLNR41YTTqFpSxanTY | none | partial, no submission |
+| dihedral | `LeinsterGroup.dihedral_is_leinster_iff_odd_perfect` | 3 | session_0173FJ6MKFKC9vPSeiUjYEwM | `4717d11` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229131686) |
+| giuga9 | `AgohGiuga.agoh_giuga.variants.le_primeFactors_card_of_isStrongGiuga` | 3 | session_01H3mCPXqce5ege54Dzy8FxD | `d075839` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229133119) |
+| weakgiuga | `AgohGiuga.isWeakGiuga_iff_sum_primeFactors` | 3 | session_01H8nXfYV588VdsLcaS3Hg8T | `4f00be3` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229137422) |
+| sqtuples | `Arxiv.«1609.08688».maximalLength_ge_of_isSquare` | 3 | session_01QG2sjTw7TAFgV3Du7gUc1X | `b3b3a7b` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229136117) |
+| gaussexact | `GaussCircleProblem.exact_form_floor` | 3 | session_015kYrYcmGZhzNRPRy4UYqNW | `3e1126f` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229292779) |
+| snakeupper | `SnakeInBox.snake_upper_bound` | 3 | session_01DBdt3BGC31hGV2sKp475ou | none | partial, no submission |
+| ramsey34 | `RamseyNumbers.ramsey_number_three_four` | 4 | session_01DM8eje1my5tTrskGriDTTE | `43a345a` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37230526750) |
+| intcomplexity | `Mathoverflow75792.complexity_three_pow` | 4 | session_01W3kXnauDyTSCEFzjK7yMVh | `a2f611d` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37229781775) |
+| a112970 | `OeisA112970.conjecture1_value` | 4 | session_01JSAu1JinjASFHc9FCqgtMH | `94455e7` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37230071402) |
+| ramsey33 | `RamseyNumbers.ramsey_number_three_three` | 5 | session_016JESCpUAHhgPm3a7hsHEAJ | `3bb9b13` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37231430678) |
+| giugacarmichael | `AgohGiuga.agoh_giuga.variants.isStrongGiuga_implies_isCarmichael` | 5 | session_01RyTrF6UDtsMyQ6SafKFTQm | `f60772e` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37231574755) |
+| triplespow | `Arxiv.«1609.08688».maximalLength_pow` | 5 | session_015p6D3imwEQwsb4DjerBv91 | `e8dd57c` | accepted, [checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37231718087) |
+
+Batches started at about 18:21, 18:54, 19:20, 19:44 and 20:14 UTC, with time boxes of 45 to 90, 40, 30, 20 and 15 minutes of work.
+Result: 21 of 23 proofs accepted by the checker, each on its first submission; 2 partial (`dean3` and `snakeupper`).
+Cost: the credit meter went from 50 to 6 USD, so the 23 runs cost 44 USD, about 2 USD per run.
+
+The partial runs:
+
+- `dean3` (Chen and Saito, 1994): the session proved a lemma about the neighbours of the end of a longest path (`DeanThree.dean_three_fan`) and stopped; the combinatorial core of the paper is missing.
+- `snakeupper` (Danzer and Klee, 1967): the session proved the case n = 1 and the weaker bound 2^n - 1, and listed three statements that would each give the real bound.
+
+Notes from the runs:
+
+- `gaussexact`: Mathlib has no two-squares counting formula, so the session proved Jacobi's formula through the Gaussian integers first.
+- `txgraffiti2`: the proof uses 84 forts and a counting argument instead of a search over all vertex sets; the graph was rebuilt from M. Fischer's paper (arXiv 2607.23664) and checked with separate code before the run.
+- `witt24`: the 759 octads are data; pairwise intersections of at most 4 points plus a count give "exactly one block".
+- The independent build of `deep/a000224` at `b5af17c` (run 37220289742) passed the build step with no `sorry` warning; the axiom step fails on the placeholder theorem name, as before.
+
+### Checker outage (19:17 to 19:39 UTC)
+
+GitHub Actions stopped starting jobs in both private repositories ("recent account payments have failed or your spending limit needs to be increased").
+Six submissions had no verdict in that time, and the sessions launched in it were told not to poll.
+An EC2 referee was written (`infra/referee-ec2.yaml`, `scripts/referee/` in the checker repository) but not deployed.
+Daniel chose to make the checker repository public, where standard runners are free; before the change the history was scanned for secrets (none) and the workflow triggers were checked (schedule and manual only).
+After the watcher was started again, all six waiting submissions were accepted within about 8 minutes.
+The checker's trust model does not depend on the repository being private: the agent still cannot write to it, and the verdict is Comparator's exit code.
