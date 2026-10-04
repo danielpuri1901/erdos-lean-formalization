@@ -71,3 +71,20 @@ one-line greedy strategy.
 Naive search tree size (no memo, win cut-off, increasing pick order, `count.c`):
 N=7: 3,455 nodes, N=8: 43,341, N=11: 14.8 M, N=12: 160 M. So kernel evaluation without
 memoisation is feasible up to N = 8 only.
+
+## Phase C: proof attempts
+
+### What is proved in Lean (`Solution.lean`, namespace `CatchUpSweep`, builds, no sorry,
+axioms propext / Classical.choice / Quot.sound only)
+- `best_eq_bestSpec`, `best_congr`: `Outcome.best` = max, depends only on membership.
+- `valL`: structurally recursive copy of `valueAux` on lists.
+- `valueAux_eq_valL`: if `R.val = ↑l` and `l.length = n` then `valueAux R s t b = valL n l s t b`.
+  Paper proof: unfold both one step; empty/sum/erase agree; `best` of the two child lists
+  agree because they contain the same outcomes (induction hypothesis on `l.erase x`).
+- `value_Icc_eq_valL`: `value (Icc 1 N) = valL N (List.range' 1 N) 0 0 true`.
+- `catchup_draw_0/3/4/7/8` by `decide +kernel` on `valL` (N = 8 ≈ 30 s), and
+  `catchup_draw_le_8`: the conjecture for every N ≤ 8.
+- `valueAux_draw_even`: a position with value draw has `s + t + ∑R` even
+  (induction on `card R`: a draw value needs a draw child, and taking x moves x from ∑R to a score).
+- `value_ne_draw_of_odd`: if `N*(N+1)/2` is odd then `value (Icc 1 N) ≠ draw` (all N).
+- `catchup_draw_iff_le_8`: for N ≤ 8, draw ⇔ `N*(N+1)/2` even.

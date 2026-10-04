@@ -137,7 +137,82 @@ theorem catchup_draw_le_8 (N : Nat) (hN : N ≤ 8) (h_even : Even (N * (N + 1) /
     | exact catchup_draw_7
     | exact catchup_draw_8
 
+/-- If `best` returns `draw`, then `draw` occurs in the list. -/
+theorem best_eq_draw {os : List Outcome} (h : Outcome.best os = .draw) : Outcome.draw ∈ os := by
+  rw [best_eq_bestSpec, bestSpec] at h
+  split_ifs at h with h1 h2
+  exact h2
+
+/-- `neg` fixes only `draw`. -/
+theorem neg_eq_draw {o : Outcome} (h : o.neg = .draw) : o = .draw := by
+  cases o <;> simp_all [Outcome.neg]
+
+/-- A drawn position has an even total: score of both players plus what is left. -/
+theorem valueAux_draw_even : ∀ (n : Nat) (R : Finset Nat), R.card = n →
+    ∀ s t b, valueAux R s t b = .draw → Even (s + t + R.sum (fun x => x)) := by
+  intro n
+  induction n with
+  | zero =>
+    intro R hcard s t b h
+    obtain rfl : R = ∅ := Finset.card_eq_zero.mp hcard
+    rw [valueAux] at h
+    simp only [if_true] at h
+    split_ifs at h with h1 h2
+    have : s = t := by omega
+    subst this
+    simp
+  | succ n ih =>
+    intro R hcard s t b h
+    have hR : R ≠ ∅ := by rintro rfl; simp at hcard
+    rw [valueAux] at h
+    simp only [hR, if_false] at h
+    by_cases hlt : s + R.sum (fun x => x) < t
+    · rw [if_pos hlt] at h; cases h
+    rw [if_neg hlt] at h
+    have hmem := best_eq_draw h
+    simp only [List.mem_map, Finset.mem_toList, Finset.mem_attach, true_and,
+      Subtype.exists] at hmem
+    obtain ⟨x, hx, hxd⟩ := hmem
+    have hc : (R.erase x).card = n := by rw [Finset.card_erase_of_mem hx]; omega
+    have hs : (R.erase x).sum (fun x => x) + x = R.sum (fun x => x) :=
+      Finset.sum_erase_add R (fun x => x) hx
+    split_ifs at hxd with hb hge
+    · have := ih _ hc _ _ _ (neg_eq_draw hxd)
+      rw [← hs]
+      convert this using 1
+      omega
+    · have := ih _ hc _ _ _ (neg_eq_draw hxd)
+      rw [← hs]
+      convert this using 1
+      omega
+    · have := ih _ hc _ _ _ hxd
+      rw [← hs]
+      convert this using 1
+      omega
+
+/-- `∑_{x=1}^{N} x = N(N+1)/2`. -/
+theorem sum_Icc_id (N : Nat) : (Finset.Icc 1 N).sum (fun x => x) = N * (N + 1) / 2 := by
+  have h2 : (Finset.Icc 1 N).sum (fun x => x) * 2 = N * (N + 1) := by
+    induction N with
+    | zero => simp
+    | succ k ih => rw [Finset.sum_Icc_succ_top (by omega), add_mul, ih]; ring
+  exact (Nat.div_eq_of_eq_mul_left (by norm_num) h2.symm).symm
+
+/-- Converse direction: when `N * (N + 1) / 2` is odd the game is not a draw. -/
+theorem value_ne_draw_of_odd (N : Nat) (h_odd : ¬ Even (N * (N + 1) / 2)) :
+    value (Finset.Icc 1 N) ≠ .draw := by
+  intro h
+  apply h_odd
+  have := valueAux_draw_even _ _ rfl _ _ _ h
+  simpa [sum_Icc_id] using this
+/-- For `N ≤ 8`: the game on `{1, …, N}` is a draw exactly when `N * (N + 1) / 2` is even. -/
+theorem catchup_draw_iff_le_8 (N : Nat) (hN : N ≤ 8) :
+    value (Finset.Icc 1 N) = .draw ↔ Even (N * (N + 1) / 2) :=
+  ⟨fun h => by_contra fun h' => value_ne_draw_of_odd N h' h, catchup_draw_le_8 N hN⟩
+
 end CatchUpSweep
 
 #print axioms CatchUpSweep.catchup_draw_le_8
 #print axioms CatchUpSweep.valueAux_eq_valL
+#print axioms CatchUpSweep.value_ne_draw_of_odd
+#print axioms CatchUpSweep.catchup_draw_iff_le_8
