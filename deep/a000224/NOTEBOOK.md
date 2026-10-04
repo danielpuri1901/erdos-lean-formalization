@@ -65,11 +65,26 @@ Stage 2 route B (general reduction, then more families):
   forces (4m²−kA)w < m² and (kA²−4m²)w² < m², so kA > 3.5m² and kA² < 4.25m², i.e. A < 2.
   [proved in Lean: `A224Deep.reduction_core` (pure Diophantine) and `A224Deep.reduction` (with a m,
   (q+1)/2 and the ModEq hypothesis), Solution/A224/Reduction.lean]
-- Q2 family p²q (needs R4 for a(p²) = (p²−p+2)/2): k ≤ 20; k ≤ 15 ⇒ w < 16; k = 16 ⇒ w < p/2 and
-  a degree-4 polynomial inequality excludes it; k ∈ 17..20 ⇒ p ≤ 31, finite discriminant check. [open]
+- Q2 family n = p²q, p ≠ q odd primes. m = p², 2A = p² − p + 2 (from R4b, j = 1), w = (q+1)/2 ≥ 2.
+  Q1 gives k with δ := 4p⁴ − kA² ≥ 1, B := 4p⁴ − kA, (E) δw² + (p⁴−1) = Bw, δw < B. Route, every step
+  checked numerically in `deep/a000224/q2_analysis.py` (decision 1791110400):
+  Q2.0 `2 * a (p^2) = p^2 - p + 2` from `a_prime_pow_even` (j = 1): 2(p+1)a = p³+p+2 = (p+1)(p²−p+2). [open]
+  Q2.1 k ≤ 20: 21(p²−p+2)² ≥ 16p⁴ for p ≥ 3 (5p⁴−42p³+105p²−84p+84 ≥ 0). [paper, checked p < 5000]
+  Q2.2 k ≥ 17 ⇒ p ≤ 31 (17(p²−p+2)² < 16p⁴ fails for p ≥ 32), and then w ≤ B/δ ≤ 1515; finite check
+       F2 over p ≤ 31, 17 ≤ k ≤ 20, w ≤ B/δ: (E) never holds (20 cases, max B/δ = 1515 at p = 31, k = 17).
+  Q2.3 k = 16: δ = 4(p−2)(2p²−p+2), B = 4p⁴−8p²+8p−16; (E) ⇒ (2δw − B)² = Disc with
+       Disc = 16p⁸ − 32p⁷ + 16p⁶ − 96p³ + 240p² − 192p + 192 = g² − (96p³ − 240p² + 192p − 192), g = 4p⁴ − 4p³.
+       For p ≥ 11: (g−1)² < Disc < g² (needs 8p⁴ − 104p³ + 240p² − 192p + 191 > 0), so Disc is not a square.
+       For p ∈ {3,5,7}: Disc = 45840, ..., not squares (explicit squeeze). [paper, checked p < 3000 directly]
+  Q2.4 k ≤ 15: δ ≥ 4p⁴ − 15A² ≥ p⁴/4 (p⁴ + 30p³ − 75p² + 60p − 60 ≥ p⁴), so w < 16 from δw < B < 4p⁴.
+       Reduce (E) mod p: A ≡ 1, δ ≡ B ≡ −k, so p ∣ k·w·(w−1) + 1 ≤ 3151. Finite check F1 over k ≤ 15,
+       w ≤ 15, p ∣ kw(w−1)+1: the ONLY solution of (E) is (k, w, p) = (13, 2, 3), i.e. q = 3 = p,
+       excluded by q ∤ p². (Brute force over p < 3200 agrees.)
+  Q2.5 assemble: conjecture for n = p²q. [open]
+  Note: the Diophantine system without q ∤ m has the spurious solution p = q = 3 (n = 27); keep q ≠ p.
 - Q3 family pqr: k ≤ 63, bounded by the same method; large finite check (~10⁵ (u,v) pairs). [open, maybe out of reach]
-- Summary theorem S: every counterexample n is odd, not a prime power, not a product of two distinct
-  primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [open, needs R6]
+- Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
+  primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [in progress: worker E, attempt 3]
 
 ## 3. Facts
 
