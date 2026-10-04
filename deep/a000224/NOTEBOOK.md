@@ -110,6 +110,8 @@ Stage 2 route B (general reduction, then more families):
 ## 3. Facts
 
 - Exhaustive n ∈ [2, 4·10⁹): 0 mismatches (`sweep/a000224/search.c`, `run_4e9.txt`, 5m20s).
+- Exhaustive n ∈ [4·10⁹, 10¹⁰): 0 mismatches (same `search.c`, copied to `deep/a000224/search.c`;
+  `run_4e9_7e9.txt`, `run_7e9_1e10.txt`, two background processes, about 15 min each). So every n < 10¹⁰ is checked.
 - n = m·q, m odd in [3, 10⁶], q prime ∤ m of any size: 0 hits (`sweep/a000224/family.py`).
 - Relaxed semiprime system 2 ≤ u < v ≤ 20000 (no primality): 0 solutions (`relaxed.c`).
 - a(p^k) recursion checked against the direct definition in stage 1 for n ≤ 3000 (`search.c`, `direct.py`).
