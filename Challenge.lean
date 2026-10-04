@@ -1,15 +1,10 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Mathoverflow.«75792»
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the intcomplexity target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+The least number of ones needed to write 3^n with addition and multiplication is 3n (Selfridge).
+The statement is taken with `type_of%` from `Mathoverflow75792.complexity_three_pow` at formal-conjectures commit df3f12d7bd06, so it is that statement by construction.
+`tests/statement/intcomplexity.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem complexity_of_three_pow : type_of% @Mathoverflow75792.complexity_three_pow := by
   sorry

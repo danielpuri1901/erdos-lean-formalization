@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Mathoverflow.«75792»
 
-open SimpleGraph
+/-! Solution for the intcomplexity target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem complexity_of_three_pow : type_of% @Mathoverflow75792.complexity_three_pow := by
   sorry
