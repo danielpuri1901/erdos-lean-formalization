@@ -153,5 +153,77 @@ int main(int argc,char**argv){
       printf("n=%d m=%d D=%d r=%d alpha=%d f=%d slack=%d\n",n,m,D,r,a,f, D<0?999:f-r-ceil3(D));
     }
   }
+
+  if(!strcmp(mode,"mix")){
+    // moves: edge toggle or degree-preserving double-edge swap; start: random caterpillar-like tree
+    n=atoi(argv[2]); long long iters=atoll(argv[3]); unsigned seed=atoi(argv[4]); srand(seed);
+    int bestEver=1000; long long evals=0; int minD=argc>5?atoi(argv[5]):4;
+    while(evals<iters){
+      memset(adj,0,sizeof adj);
+      int L=minD+1+rand()%(n-minD-1); // spine length
+      for(int i=1;i<L;i++){adj[i]|=1u<<(i-1);adj[i-1]|=1u<<i;}
+      for(int i=L;i<n;i++){int j=rand()%L; adj[i]|=1u<<j; adj[j]|=1u<<i;}
+      int extra=rand()%n;
+      for(int t=0;t<extra;t++){int a=rand()%n,b=rand()%n; if(a!=b && abs(a-b)<4){adj[a]|=1u<<b;adj[b]|=1u<<a;}}
+      int D=diam(); if(D<minD) continue;
+      int cur=forest()-residue()-ceil3(D);
+      for(int step=0;step<3000 && evals<iters;step++){
+        u32 save[32]; memcpy(save,adj,sizeof adj);
+        if(rand()%2){ int a=rand()%n,b=rand()%n; if(a==b) continue; adj[a]^=1u<<b; adj[b]^=1u<<a; }
+        else { int a=rand()%n,c=rand()%n; if(a==c||!adj[a]||!adj[c]) continue;
+          // pick b in N(a), d in N(c)
+          int nb=__builtin_popcount(adj[a]), nd=__builtin_popcount(adj[c]);
+          int ib=rand()%nb, id=rand()%nd; int b=-1,d=-1;
+          for(u32 t=adj[a];t;t&=t-1){ if(ib--==0){b=__builtin_ctz(t);break;} }
+          for(u32 t=adj[c];t;t&=t-1){ if(id--==0){d=__builtin_ctz(t);break;} }
+          if(b==c||d==a||b==d) continue;
+          if(adj[a]>>c&1 || adj[b]>>d&1) continue;
+          adj[a]&=~(1u<<b); adj[b]&=~(1u<<a); adj[c]&=~(1u<<d); adj[d]&=~(1u<<c);
+          adj[a]|=1u<<c; adj[c]|=1u<<a; adj[b]|=1u<<d; adj[d]|=1u<<b; }
+        int D2=diam();
+        if(D2<minD){ memcpy(adj,save,sizeof adj); continue; }
+        evals++;
+        int r=residue(), f=forest(); int s=f-r-ceil3(D2);
+        if(s<=cur || (rand()%1000)<5){ cur=s; } else memcpy(adj,save,sizeof adj);
+        if(s<bestEver){ bestEver=s;
+          printf("n=%d slack=%d D=%d r=%d f=%d a=%d edges:",n,s,D2,r,f,alpha());
+          for(int i=0;i<n;i++)for(int j=i+1;j<n;j++)if(adj[i]>>j&1)printf(" %d-%d",i,j);
+          printf("\n"); fflush(stdout);
+          if(s<0) return 0; }
+      }
+    }
+    printf("done n=%d evals=%lld bestslack=%d (D>=%d)\n",n,evals,bestEver,minD);
+  }
+  if(!strcmp(mode,"exh8")){
+    // labeled exhaustive n=8, part p of P (split by top bits of edge mask)
+    n=8; int P=atoi(argv[2]), part=atoi(argv[3]);
+    int ne=28; int pu[64],pv[64],e=0; for(int i=0;i<n;i++)for(int j=i+1;j<n;j++){pu[e]=i;pv[e]=j;e++;}
+    long long tot=0,fail=0,tight=0,tightD4=0;
+    for(long long m=part;m<(1LL<<ne);m+=P){
+      memset(adj,0,sizeof adj);
+      for(int b=0;b<ne;b++) if(m>>b&1){adj[pu[b]]|=1u<<pv[b];adj[pv[b]]|=1u<<pu[b];}
+      int D=diam(); if(D<0) continue; tot++;
+      int s=forest()-residue()-ceil3(D);
+      if(s<0){fail++; printf("FAIL m=%lld\n",m);} if(s==0){tight++; if(D>=4) tightD4++;}
+    }
+    printf("exh8 part %d/%d: connected=%lld fail=%lld tight=%lld tight_with_D>=4=%lld\n",part,P,tot,fail,tight,tightD4);
+  }
+
+  if(!strcmp(mode,"tight")){
+    int N=atoi(argv[2]);
+    for(n=4;n<=N;n++){
+      int ne=n*(n-1)/2; int pu[64],pv[64],e=0; for(int i=0;i<n;i++)for(int j=i+1;j<n;j++){pu[e]=i;pv[e]=j;e++;}
+      for(long long m=0;m<(1LL<<ne);m++){
+        memset(adj,0,sizeof adj);
+        for(int b=0;b<ne;b++) if(m>>b&1){adj[pu[b]]|=1u<<pv[b];adj[pv[b]]|=1u<<pu[b];}
+        int D=diam(); if(D<4) continue;
+        int r=residue(), f=forest(); if(f-r-ceil3(D)!=0) continue;
+        int d[32]; for(int i=0;i<n;i++) d[i]=__builtin_popcount(adj[i]);
+        for(int i=1;i<n;i++){int x=d[i],j=i;while(j>0&&d[j-1]<x){d[j]=d[j-1];j--;}d[j]=x;}
+        printf("n=%d D=%d r=%d a=%d f=%d m=%d deg=",n,D,r,alpha(),f,__builtin_popcountll(m));
+        for(int i=0;i<n;i++) printf("%d",d[i]); printf("\n");
+      }
+    }
+  }
   return 0;
 }

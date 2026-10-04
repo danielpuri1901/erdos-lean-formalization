@@ -68,3 +68,42 @@ slack := f - residue - ceil(diam/3); a counterexample needs slack < 0.
   so residue is far below alpha in these chains. This family also shows f - alpha ~ D/4,
   so the alpha-version fails by a linear amount.
 No counterexample found anywhere.
+
+## Phase C: proof attempt
+
+### Written argument for what is proved (diam <= 3 case, conditional on FMS)
+1. If s induces a forest then |s| <= f(G) (definition of sSup, set bounded by n).
+2. If I is independent and v is any vertex, then G[I ∪ {v}] has every edge incident to v,
+   so it is a subgraph of the star centred at v, hence acyclic.
+3. If G is connected with n >= 2 it has an edge uw; a maximum independent set I cannot contain
+   both u and w, so some v ∉ I; by 2, f(G) >= |I ∪ {v}| = α(G) + 1.
+4. If diam <= 3 then ceil(diam/3) <= 1, so residue <= α (Favaron–Mahéo–Saclé, from memory,
+   unverified, NOT proved in Lean) gives residue + ceil(diam/3) <= α + 1 <= f.
+
+Lemma status: 1, 2, 3 proved on paper and in Lean; 4's arithmetic proved in Lean;
+residue <= α is a hypothesis (a classical theorem, but not formalized here).
+
+Lean (`Solution.lean`, namespace `Wowii61Sweep`, builds with no sorry; axioms are only
+propext, Classical.choice, Quot.sound):
+- `card_le_largestInducedForestSize`
+- `induce_insert_indep_isAcyclic`
+- `indepNum_add_one_le` : connected, Nontrivial α → `G.indepNum + 1 ≤ G.largestInducedForestSize`
+- `conjecture61_of_diam_le_three` : connected, `residue G ≤ G.indepNum`, `G.diam ≤ 3` →
+  the inequality of `conjecture61`.
+
+### Why the general case is out of reach here
+- For diam >= 4 one needs f >= residue + 2, but f = α + 1 happens with diam = 4
+  (K_{2,m} plus pendants on both hubs, C4 plus two pendants), so the route through α is dead:
+  the residue must be shown to be strictly below α in such graphs.
+- Tested candidate induction lemmas on all labeled graphs (not nec. connected) n <= 7 (`lem.c`):
+  - L1: R(G) <= R(G - v) + 1 for every vertex v: 0 failures (n <= 7). Plausible, unknown.
+  - R(G - v) <= R(G): fails (1,455,937 (G,v) pairs at n = 7).
+  - Edge deletion: R(G) <= R(G - e) fails (557,676 at n = 7); R(G - e) <= R(G) + 1: 0 failures.
+  L1 combined with FMS gives R(G) <= α(G - S) + |S| for every S, but on C4+2 pendants
+  every choice of S still gives a bound >= 4 > R = 3, so L1 + FMS cannot reach the conjecture
+  either; the HH process itself has to be analysed.
+
+### Tight graphs with diam >= 4 (labeled, n <= 7, `./g61t tight 7`)
+All of them have diam exactly 4 (no tight graph with diam >= 5 for n <= 7); they have
+r = 3, f = 5 (n = 6, 7) or r = 4, f = 6 (n = 7), with α in {r, r + 1}.
+So diam = 4, 7, 10, ... (where ceil(diam/3) jumps) are where counterexamples should be looked for.
