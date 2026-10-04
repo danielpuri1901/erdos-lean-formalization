@@ -39,3 +39,8 @@
 
 - Full proof builds (`lake build Solution`, about 30 s for the pair modules on 4 cores);
   `#print axioms witt_design_exists` gives `propext, Classical.choice, Quot.sound`.
+- Submitted as `07e67ad` (`submit(witt24): ...`); `comparator/witt24` reported success
+  ("Your solution is okay!", checker run 37226893860), about 12 minutes after the push.
+- Memory: a clean `lake build Solution` peaks at about 7.3 GB RSS in one process, but about 6.6 GB of
+  that is file-backed mmap of the Mathlib oleans (Challenge.lean shows the same); anonymous memory
+  is 0.5 to 0.7 GB per module.
