@@ -1,3 +1,5 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.Paper.CatchUpConjecture
+
+/-! Sweep work for problem `catchup`. -/
 
 theorem solution_placeholder : True := trivial
