@@ -1,31 +1,36 @@
 result: partial
-claim: (1) LEAN, no sorry: conjecture 198a holds for every connected graph that is NOT self-centered
-  (some two vertices have different eccentricity). Also in Lean: Lemma 3 (if all distance layers around
-  some vertex are cliques then G has a Hamiltonian path) and Lemma 1 (two non-adjacent vertices at the
-  same distance from u give an induced bipartite set of size ecc(u)+2).
-  (2) PAPER only: the remaining self-centered case. Diameter 1: complete graph. Diameter >= 3: impossible
-  under the hypothesis (Theorems B3, B4, B5, elementary). Diameter 2: settled by the Chvátal–Erdős theorem
-  (used from memory; its classical proof is reproduced below). So on paper the conjecture is TRUE.
-lean: Solution.lean, namespace Sweep198a: `conjecture198a_of_not_selfCentered` (main special case),
-  `lemma1_bip`, `lemma3_hamPath`, `caseA_of_lemmas`, `caseA_of_lemma3`, `exists_walk_support_eq`,
-  `exists_parent`. `lake build Solution` passes; `#print axioms conjecture198a_of_not_selfCentered` gives
-  only [propext, Classical.choice, Quot.sound]. No sorry/admit/axiom/native_decide in the file.
+claim: (1) LEAN, no sorry: conjecture 198a holds for every connected graph EXCEPT possibly self-centered
+  graphs (all vertices have the same eccentricity) whose common eccentricity is 2 or 3.
+  (Theorem A: not self-centered; ecc 1: complete graph; B3: self-centered with ecc >= 5 never satisfies the
+  hypothesis; B5: same for ecc 4.)
+  (2) PAPER only: ecc 3 never satisfies the hypothesis (Theorem B4, elementary, below); ecc 2 is settled by
+  the Chvátal–Erdős theorem (Theorem B2; used from memory, classical proof reproduced below).
+  So on paper the conjecture is TRUE; in Lean it is reduced to self-centered graphs of eccentricity 2 or 3.
+lean: Solution.lean, namespace Sweep198a. Main: `conjecture198a_unless_selfCentered_ecc_two_or_three`
+  (same hypotheses as conjecture198a plus ¬(self-centered ∧ ecc ∈ [2,3])). Also
+  `conjecture198a_of_not_selfCentered`, `conjecture198a_unless_selfCentered_ecc_two_to_four`,
+  `no_selfCentered_of_diam_ge_five`, `no_selfCentered_of_diam_four`, `lemma1_bip`, `two_layers_bip`,
+  `card_le_b_of_layer_indep`, `lemma3_hamPath`, `ancestor`, `exists_parent`, `exists_walk_support_eq`,
+  `ecc_contra`, `cl_of_selfCentered`, `b_le_of_selfCentered`, `caseA_of_lemmas`, `caseA_of_lemma3`.
+  `lake build Solution` passes; `#print axioms` on the main theorem: [propext, Classical.choice, Quot.sound].
+  No sorry/admit/axiom/native_decide/implemented_by/unsafe in the file.
 computed: exhaustive over ALL labeled graphs n=2..8 (C, check.c): 0 counterexamples; 4,351,887 labeled
   graphs on 8 vertices satisfy the hypothesis. Claim A (all layers from a peripheral vertex are cliques
   when not self-centered) 0 violations n<=8. Self-centered D>=3 graphs: layer α-sum lemma 0 failures n<=8
   (layer.c); random G(n,p) n=10..16 (sc.c) none with b<=D+2; D=2 sanity (d2.c) n<=7.
-next idea: Formalize the self-centered case. (a) Generalize `lemma1_bip` to two non-clique layers
-  (b >= ecc(u)+3), and to the 6-vertex sets used in B4 (I-a set and the induced C_6). (b) Prove the
-  distance bounds of Lemma 4 from `exists_parent`-style ancestor chains, then B3, B4, B5: all short
-  dist arguments. (c) D=2: formalize Chvátal–Erdős for H = G + universal vertex (longest-cycle argument),
-  or find a direct layered Hamiltonian-path argument for self-centered diameter-2 graphs with b <= 4.
+next idea: Finish the Lean proof. (a) B4 (ecc 3): needs two bipartite sets that are NOT layer-independent:
+  the 6-set {u,p,q,x,c,c'} (bipartite because c or c' is pendant) and the induced 6-cycle of (II.3);
+  prove a small lemma "an explicit 2-colouring of S gives |S| <= b G" and colour them by hand; the distance
+  steps reuse `ancestor`, `ecc_contra`, and the "every root has one non-clique layer" pattern of
+  `cl_of_selfCentered` (for ecc 3 the bad layer index is 1 or 2, not forced to be 2). (b) ecc 2: formalize
+  Chvátal–Erdős for G + universal vertex (longest-cycle argument), or find a direct layered argument.
 dead ends: blind random G(n,p) search never hits the hypothesis for D>=3 (b is far too large); random
   graphs are useless as counterexample candidates. Simulated annealing toward self-centered D in {3,4}
-  with small layer sums never succeeded (and B4/B5 now explain why).
-confidence: high for the Lean part (it builds, standard axioms only, and its statement copies the
-  hypotheses of conjecture198a plus "not self-centered"); medium for the paper part, because each step is
-  short and was re-read adversarially once and all intermediate claims were confirmed exhaustively for
-  n<=8, but nobody else has checked it and Chvátal–Erdős is used from memory.
+  with small layer sums never succeeded (B4/B5 explain why).
+confidence: high for the Lean part (it builds, standard axioms only, and its hypotheses are those of
+  conjecture198a plus the explicit exclusion); medium for the paper-only part (B4, B2): short, re-read
+  once adversarially and consistent with exhaustive checks for n<=8, but unchecked by anyone else, and
+  B2 relies on Chvátal–Erdős from memory.
 
 # wowii198a sweep notes
 
@@ -175,7 +180,7 @@ c_i -(K)- c_j -(backwards)- c_i^+ - c_j^+ -(forwards)- c_i. So {v} ∪ {c^+} is 
 |N|+1 >= κ+1 > α. Contradiction. Applied in B2 to H = G + universal vertex.
 
 ## Decisions
-- Lean: I formalized Theorem A (Lemma 1, Lemma 3, and the averaging step) because it was short enough
-  to finish inside the box. I left Theorems B2–B5 on paper: they need several more distance lemmas, and
-  Chvátal–Erdős, which do not fit in the time left.
+- Lean: formalized Theorem A, the ecc-1 case, B3 and B5 inside the box. I left B4 (ecc 3) and B2 (ecc 2)
+  on paper at minute ~31: B4 needs two new non-layered bipartite constructions and B2 needs Chvátal–Erdős;
+  I judged neither safe to finish before minute 50.
 - Counts are for labeled graphs; I did not reproduce the iso-class count 516 (labeled exhaustive is stronger).
