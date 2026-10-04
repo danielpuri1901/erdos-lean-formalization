@@ -116,3 +116,52 @@ N(s_μ) = 19/25 (never both 0). Hence no such 2-eigenvalue non-commuting model e
 characteristic (numfield.py; block2.py confirms numerically for all p < 200 with q split-root in F_p).
 Not covered: λ² = −1 (e.g. char 5, λ = 2), non-semisimple B, several interacting eigenvalue pairs,
 coefficient rings that are not fields (Z_{p^k}).
+
+### Correction and completion of the non-commuting analysis (paper proof, computer-checked ingredients)
+
+Λ = Z⟨A, B, B⁻¹⟩ / (g1, g2). Rewriting rules valid in Λ (each derived by one multiplication by B⁻¹):
+  AB = B⁻² − B⁻¹A,  AB⁻¹ = B⁻² − BA,  A² = −B⁻²A − B.
+rewrite.py (independent code, Laurent polynomials over Q) confirms:
+  (★)  (AA)B − A(AB) = −B⁻⁴ q(B) (B(B²+1)A − 1), so q(B)(B(B²+1)A − 1) = 0, q = t³ − t − 1;
+  (★★) B(B²+1)·(★')·A + (1 + B + B⁻¹)·(★') = −B⁻¹ q(B) o(B), so q(B) o(B) = 0,
+       where (★') = −q + qB(B²+1)A and o = t⁸ + 2t⁶ + t⁴ + t² + t + 1 (the commutative octic).
+Norms in Z[λ], λ³ = λ + 1, μ = −1/λ (numfield.py, norms.py):
+  N(o(λ)) = 11, N(o(μ)) = 19, N(q(μ)) = −5, N(λ² + 1) = 5, disc(q) = −23.
+exceptional.py lists, for p ∈ {5, 11, 19, 23}, each q-root λ ∈ F̄_p and q'(λ), o(λ), q(μ), o(μ), λ²+1.
+
+Theorem (paper). Let V be a finite-dimensional vector space over a field F, A, B ∈ End(V), c ∈ V,
+and x◇y = Ax + By + c satisfy 677. Then AB = BA, and hence (by the Lean module theorem with
+R = F[A, B] commutative) the magma satisfies 255.
+Proof. B is invertible (B(A + BAB) = I). Pass to F̄ and split V = ⊕ V_ν (generalized eigenspaces of B).
+(1) From AB + B⁻¹A = B⁻² (block form, Sylvester): the block A_{νλ}: V_λ → V_ν is 0 unless ν = λ or
+    νλ = −1; if λ² ≠ −1 then A_{λλ} = (B_λ³ + B_λ)⁻¹, a polynomial in B_λ.
+(2) Let λ be an eigenvalue with q(λ) = 0 and μ = −1/λ.
+    (a) λ² = −1 forces char 5, λ = 2 (q(λ) = −2λ − 1 when λ² = −1). Then μ = λ, so V_2 is
+        A-invariant; λ is a simple root of q·o (q'(2) = 1, o(2) = 2 mod 5), so by (★★) B = 2 on V_2;
+        g1 on V_2 reads 10A = I, impossible. So V_2 = 0.
+    (b) μ not an eigenvalue: V_λ is A-invariant and A commutes with B on it by (1).
+    (c) μ an eigenvalue: q(μ)o(μ) = 0 by (★★). q(μ) = 0 only in char 5 (where it is case (a));
+        o(μ) = 0 only in char 19 (λ = 6, μ = 3). There λ is a simple root of q·o, so B = λ on V_λ;
+        (1) gives A_λλ = α, A_μμ = (B_μ³+B_μ)⁻¹, F := A_{μλ} has image in ker(B_μ − μ);
+        the (μ,λ) block of g2 gives (1 + μ²(α + α'))F = −q(μ)F = 0 so F = 0; then the (λ,λ) block of g2
+        gives c_λ := α + λ²α² + λ³ = 0, but c_λ = −λ² s_λ with N(s_λ) = −11/25, nonzero mod 19.
+        So this case is empty.
+(3) So V = (⊕ over q-root eigenvalues V_λ) ⊕ W, all A-invariant, A commutes with B on each V_λ,
+    and q(B) is invertible on W, where (★) gives B(B²+1)A = I, so A = (B³+B)⁻¹ commutes with B.
+Status: each step proved on paper; the norm values and exceptional-prime table are computer output;
+(★), (★★) checked by rewrite.py. Not formalized. Confidence medium-high.
+Not covered: affine models on abelian groups that are not elementary abelian (e.g. Z_{p²}^k) with
+non-commuting A, B (commuting ones are covered by the Lean theorem).
+
+Search support: char-5 Jordan blocks at eigenvalue 2 (char5.py): only even block sizes admit a
+solution of g1; for k ≤ 4 none satisfies g2 (as the proof predicts).
+
+## Phase B (cont.): cocycle extensions (ext.py, extc.c, batch.py)
+
+(x,a)◇(y,b) = (x◇y, αa + βb + θ(x,y)) over a 677 base M, fiber F_p, (α,β) a commutative linear
+677 solution mod p, θ: M×M → F_p arbitrary. 677 is linear in θ; 255 failure is a linear functional.
+- Level 1: bases = all linear Z_q models, q ∈ {5,7,11,13}; fibers = all (p, α, β), p ∈ {5,7,11,13}:
+  72 cases (Python) and the same in C; cocycle spaces often exceed coboundaries (genuinely new
+  677 models, e.g. order 35, 55, 77, 65), but every cocycle satisfies 255.
+- Level 2: random non-trivial extensions of order ≤ 70 as bases, extended again by every fiber:
+  every cocycle satisfies 255 (see batch.log).
