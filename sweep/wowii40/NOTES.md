@@ -67,3 +67,39 @@ Results:
   So no counterexample on 10 vertices.
 - n=10 slack ≤ 2 list, complete: from 133,520 n=9 parents of slack ≤ 4: 115,154 graphs
   (slack 1: 4960, slack 2: 110194).
+- n=11, complete: 115,154 parents (n=10, slack ≤ 2) extended in all 1023 ways (23.7M candidates
+  passed the Δf filter and were tested exactly): 0 graphs with slack ≤ 0.
+  So no counterexample on 11 vertices. With the problem file's n ≤ 9 and my n ≤ 9 re-check:
+  **no counterexample on ≤ 11 vertices** (computer, exhaustive up to isomorphism).
+- n = 12 exhaustive was not attempted: it needs the complete slack ≤ 4 list at n = 10 (millions of
+  graphs) and then about 10^9 extension tests. Decision: skip, use heuristic searches instead.
+
+## Phase C: proof attempt
+
+Reformulation: the claim is p ≤ 2f − b − 1.
+
+Lemmas:
+- L1 p ≤ n − 1 for connected n ≥ 2 (one edge plus singletons). Proved on paper and in Lean.
+- L2 b ≤ n. Proved, Lean.
+- L3 f = n when G is acyclic. Proved, Lean (only f ≥ n is needed).
+- L4 an independent set Z plus one vertex w induces a forest (all edges contain w; after deleting an
+  edge wx, x is isolated, so every edge is a bridge). Proved, Lean.
+- L5 b + 2 ≤ 2f for connected n ≥ 2: take a largest induced bipartite set, its larger colour class Z
+  (b ≤ 2|Z|), a vertex w ∉ Z (an edge cannot lie inside Z), and use L4. Proved, Lean.
+  Sharper on paper: 2f − b − 1 ≥ |Z| − |Z'| + 1 where Z' is the other class.
+- L6 p ≤ α (Gallai–Milgram). From memory, unverified; not formalised.
+- L7 f ≥ α + 1 (L4 applied to a maximum independent set). Proved on paper.
+- L8 (paper, conditional on L6): the claim holds whenever b ≤ 2f − α − 1; in particular whenever
+  b = f (then p ≤ α ≤ f − 1 = 2f − b − 1). So a counterexample needs b > f, indeed b − f > f − α − 1.
+- L9 the general case: unknown. I found no way to turn a large induced bipartite set into a path
+  cover with few paths; the examples K_{n,n}, K_{a,a,a} (slack 1) show L5 is sharp and leave no room.
+
+Lean (Solution.lean, namespace Wowii40Sweep, builds, no sorry, axioms propext/Classical.choice/
+Quot.sound only):
+- `conjecture40_of_isAcyclic`: the exact conclusion of `conjecture40` under the extra hypothesis
+  `G.IsAcyclic` (trees).
+- `conjecture40_of_pathCoverNumber_le_one`: the exact conclusion under `pathCoverNumber G ≤ 1`
+  (graphs with a Hamiltonian path).
+- helpers: `edgeCover_isPathCover`, `edgeCover_card`, `pathCoverNumber_le_card_sub_one`,
+  `largestInducedBipartiteSubgraphSize_le_card`, `card_le_largestInducedForestSize`, `exists_adj`,
+  `induce_insert_isAcyclic`, `b_add_two_le` (b + 2 ≤ 2f).
