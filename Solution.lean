@@ -390,4 +390,65 @@ theorem radius_toNat_add_two_le_path [Nontrivial α] (G : SimpleGraph α) (h : G
   simp only [List.length_cons, hl] at h4
   omega
 
+omit [DecidableEq α] in
+/-- Step 15. In a complete graph every neighbourhood is a clique, so `l(G) ≤ 1`. -/
+lemma l_le_one_of_complete [Nonempty α] (G : SimpleGraph α)
+    (hcomp : ∀ a b, a ≠ b → G.Adj a b) : l G ≤ 1 := by
+  have hn : (0 : ℝ) < Fintype.card α := by exact_mod_cast Fintype.card_pos
+  have hsum : ∑ v ∈ Finset.univ, indepNeighbors G v ≤ ∑ _v ∈ (Finset.univ : Finset α), (1 : ℝ) := by
+    apply Finset.sum_le_sum
+    intro v _
+    unfold indepNeighbors
+    exact_mod_cast indepNeighborsCard_le_one v (fun x y _ _ hxy => hcomp x y hxy)
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one] at hsum
+  show (∑ v ∈ Finset.univ, indepNeighbors G v) / (Fintype.card α : ℝ) ≤ 1
+  rw [div_le_one hn]
+  exact hsum
+
+/-- Step 16. Conjecture 133 holds for every connected graph with `l(G) ≤ 2`
+(for example every tree, every cycle, every graph with at most as many edges as vertices,
+every graph in which each neighbourhood has independence number at most 2). -/
+theorem conjecture133_of_l_le_two [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (hl : l G ≤ 2) :
+    let rad := G.radius.toNat
+    let hasC4 := ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a
+    let cC4 : ℕ := if hasC4 then 0 else 1
+    (rad : ℝ) + l G ^ cC4 ≤ (path G : ℝ) := by
+  intro rad hasC4 cC4
+  by_cases hC4 : hasC4
+  · exact conjecture133_of_hasC4 G h hC4
+  have hcC4 : cC4 = 1 := if_neg hC4
+  rw [hcC4, pow_one]
+  by_cases hcomp : ∀ a b, a ≠ b → G.Adj a b
+  · have hl1 := l_le_one_of_complete G hcomp
+    have hp : ((rad + 1 : ℕ) : ℝ) ≤ (path G : ℝ) := by
+      exact_mod_cast radius_toNat_add_one_le_path G h
+    push_cast at hp
+    linarith
+  · push Not at hcomp
+    obtain ⟨a, b, hab, hnadj⟩ := hcomp
+    -- the first three vertices of a shortest `a`-`b` walk: `q_1` has non-adjacent neighbours
+    obtain ⟨q, hq⟩ := h.exists_walk_length_eq_dist a b
+    have hq2 : 2 ≤ q.length := by
+      have h0 : q.length ≠ 0 := fun h0 => hab (q.eq_of_length_eq_zero h0)
+      have h1 : q.length ≠ 1 := by
+        intro h1
+        apply hnadj
+        have := q.adj_getVert_succ (i := 0) (by omega)
+        have hb : q.getVert 1 = b := by rw [← h1]; exact q.getVert_length
+        rwa [hb, Walk.getVert_zero] at this
+      omega
+    have hA : G.Adj (q.getVert 1) (q.getVert 0) := (q.adj_getVert_succ (i := 0) (by omega)).symm
+    have hB : G.Adj (q.getVert 1) (q.getVert 2) := q.adj_getVert_succ (i := 1) (by omega)
+    have hne : q.getVert 0 ≠ q.getVert 2 := by
+      intro hcon
+      have := geodesic_shortcut q hq (i := 0) (j := 2) hq2 (Walk.nil.copy rfl hcon)
+      simp at this
+    have hnA : ¬ G.Adj (q.getVert 0) (q.getVert 2) := geodesic_not_adj q hq (by omega) hq2
+    have hp := radius_toNat_add_two_le_path G h hC4 _ _ _ hA hB hne hnA
+    have hpR : ((rad + 2 : ℕ) : ℝ) ≤ (path G : ℝ) := by exact_mod_cast hp
+    push_cast at hpR
+    linarith
+
 end Wowii133Sweep
