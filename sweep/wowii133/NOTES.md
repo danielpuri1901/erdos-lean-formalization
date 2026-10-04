@@ -14,10 +14,12 @@ lean: Solution.lean, namespace Wowii133Sweep, builds with no sorry (axioms: prop
   conjecture133_of_minl, conjecture133_of_const_l, radius_toNat_add_one_le_path,
   diam_add_one_le_path, radius_toNat_add_two_le_path, add_two_le_path_of_minl,
   indepNeighborsCard_le_of_cover, isInducedPath_support_of_length_eq_dist, isInducedPath_cons,
-  geodesic_shortcut.
+  geodesic_shortcut; fidelity_hasC4, fidelity_l_le_two, fidelity_reduction state their results
+  with type `type_of% (conjecture133 G h)`, so the restatement is literally the imported statement.
 computed: EXHAUSTIVE (exhaust.c, canonical augmentation, counts 1,2,3,8,19 for n=2..6 match an
   independent brute force): all connected C4-free graphs n=2..11 (n=9: 740, n=10: 3389,
-  n=11: 18502): 0 failures; ties only K2, K3, C5, C6, Petersen. (n=12: see Phase D line below.)
+  n=11: 18502, n=12: 120221): 0 failures; ties only K2, K3, C5, C6 and one graph at n=10, which
+  is the Petersen graph (a known tie). n=13: see the Phase D note at the end.
   HEURISTIC: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
   q in {2,3,4,5,7,8,9,11,13}; PG(2,q) incidence graphs q in {2,3,4,5,7,8,9}; generalized Petersen
   GP(m,k) 5<=m<=15; all 548 connected C4-free circulants C_n(S), n<=60, |S|<=5; theta graphs
@@ -168,3 +170,22 @@ internally disjoint paths of length 3, n = 2k+2: C4-free, rad 3, path 6, l = 3k/
 margin path - rad - l = 3/(k+1) -> 0 (k = 2 is C6, margin 0). theta(4,k), theta(5,k): large margins.
 Annealing restricted to l(G) > 2 (`anneal3`, n=11..24) converged to theta(3,k)-like graphs
 (best margins: n=14 0.4286, n=12 0.5) or worse; Petersen (n=10) is the only exact tie with l > 2.
+
+
+## Phase D notes (09:36-09:45 UTC)
+
+`exhaust.c`: connected C4-free graphs by adding a vertex with neighbourhood S (valid iff no vertex
+of G has two neighbours in S) to connected C4-free graphs on n-1 vertices; dedup by an exact
+canonical form (minimum adjacency code over permutations preserving an isomorphism-invariant
+ordered partition; an imperfect invariant only costs time, never completeness). Counts 1,1,2,3,8,19
+for n=1..6... (n=2..6 cross-checked against `bruteforce_count.py`), then 57, 186, 740, 3389, 18502,
+120221 for n=7..12. Each graph checked exactly (`n*(path-rad) >= sum_v l(v)` in integers, general
+brute-force indepNum, exact DFS path): 0 failures n<=12. Run time n=12: about 5 minutes.
+`exhaust13.c`: final level n=13 without dedup (every extension checked, redundantly), split over
+4 processes by parent index; skips graphs with sum_v l(v) <= 2n (covered by the Lean theorem
+`conjecture133_of_l_le_two`), and for the rest searches an induced path with
+`rad + ceil(sum l / n)` vertices. Sanity: making the test non-strict flags exactly the Petersen
+graph at n=10.
+
+Greedy theorem formalized at 09:38-09:40 (`add_two_le_path_of_minl`, ~110 lines, compiled on the
+first try once the counting lemma `indepNeighborsCard_le_of_cover` was isolated).

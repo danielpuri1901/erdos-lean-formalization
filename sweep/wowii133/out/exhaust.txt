@@ -8,3 +8,4 @@ n=8 graphs=186 checked=186 fails=0 tight=0
 n=9 graphs=740 checked=740 fails=0 tight=0
 n=10 graphs=3389 checked=3389 fails=0 tight=1
 n=11 graphs=18502 checked=18502 fails=0 tight=0
+n=12 graphs=120221 checked=120221 fails=0 tight=0
