@@ -68,9 +68,10 @@ Stage 2 route B (general reduction, then more families):
 - Q2 family n = p²q, p ≠ q odd primes. m = p², 2A = p² − p + 2 (from R4b, j = 1), w = (q+1)/2 ≥ 2.
   Q1 gives k with δ := 4p⁴ − kA² ≥ 1, B := 4p⁴ − kA, (E) δw² + (p⁴−1) = Bw, δw < B. Route, every step
   checked numerically in `deep/a000224/q2_analysis.py` (decision 1791110400):
-  Q2.0 `2 * a (p^2) = p^2 - p + 2` from `a_prime_pow_even` (j = 1): 2(p+1)a = p³+p+2 = (p+1)(p²−p+2). [worker H]
-  Q2.1 k ≤ 20: 21(p²−p+2)² ≥ 16p⁴ for p ≥ 3 (5p⁴−42p³+105p²−84p+84 ≥ 0). [paper, checked p < 5000]
-  Q2.2 k ≥ 17 ⇒ p ≤ 31 (17(p²−p+2)² < 16p⁴ fails for p ≥ 32), and then w ≤ B/δ ≤ 1515; finite check
+  Q2.0 `2 * a (p^2) = p^2 - p + 2` from `a_prime_pow_even` (j = 1): 2(p+1)a = p³+p+2 = (p+1)(p²−p+2).
+  [proved in Lean: `A224Deep.two_mul_a_sq`, Solution/A224/P2Q.lean]
+  Q2.1 k ≤ 20: 21(p²−p+2)² ≥ 16p⁴ for p ≥ 3 (5p⁴−42p³+105p²−84p+84 ≥ 0). [proved in Lean: `q2_k_le_20`]
+  Q2.2 k ≥ 17 ⇒ p ≤ 31 (17(p²−p+2)² < 16p⁴ fails for p ≥ 32) [`q2_p_le_31`], and then w ≤ B/δ ≤ 1515; finite check
        F2 over p ≤ 31, 17 ≤ k ≤ 20, w ≤ B/δ: (E) never holds (20 cases, max B/δ = 1515 at p = 31, k = 17).
        [F2 proved in Lean: `A224Deep.q2ChkLarge_all` (decide +kernel, 1 s), unpacked as `q2_large`, Solution/A224/P2QCheck.lean]
   Q2.3 k = 16: δ = 4(p−2)(2p²−p+2), B = 4p⁴−8p²+8p−16; (E) ⇒ (2δw − B)² = Disc with
@@ -78,12 +79,13 @@ Stage 2 route B (general reduction, then more families):
        For p ≥ 11: (g−1)² < Disc < g² (needs 8p⁴ − 104p³ + 240p² − 192p + 191 > 0), so Disc is not a square.
        For p ∈ {3,5,7}: Disc = 45840, ..., not squares (explicit squeeze). [proved in Lean: `A224Deep.q2_k16`,
        Solution/A224/P2QAlg.lean, with helper `q2_no_sq_between`]
-  Q2.4 k ≤ 15: δ ≥ 4p⁴ − 15A² ≥ p⁴/4 (p⁴ + 30p³ − 75p² + 60p − 60 ≥ p⁴), so w < 16 from δw < B < 4p⁴.
+  Q2.4 k ≤ 15: δ ≥ 4p⁴ − 15A² ≥ p⁴/4 (p⁴ + 30p³ − 75p² + 60p − 60 ≥ p⁴), so w < 16 from δw < B < 4p⁴ [`q2_w_le_15`].
        Reduce (E) mod p: A ≡ 1, δ ≡ B ≡ −k, so p ∣ k·w·(w−1) + 1 ≤ 3151. Finite check F1 over k ≤ 15,
        w ≤ 15, p ∣ kw(w−1)+1: the ONLY solution of (E) is (k, w, p) = (13, 2, 3), i.e. q = 3 = p,
        excluded by q ∤ p². (Brute force over p < 3200 agrees.) [mod-p step proved in Lean: `A224Deep.q2_dvd`;
        F1 proved in Lean: `q2ChkSmall_all` (decide +kernel, 42 s), unpacked as `q2_small`]
-  Q2.5 assemble: conjecture for n = p²q. [worker H, attempt 5]
+  Q2.5 assemble: conjecture for n = p²q. [proved in Lean: `A224Deep.not_modEq_sq_mul_prime`,
+  `A224Deep.conjecture_sq_mul_prime` (p ≠ q odd primes), Solution/A224/P2Q.lean]
   Note: the Diophantine system without q ∤ m has the spurious solution p = q = 3 (n = 27); keep q ≠ p.
 - Q3 family pqr (2 ≤ u < v < w, m = (2u−1)(2v−1), A = uv, r = 2w−1 the simple prime): k ≤ 63. Analysis
   (decision 1791110900, not attempted in Lean): with ρ = 4m²/A² = 4(2−1/u)²(2−1/v)², k ≤ ρ − 1 gives
@@ -94,6 +96,13 @@ Stage 2 route B (general reduction, then more families):
   pair of simultaneous Pell-type conditions in s = v+w, x = vw. (u = 32 and u = 128 give p = 63, 255, not
   prime.) Computationally the corner is covered: famq (m ≤ 10⁷) includes pq = 127·q for q ≤ 65025.
   Verdict: pqr is out of reach for this run; the p = 127 corner is the obstruction to record.
+- Q4 (idea, not attempted; decision 1791111600) uniform family p^e q, X = p^e, 2(p+1)A = pX + c with
+  c = p+2 (e even) or 2p+1 (e odd) (R4). From n² − 1 = k·a(a−1): kA²w² − kAw + 1 = X²(2w−1)²; multiplying by
+  4(p+1)² and reducing mod X gives X ∣ F := k c² w² − 2k(p+1)c w + 4(p+1)² = k(cw − p − 1)² + (4−k)(p+1)²,
+  and F ≠ 0 for k ≠ 4 (else k(k−4) would be a square), F > 0 for k = 4. So p^e ≤ F: once w is bounded, e is
+  bounded. k ≤ 15 ⇒ w ≤ 15 uniformly; k ≥ 17 ⇒ p ≤ 32 and (for e ≥ 3) w ≲ 400; k = 16 ⇒ F = 4(2cw−p−1)² so
+  p^⌈e/2⌉ ≤ 2cw ≈ 2p², i.e. e ≤ 4 (e ≤ 7 for p ≤ 11): only the discriminant squeeze for e ∈ {3, 4} remains
+  as genuinely new algebra. Estimated 5–6 worker slots; deferred behind p³q.
 - Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
   primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [proved in Lean:
   `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean]
@@ -145,6 +154,15 @@ Stage 2 route B (general reduction, then more families):
    no Lean.ofReduceBool. Worker F timing: q2ChkSmall_all 42 s kernel, q2ChkLarge_all 1 s. Worker G: `hw` unused
    in q2_k16 (the k = 16 equation has no solution for any w). Minutes: 4 + 4 (workers), 4 (manager).
    Wall clock so far: 34 min. Next: H assembles Q2.0, Q2.1, Q2.2, Q2.4 bounds and the theorem for n = p²q.
+5. Item Q2.5 assembly (worker H): proved-in-lean, first build passed. File: Solution/A224/P2Q.lean. Manager check:
+   imported into Solution.lean, `lake build Solution` passes, no sorry/admit/axiom/native_decide,
+   `#print axioms conjecture_sq_mul_prime`: propext, Classical.choice, Quot.sound. Minutes: 2 (worker), 3 (manager).
+   Wall clock so far: 42 min. The family p²q is done. Decision: next family p³q by the same route
+   (numerics in `deep/a000224/q3cube_analysis.py`: k ≤ 24; k ≥ 17 ⇒ p ≤ 32 and max B/δ = 336; k ≤ 15 ⇒ w ≤ 15,
+   mod p gives p ∣ kw(w−2)+4 (A ≡ (p+1)/2 mod p), finite check has NO solution at all; k = 16 ⇒ discriminant squeeze
+   with g = 4p⁶ − 4p⁵ + 4p⁴ − 4p³, isqrt(Disc) = g − 1 for large p). Workers I (summary + p²q clause) and
+   J (p³q finite checks) run now; then K (p³q algebra) and L (assembly). Longer-term idea recorded in section 2:
+   a uniform treatment of p^e q via X ∣ F (see Q4).
 
 ## 5. Dead ends
 
