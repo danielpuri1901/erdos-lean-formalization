@@ -174,7 +174,7 @@ pair class: a set T of at least m/3 matched vertices, from distinct pairs, with 
 disjoint U-neighbourhoods. D = T plus (U minus N(T)) is independent of size
 |T| + 4m/3 - 2|T| <= m, but it may miss pair vertices whose two U-neighbours are both in
 N(T); each such pair costs one more vertex. So the argument is incomplete (plausible, not
-proved). Computation shows i = m - 1 or m - 2 for random members and i <= m always.
+proved). Computation: i = m - 1 or m - 2 for random members, and i <= m in every member evaluated.
 
 ### C5. SAT view of the extremal family (r = 3), found during Phase B
 In the extremal family, an independent dominating set made of one endpoint from every pair is
@@ -185,8 +185,9 @@ Conversely every such formula gives a cubic graph in the family. So:
 - A counterexample in the family needs (1) F unsatisfiable, and (2) no mixed independent
   dominating set of size <= m (k pairs left out, at most k clause vertices used, and both
   literal vertices of every left-out pair adjacent to a used clause vertex).
-- Leaving out a single pair never works when F is unsatisfiable (checked on paper: it costs
-  at least 2 clause vertices), so (2) is a real but weaker extra condition.
+- Leaving out a single pair never gives a set of size <= m (on paper: both literal vertices
+  of the pair need a used clause vertex, and no clause holds both, so at least 2 clause vertices
+  are used). Leaving out k >= 2 pairs can work, so (2) is a real extra condition.
 - A random formula of this kind has about 2^m (7/8)^(4m/3) = 1.673^m satisfying assignments,
   so unsatisfiable ones are rare and structured.
 - The near miss `near22.txt` is such a formula on m = 12 variables with exactly 1 satisfying
