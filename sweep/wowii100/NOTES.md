@@ -1,3 +1,28 @@
+```
+result: solved
+claim: For every finite type V with DecidableEq and Nontrivial (n >= 2) and every connected
+  simple graph G on V: (α(G) : ℝ) ≤ ⌈(maxL + (1/2) * degreeL2Norm Gᶜ) / 2⌉, i.e. exactly the
+  statement of WrittenOnTheWallII.GraphConjecture100.conjecture100 (WOWII conjecture 100 is true).
+lean: Solution.lean: wowii100_holds (the theorem), wowii100_matches (its type is
+  `type_of% @WrittenOnTheWallII.GraphConjecture100.conjecture100.{u}`, so the statement match is
+  checked by Lean); helper lemmas Wowii100.poly, Wowii100.algebra, Wowii100.final.
+  No sorry. `#print axioms` on both: [propext, Classical.choice, Quot.sound].
+computed: (only supporting evidence, not used by the proof) check.py: all 27,475 labelled
+  connected graphs on 2..6 vertices and 20,000 random connected graphs on 7..16 vertices satisfy
+  the conjecture and every intermediate inequality of the proof; the polynomial lemma was
+  checked in Python for 1 <= m <= A < 3000 (equality only at A = 4, m = 2). Inside the Lean
+  proof the finite range 1 <= m <= A <= 15 of the polynomial lemma is closed by
+  interval_cases + omega (kernel-checked, no native_decide).
+next idea: none needed for this problem. The same counting (a maximum independent set I has
+  complement degrees >= α-1, plus double counting of non-edges between I and V \ I) may settle
+  other WOWII bounds that use length(Gᶜ) = degreeL2Norm Gᶜ; those are worth a quick look, since
+  sqrt(sum of squared complement degrees) is about α^{3/2} or more and beats linear targets.
+dead ends: none; no counterexample search beyond the checks above (decided in Phase B to go
+  straight to the proof once the paper argument covered all graphs).
+confidence: high because the whole statement is proved in Lean with no sorry and only the
+  standard axioms, and wowii100_matches makes Lean check that the proved type is the imported one.
+```
+
 # wowii100 notes
 
 start: 1791105214 (date -u +%s)
