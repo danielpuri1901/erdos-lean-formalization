@@ -14,6 +14,14 @@ def chi (d : ℕ) : ℤ := ZMod.χ₄ (d : ZMod 4)
 lemma chi_mul (a b : ℕ) : chi (a * b) = chi a * chi b := by
   simp [chi, Nat.cast_mul, map_mul]
 
+lemma chi_eq (d : ℕ) : chi d = if d % 2 = 0 then 0 else if d % 4 = 1 then 1 else -1 :=
+  ZMod.χ₄_nat_eq_if_mod_four d
+
+lemma chi_four (i : ℕ) :
+    chi (4 * i) = 0 ∧ chi (4 * i + 1) = 1 ∧ chi (4 * i + 2) = 0 ∧ chi (4 * i + 3) = -1 := by
+  simp only [chi_eq]
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> split_ifs <;> omega
+
 /-- `D n = Σ_{d ∣ n} χ₄ d`. -/
 def D (n : ℕ) : ℤ := ∑ d ∈ n.divisors, chi d
 
@@ -75,7 +83,7 @@ lemma S_eq (n K : ℕ) (h : n ≤ K) :
     {z : GaussianInt | z.norm = n} = (fun z : ℤ × ℤ => (⟨z.1, z.2⟩ : GaussianInt)) ''
       ↑((box K).filter (fun z => z.1 ^ 2 + z.2 ^ 2 = (n : ℤ))) := by
   ext w
-  simp only [Set.mem_setOf_eq, Set.mem_image, Finset.coe_filter, box, Finset.mem_product,
+  simp only [Set.mem_ofPred_eq, Set.mem_image, Finset.coe_filter, box, Finset.mem_product,
     Finset.mem_Icc]
   constructor
   · intro hw
@@ -112,7 +120,7 @@ lemma card_dvd (α : GaussianInt) (hα : α ≠ 0) (m : ℕ) :
   have hαn : α.norm ≠ 0 := by rwa [Ne, GaussianInt.norm_eq_zero]
   have : {z : GaussianInt | z.norm = α.norm * m ∧ α ∣ z} = (fun w => α * w) '' {w | w.norm = m} := by
     ext z
-    simp only [Set.mem_setOf_eq, Set.mem_image]
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
     constructor
     · rintro ⟨hn, w, rfl⟩
       refine ⟨w, ?_, rfl⟩
@@ -144,7 +152,7 @@ lemma card_natCast_dvd (p : ℕ) (hp : 1 < p) (m : ℕ) :
     simp only [e]
   · convert Set.ncard_empty GaussianInt
     ext z
-    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_and]
+    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_and]
     rintro hn ⟨w, rfl⟩
     rw [Zsqrtd.norm_mul, Zsqrtd.norm_natCast, mul_assoc] at hn
     have h2 : (p : ℤ) * w.norm = m := mul_left_cancel₀ hp0 hn
@@ -247,7 +255,7 @@ lemma R_two (m : ℕ) : R (2 * m) = R m := by
   unfold R
   congr 1
   ext z
-  simp only [Set.mem_setOf_eq, hπ]
+  simp only [Set.mem_ofPred_eq, hπ]
   push_cast
   constructor
   · intro hz
@@ -269,7 +277,7 @@ lemma R_three (p m : ℕ) (hp : p.Prime) (h3 : p % 4 = 3) :
   unfold R
   congr 1
   ext z
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   push_cast
   constructor
   · intro hz
@@ -315,7 +323,7 @@ lemma R_one (p m : ℕ) (hp : p.Prime) (h1 : p % 4 = 1) :
   have hB : B.ncard = R m := card_dvd (star π) hπ0' m
   have hU : A ∪ B = {z : GaussianInt | z.norm = ((p * m : ℕ) : ℤ)} := by
     ext z
-    simp only [hAdef, hBdef, Set.mem_union, Set.mem_setOf_eq, hπ, hπ']
+    simp only [hAdef, hBdef, Set.mem_union, Set.mem_ofPred_eq, hπ, hπ']
     push_cast
     constructor
     · rintro (⟨h, -⟩ | ⟨h, -⟩) <;> exact h
@@ -325,7 +333,7 @@ lemma R_one (p m : ℕ) (hp : p.Prime) (h1 : p % 4 = 1) :
       · exact Or.inr ⟨hz, h⟩
   have hI : A ∩ B = {z : GaussianInt | z.norm = (p : ℤ) * m ∧ (p : GaussianInt) ∣ z} := by
     ext z
-    simp only [hAdef, hBdef, Set.mem_inter_iff, Set.mem_setOf_eq, hπ, hπ']
+    simp only [hAdef, hBdef, Set.mem_inter_iff, Set.mem_ofPred_eq, hπ, hπ']
     constructor
     · rintro ⟨⟨hz, h1⟩, -, h2⟩
       exact ⟨hz, dvd_of_dvd_dvd_star π p hp hodd hπ z h1 h2⟩
@@ -350,34 +358,192 @@ lemma R_one' : R 1 = 4 := by
   decide
 
 theorem R_eq (n : ℕ) (hn : n ≠ 0) : (R n : ℤ) = 4 * D n := by
-  sorry
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  rcases Nat.lt_or_ge n 2 with h | h
+  · have : n = 1 := by omega
+    subst this
+    rw [R_one']
+    simp [D, chi_eq]
+  · obtain ⟨p, hpdef⟩ : ∃ p, p = n.minFac := ⟨_, rfl⟩
+    have hp : p.Prime := hpdef ▸ Nat.minFac_prime (by omega)
+    obtain ⟨m, hm⟩ : p ∣ n := hpdef ▸ Nat.minFac_dvd n
+    have hm0 : m ≠ 0 := by
+      rintro rfl
+      simp at hm
+      omega
+    have hmlt : m < n := by
+      rw [hm]
+      have := hp.two_le
+      have := Nat.pos_of_ne_zero hm0
+      nlinarith
+    have ihm := ih m hmlt hm0
+    rw [hm, D_rec p m hp hm0]
+    have hdiv : p ∣ m → (R (m / p) : ℤ) = 4 * D (m / p) := by
+      intro hpm
+      obtain ⟨k, rfl⟩ := hpm
+      have hk : k ≠ 0 := by
+        rintro rfl
+        simp at hm0
+      rw [Nat.mul_div_cancel_left k hp.pos]
+      apply ih k _ hk
+      have := hp.two_le
+      have := Nat.pos_of_ne_zero hk
+      nlinarith
+    rcases hp.eq_two_or_odd with h2 | hodd
+    · subst h2
+      have c2 : chi 2 = 0 := by simp [chi_eq]
+      rw [R_two, ihm, c2]
+      simp
+    · have h13 : p % 4 = 1 ∨ p % 4 = 3 := by omega
+      rcases h13 with h1 | h3
+      · have c1 : chi p = 1 := by simp [chi_eq, h1, hodd]
+        have key := R_one p m hp h1
+        rw [c1]
+        split_ifs at key ⊢ with hpm
+        · have := hdiv hpm
+          zify at key
+          linarith
+        · zify at key
+          linarith
+      · have c3 : chi p = -1 := by simp [chi_eq, h3, hodd]
+        rw [R_three p m hp h3, c3]
+        split_ifs with hpm
+        · rw [hdiv hpm]
+          ring
+        · simp
 
 -- ### Summation
 
 lemma card_le (K : ℕ) :
     (((box K).filter (fun z => z.1 ^ 2 + z.2 ^ 2 ≤ (K : ℤ))).card : ℤ)
       = 1 + 4 * ∑ n ∈ Finset.range K, D (n + 1) := by
-  sorry
+  have h1 : ((box K).filter (fun z => z.1 ^ 2 + z.2 ^ 2 ≤ (K : ℤ))).card
+      = ∑ n ∈ Finset.range (K + 1), R n := by
+    rw [Finset.card_eq_sum_card_fiberwise (f := fun z : ℤ × ℤ => (z.1 ^ 2 + z.2 ^ 2).toNat)
+      (t := Finset.range (K + 1))]
+    · apply Finset.sum_congr rfl
+      intro n hn
+      rw [Finset.mem_range] at hn
+      rw [R_eq_card n K (by omega), Finset.filter_filter]
+      congr 1
+      apply Finset.filter_congr
+      intro z _
+      have hq : 0 ≤ z.1 ^ 2 + z.2 ^ 2 := by positivity
+      generalize z.1 ^ 2 + z.2 ^ 2 = q at hq ⊢
+      constructor
+      · rintro ⟨h1, h2⟩
+        omega
+      · intro h
+        omega
+    · intro z hz
+      simp only [Finset.mem_coe, Finset.mem_filter, Finset.coe_filter, Set.mem_ofPred_eq,
+        Finset.mem_range] at hz ⊢
+      have hq : 0 ≤ z.1 ^ 2 + z.2 ^ 2 := by positivity
+      have := hz.2
+      generalize z.1 ^ 2 + z.2 ^ 2 = q at hq this ⊢
+      omega
+  rw [h1, Finset.sum_range_succ', R_zero]
+  push_cast
+  rw [Finset.mul_sum, add_comm]
+  congr 1
+  exact Finset.sum_congr rfl (fun n _ => R_eq (n + 1) (by omega))
 
 lemma sum_D (K M : ℕ) (h : K < M) :
     ∑ n ∈ Finset.range K, D (n + 1) = ∑ d ∈ Finset.range M, chi d * ((K / d : ℕ) : ℤ) := by
-  sorry
+  induction K with
+  | zero => simp
+  | succ K ih =>
+    rw [Finset.sum_range_succ, ih (by omega)]
+    have e : ∀ d ∈ Finset.range M, chi d * (((K + 1) / d : ℕ) : ℤ)
+        = chi d * ((K / d : ℕ) : ℤ) + (if d ∣ K + 1 then chi d else 0) := by
+      intro d _
+      rw [Nat.succ_div]
+      split_ifs <;> push_cast <;> ring
+    rw [Finset.sum_congr rfl e, Finset.sum_add_distrib, ← Finset.sum_filter]
+    congr 1
+    unfold D
+    apply Finset.sum_congr _ (fun _ _ => rfl)
+    ext d
+    simp only [Nat.mem_divisors, Finset.mem_filter, Finset.mem_range]
+    constructor
+    · rintro ⟨hd, -⟩
+      exact ⟨(Nat.le_of_dvd (by omega) hd).trans_lt h, hd⟩
+    · rintro ⟨-, hd⟩
+      exact ⟨hd, by omega⟩
 
 lemma sum_chi (f : ℕ → ℤ) (J : ℕ) :
     ∑ d ∈ Finset.range (4 * J), chi d * f d = ∑ i ∈ Finset.range J, (f (4 * i + 1) - f (4 * i + 3)) := by
-  sorry
+  induction J with
+  | zero => simp
+  | succ J ih =>
+    obtain ⟨c0, c1, c2, c3⟩ := chi_four J
+    rw [show 4 * (J + 1) = 4 * J + 1 + 1 + 1 + 1 by ring, Finset.sum_range_succ,
+      Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, ih,
+      Finset.sum_range_succ]
+    rw [show 4 * J + 1 + 1 = 4 * J + 2 by ring, show 4 * J + 2 + 1 = 4 * J + 3 by ring, c0, c1, c2, c3]
+    ring
 
 -- ### Back to the disc
 
 lemma N_eq (r : ℝ) (hr : 0 ≤ r) :
     GaussCircleProblem.N r = ((box ⌊r ^ 2⌋₊).filter (fun z => z.1 ^ 2 + z.2 ^ 2 ≤ (⌊r ^ 2⌋₊ : ℤ))).card := by
-  sorry
+  have key : ∀ m n : ℤ, (!₂[(m : ℝ), (n : ℝ)] ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) r)
+      ↔ m ^ 2 + n ^ 2 ≤ (⌊r ^ 2⌋₊ : ℤ) := by
+    intro m n
+    rw [mem_closedBall_zero_iff, ← sq_le_sq₀ (_root_.norm_nonneg _) hr, EuclideanSpace.real_norm_sq_eq]
+    simp only [Fin.sum_univ_two]
+    rw [Int.natCast_floor_eq_floor (sq_nonneg r), Int.le_floor]
+    push_cast
+    simp
+  rw [← Set.ncard_coe_finset]
+  apply congrArg Set.ncard
+  ext ⟨m, n⟩
+  simp only [Set.mem_ofPred_eq, Finset.coe_filter, box, Finset.mem_product, Finset.mem_Icc, key]
+  constructor
+  · intro h
+    have h1 := Int.le_self_sq m
+    have h2 := Int.le_self_sq (-m)
+    have h3 := Int.le_self_sq n
+    have h4 := Int.le_self_sq (-n)
+    have h5 := sq_nonneg m
+    have h6 := sq_nonneg n
+    rw [neg_sq] at h2 h4
+    exact ⟨⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩, h⟩
+  · exact fun h => h.2
 
 lemma floor_div (r : ℝ) (d : ℕ) : ⌊r ^ 2 / ((d : ℕ) : ℝ)⌋ = ((⌊r ^ 2⌋₊ / d : ℕ) : ℤ) := by
-  sorry
+  rw [Int.floor_div_natCast, ← Int.natCast_floor_eq_floor (sq_nonneg r)]
+  norm_cast
 
 end GaussExact
 
 theorem gauss_circle_exact_form : type_of% @GaussCircleProblem.exact_form_floor := by
   intro r hr
-  sorry
+  set K := ⌊r ^ 2⌋₊ with hK
+  have ht : ∑' (i : ℕ), (⌊r ^ 2 / (4 * i + 1)⌋ - ⌊r ^ 2 / (4 * i + 3)⌋)
+      = ∑ i ∈ Finset.range (K + 1), (((K / (4 * i + 1) : ℕ) : ℤ) - ((K / (4 * i + 3) : ℕ) : ℤ)) := by
+    rw [tsum_eq_sum (s := Finset.range (K + 1))]
+    · apply Finset.sum_congr rfl
+      intro i _
+      have h1 := GaussExact.floor_div r (4 * i + 1)
+      have h3 := GaussExact.floor_div r (4 * i + 3)
+      push_cast at h1 h3
+      rw [h1, h3]
+      push_cast
+      rfl
+    · intro i hi
+      rw [Finset.mem_range, not_lt] at hi
+      have hlt : r ^ 2 < K + 1 := Nat.lt_floor_add_one _
+      have hi' : (K : ℝ) + 1 ≤ i := by exact_mod_cast hi
+      have hr2 : 0 ≤ r ^ 2 := sq_nonneg r
+      have hi0 : (0 : ℝ) ≤ i := Nat.cast_nonneg i
+      rw [Int.floor_eq_zero_iff.mpr, Int.floor_eq_zero_iff.mpr, sub_zero]
+      · refine ⟨by positivity, ?_⟩
+        rw [div_lt_one (by positivity)]
+        linarith
+      · refine ⟨by positivity, ?_⟩
+        rw [div_lt_one (by positivity)]
+        linarith
+  rw [ht, GaussExact.N_eq r hr, GaussExact.card_le, GaussExact.sum_D K (4 * (K + 1)) (by omega),
+    GaussExact.sum_chi]

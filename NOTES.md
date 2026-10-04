@@ -18,4 +18,15 @@ The tsum terms vanish for i > K, so the tsum is a sum over range (K+1).
 
 ## Plan / state
 
-Skeleton with sorry first, then fill. All in `Solution.lean` (no heavy kernel checks).
+Skeleton with sorry first, then fill. All in `Solution.lean` (no heavy kernel checks; the only
+`decide` calls are R 0 = 1 and R 1 = 4 on 1×1 and 3×3 boxes).
+
+Decision: Jacobi's two-squares formula is not in Mathlib, so it is proved here through `GaussianInt`
+(prime of norm p is irreducible hence prime in the UFD; `GaussianInt.prime_of_nat_prime_of_mod_four_eq_three`;
+`Nat.Prime.sq_add_sq`), without valuations: one prime factor at a time, with inclusion-exclusion for p ≡ 1.
+
+State: `lake build Solution Challenge` passes; `gauss_circle_exact_form` has no sorry and
+`#print axioms` gives [propext, Classical.choice, Quot.sound]; `example : type_of% @GaussCircleProblem.exact_form_floor
+:= @gauss_circle_exact_form` checks. Submitted with a `submit(gaussexact):` commit.
+The checker is paused today (per the user), so no verdict was polled; the status of
+`comparator/gaussexact` on the submit commit is unknown at the end of this session.

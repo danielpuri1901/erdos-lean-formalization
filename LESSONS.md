@@ -107,3 +107,7 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- gaussexact: with `open GaussianInt`, the notation `ℤ[i]` failed ("Unknown identifier i") and `norm_nonneg` resolves to `GaussianInt.norm_nonneg`; write `GaussianInt` and `_root_.norm_nonneg`.
+- gaussexact: `congr 1` on `GaussCircleProblem.N r = (↑s).ncard` hit a whnf timeout; `apply congrArg Set.ncard` then `ext ⟨m, n⟩` works.
+- gaussexact: `Finset.card_eq_sum_card_fiberwise` takes `Set.MapsTo`, so the hypothesis is `z ∈ ↑s`; simp with `Finset.mem_coe` too.
+- gaussexact: `map_dvd (starRingEnd _) h` then `rw [starRingEnd_apply, starRingEnd_apply, star_star]` moves divisibility through conjugation (`simpa` left `starRingEnd` unfolded).
