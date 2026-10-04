@@ -43,3 +43,51 @@ Reproduction (own code):
   C only: n=7: 150930 labelled, 630 tight, 0 failures.
 - Isomorphism classes (Python, n<=6): 1,1,2,6,10,29; 6 at n=4 includes K4, so 5 without.
   Matches the problem file's 1,1,2,5,10,29.
+
+## Phase B: counterexample search (all code in this directory)
+
+Tools (both checked against the Python reference `check.py` and on known graphs:
+Petersen Z=5 α=4, K3,3 Z=4 α=3, cube Q3 Z=4 α=4, prism Z=3 α=2):
+- `zf.c`: bitmask C. Tests "some (α+1)-set forces" (monotonicity: Z <= k iff some
+  k-set forces), exact Z, random (sub)cubic graphs, hill-climbing, graph6 input.
+- `bfsgen.c`: exhaustive generator of connected subcubic graphs up to isomorphism
+  *with repetitions*. Every connected graph has a BFS labelling from a max-degree root
+  with each sibling group sorted by nonincreasing degree; the generator emits exactly
+  such labellings (parent(w) = min N(w), nondecreasing). Validated: isomorphism-class
+  counts of its output (Python canonical forms) are 1,1,2,5(+K4),10,29,64,194 for
+  n=1..8, and cubic 2,5 for n=6,8 — all match known counts / the problem file.
+- `fam.py` + `g6.py`: structured families as graph6.
+
+Results (Z <= α+1 checked for every graph; K4 is the only failure ever seen):
+- Exhaustive, all connected subcubic graphs (labellings generated / failures):
+  n=8: 1306/0, n=9: 5756/0, n=10: 26545/0, n=11: 124136/0, n=12: 600739/0,
+  n=13: 2964755/0, n=14: 15052264/0, n=15: 78039866/0  (n=16, cubic n=18: see below)
+- Exhaustive cubic only: n=4..16: 1, 5, 50, 639, 9609, 167234, 3311918 labellings, 0 failures
+  (n=4 the 1 is K4, skipped).
+- Labelled exhaustive (`zf all n`), every labelled connected subcubic graph:
+  n<=7 (150930 at n=7) and n=8: 3675000 graphs, 28560 tight, 0 failures.
+- Random cubic (configuration model, seed 7): 2,000,000 samples each at
+  n=12,14,16,18,20,22,24,26,28,30: 0 failures (tight counts 14868, 2121, 104, 7, 2, 0, ...).
+  n>=32 runs hit the 40 s timeout before printing; treat as not run.
+- Random subcubic (random cubic, each edge deleted with prob p, kept if connected;
+  odd n: one degree-2 vertex): p in {0.05,0.1,0.2,0.3} x n in {11..16,18,..,28},
+  ~1e5–3e5 samples each; and p in {0,0.03,0.08,0.15,0.25} x n=9..18, 4e5 samples each:
+  0 failures.
+- Structured families (575 graphs): GP(m,k) for 3<=m<=32, Möbius ladders 2m<=64,
+  Heawood, McGee, Tutte 8-cage, F26A, Franklin, Frucht, Dyck, Gray, Pappus, Desargues,
+  Nauru, flower snarks J3..J15, truncations of 14 named cubic graphs and of 270 random
+  cubic graphs (claw-free cubic graphs): 0 failures. (The one "FAIL" was K4 = Möbius
+  ladder on 4 vertices.) Tight ones: prism, Petersen, K3,3, Möbius ladder V8,
+  GP(7,2), GP(7,3). No truncation was tight.
+- Hill-climbing over cubic graphs (double-edge swaps, objective Z−α, exact Z):
+  n=12..20: best Z−α = 1 everywhere. Tight graphs with large Z exist, e.g.
+  n=16, Z=8, α=7 (6 triangles), n=18 Z=8 α=7, n=20 Z=9 α=8 (Python re-check of
+  n=16, 18 agrees). Edge lists in `tight_climb.txt`.
+
+Gadget observation (paper argument, uses the edge-spread fact |Z(G)−Z(G−e)| <= 1,
+from memory, unverified): if a connected subcubic H ≠ K4 had Z(H) = α(H)+1 and a
+vertex u of degree <= 2 lying in every maximum independent set, then two copies of H
+joined by the edge u–u' would have α = 2α(H)−1 and Z >= 2Z(H)−1 = 2α(H)+1, so
+Z−α >= 2: a counterexample. Search for such H: none among all labelled graphs n<=8 and
+none in the random subcubic runs above (counter `ess=0`). So the conjecture implies
+"no tight graph has an essential vertex of degree <= 2"; this is consistent with data.

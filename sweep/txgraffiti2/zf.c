@@ -49,6 +49,18 @@ static void mis_rec(u64 P, int cur) {
 }
 static int alpha(void) { best_a = 0; mis_rec(FULL, 0); return best_a; }
 
+
+// tight graph: report vertices u of degree <= 2 lying in every maximum independent set
+static long ess_found;
+static int ess_check(int a) {
+  int hit = 0;
+  for (int u = 0; u < n; u++) {
+    if (__builtin_popcountll(adj[u]) > 2) continue;
+    best_a = 0; mis_rec(FULL & ~(1ULL << u), 0);
+    if (best_a == a - 1) { hit = 1; }
+  }
+  return hit;
+}
 // does some k-subset force? enumerate k-subsets lexicographically with early exit
 static int idx[64];
 static int has_forcing(int k) {
@@ -69,6 +81,28 @@ static int has_forcing(int k) {
   }
 }
 
+
+// randomised attempts (grow a set by closure-guided random choices), then exhaustive
+static int has_forcing_fast(int k, int tries) {
+  for (int t = 0; t < tries; t++) {
+    u64 S = 0; int c = 0;
+    // start with a random vertex and all but one neighbour
+    int v = rnd() % n; S |= 1ULL << v; c++;
+    u64 N = adj[v]; int d = __builtin_popcountll(N); int skip = d ? rnd() % d : 0;
+    for (int i = 0; N; i++) { int u = __builtin_ctzll(N); N &= N - 1; if (i != skip && c < k) { S |= 1ULL << u; c++; } }
+    u64 C = closure(S);
+    while (C != FULL && c < k) {
+      // add a random white vertex adjacent to the closure (or any white vertex)
+      u64 Wb = 0; u64 T = C; while (T) { int x = __builtin_ctzll(T); T &= T - 1; Wb |= adj[x]; } Wb &= ~C;
+      if (!Wb) Wb = FULL & ~C;
+      int m = __builtin_popcountll(Wb); int r = rnd() % m; for (int i = 0; i < r; i++) Wb &= Wb - 1;
+      S |= 1ULL << __builtin_ctzll(Wb); c++;
+      C = closure(S);
+    }
+    if (C == FULL) return 1;
+  }
+  return has_forcing(k);
+}
 static int zf_number(void) {
   // monotone: find least k with forcing k-set
   int lo = 1;
@@ -84,7 +118,7 @@ static int connected(void) {
 
 // random cubic multigraph by pairing; reject loops/multi-edges
 static int random_cubic(void) {
-  int pts[192]; int m = 3 * n;
+  int pts[192]; int m = 3 * n - (n & 1);
   for (int tries = 0; tries < 100000; tries++) {
     for (int i = 0; i < m; i++) pts[i] = i / 3;
     for (int i = m - 1; i > 0; i--) { int j = rnd() % (i + 1); int t = pts[i]; pts[i] = pts[j]; pts[j] = t; }
@@ -120,7 +154,7 @@ static void all_rec(int e) {
     if (!connected()) return;
     int a = alpha(); all_cnt++;
     if (!has_forcing(a + 1)) { all_fail++; printf("FAIL: "); print_g(stdout); }
-    else if (!has_forcing(a)) all_tight++;
+    else if (!has_forcing(a)) { all_tight++; if (ess_check(a)) { ess_found++; printf("ESS: "); print_g(stdout); } }
     return;
   }
   all_rec(e + 1);
@@ -137,10 +171,10 @@ int main(int argc, char **argv) {
     n = atoi(argv[2]); FULL = (1ULL << n) - 1; np_ = 0; memset(adj,0,sizeof adj);
     for (int a = 0; a < n; a++) for (int b = a + 1; b < n; b++) { pa[np_] = a; pb[np_] = b; np_++; }
     all_rec(0);
-    printf("labelled n=%d connected subcubic=%ld tight=%ld fails=%ld\n", n, all_cnt, all_tight, all_fail);
+    printf("labelled n=%d connected subcubic=%ld tight=%ld fails=%ld ess=%ld\n", n, all_cnt, all_tight, all_fail, ess_found);
     return 0;
   }
-  if (!strcmp(argv[1], "g6")) {
+  if (!strcmp(argv[1], "g6")) { rng_state = 88172645463325252ULL;
     char line[1024];
     long cnt = 0, fails = 0;
     while (fgets(line, sizeof line, stdin)) {
@@ -153,10 +187,12 @@ int main(int argc, char **argv) {
         if (b) { adj[i] |= 1ULL << j; adj[j] |= 1ULL << i; }
       }
       FULL = (n == 64) ? ~0ULL : ((1ULL << n) - 1);
-      int a = alpha(), z = zf_number();
+      int a = alpha(); int ok = has_forcing_fast(a + 1, 20000);
+      int tight = (ok && n <= 30) ? !has_forcing_fast(a, 2000) : -1;
       cnt++;
-      if (z > a + 1) { fails++; printf("FAIL %s n=%d alpha=%d Z=%d\n", line, n, a, z); }
-      if (argc > 2) printf("%s %d %d %d\n", line, n, a, z);
+      if (!ok) { fails++; printf("FAIL %s n=%d alpha=%d\n", line, n, a); }
+      if (argc > 2) printf("%s n=%d alpha=%d ok=%d tight=%d\n", line, n, a, ok, tight);
+      fflush(stdout);
     }
     printf("graphs=%ld fails=%ld\n", cnt, fails);
     return 0;
@@ -173,12 +209,70 @@ int main(int argc, char **argv) {
       tested++;
       if (!has_forcing(a + 1)) {
         fails++; printf("FAIL n=%d alpha=%d: ", n, a); print_g(stdout); fflush(stdout);
-      } else if (!has_forcing(a)) tight++;
+      } else if (n <= 22 && !has_forcing(a)) { tight++; if (ess_check(a)) { ess_found++; printf("ESS tight n=%d alpha=%d: ", n, a); print_g(stdout); fflush(stdout);} }
     }
-    printf("n=%d p=%.3f tested=%ld tight(Z=alpha+1)=%ld fails=%ld\n", n, p, tested, tight, fails);
+    printf("n=%d p=%.3f tested=%ld tight(Z=alpha+1)=%ld fails=%ld ess=%ld\n", n, p, tested, tight, fails, ess_found);
     return 0;
   }
-  if (!strcmp(argv[1], "climb")) {
+
+  if (!strcmp(argv[1], "sclimb")) {
+    n = atoi(argv[2]); long iters = atol(argv[3]); rng_state = strtoull(argv[4], 0, 10) * 2654435761ULL + 88172645463325252ULL;
+    FULL = (n == 64) ? ~0ULL : ((1ULL << n) - 1);
+    int bestever = -100;
+    while (iters > 0) {
+      random_cubic(); delete_edges(0.1); if (!connected()) continue;
+      int cur = zf_number() - alpha();
+      for (int it = 0; it < 500 && iters > 0; it++, iters--) {
+        u64 save[64]; memcpy(save, adj, sizeof save);
+        int x = rnd() % n, y = rnd() % n; if (x == y) continue;
+        if (adj[x] >> y & 1) { adj[x] &= ~(1ULL << y); adj[y] &= ~(1ULL << x); }
+        else if (__builtin_popcountll(adj[x]) < 3 && __builtin_popcountll(adj[y]) < 3) { adj[x] |= 1ULL << y; adj[y] |= 1ULL << x; }
+        else {
+          // swap: remove an edge at x, connect x-y if y has room, else skip
+          continue;
+        }
+        if (!connected()) { memcpy(adj, save, sizeof save); continue; }
+        int a2 = alpha(); int z2 = zf_number(); int v = z2 - a2;
+        int isk4 = (n == 4);
+        if (isk4) { memcpy(adj, save, sizeof save); continue; }
+        if (v >= cur || (rnd() % 20) == 0) cur = v; else { memcpy(adj, save, sizeof save); continue; }
+        if (cur > bestever) { bestever = cur; printf("n=%d best Z-alpha=%d (Z=%d a=%d): ", n, cur, z2, a2); print_g(stdout); fflush(stdout); }
+        if (cur >= 2) { printf("FAIL candidate: "); print_g(stdout); fflush(stdout); }
+      }
+    }
+    printf("n=%d done bestever=%d\n", n, bestever);
+    return 0;
+  }
+  if (!strcmp(argv[1], "climb2")) {
+    n = atoi(argv[2]); long iters = atol(argv[3]); rng_state = strtoull(argv[4], 0, 10) * 2654435761ULL + 88172645463325252ULL;
+    FULL = (n == 64) ? ~0ULL : ((1ULL << n) - 1);
+    int bestever = -100;
+    for (int restart = 0; restart < 1000000 && iters > 0; restart++) {
+      random_cubic();
+      int a = alpha(); int z = zf_number(); int cur = 4 * (z - a) + z;
+      for (int it = 0; it < 400 && iters > 0; it++, iters--) {
+        // double edge swap: edges ab, cd -> ac, bd
+        u64 save[64]; memcpy(save, adj, sizeof save);
+        int a1, b1, c1, d1;
+        for (;;) {
+          a1 = rnd() % n; u64 N = adj[a1]; int k = rnd() % 3; for (int t = 0; t < k; t++) N &= N - 1; b1 = __builtin_ctzll(N);
+          c1 = rnd() % n; N = adj[c1]; k = rnd() % 3; for (int t = 0; t < k; t++) N &= N - 1; d1 = __builtin_ctzll(N);
+          if (a1 == c1 || a1 == d1 || b1 == c1 || b1 == d1) continue;
+          if (adj[a1] >> c1 & 1 || adj[b1] >> d1 & 1) continue;
+          break;
+        }
+        adj[a1] &= ~(1ULL << b1); adj[b1] &= ~(1ULL << a1); adj[c1] &= ~(1ULL << d1); adj[d1] &= ~(1ULL << c1);
+        adj[a1] |= 1ULL << c1; adj[c1] |= 1ULL << a1; adj[b1] |= 1ULL << d1; adj[d1] |= 1ULL << b1;
+        if (!connected()) { memcpy(adj, save, sizeof save); continue; }
+        int a2 = alpha(); int z2 = zf_number(); int v = 4 * (z2 - a2) + z2;
+        if (v >= cur || (rnd() % 10) == 0) { cur = v; } else { memcpy(adj, save, sizeof save); }
+        if (cur > bestever) { bestever = cur; printf("n=%d best score=%d (Z=%d a=%d): ", n, cur, z2, a2); print_g(stdout); fflush(stdout); }
+        if (z2 - a2 >= 2) { printf("FAIL candidate\n"); print_g(stdout); fflush(stdout); }
+      }
+    }
+    printf("n=%d done bestever=%d\n", n, bestever);
+    return 0;
+  }  if (!strcmp(argv[1], "climb")) {
     n = atoi(argv[2]); long iters = atol(argv[3]); rng_state = strtoull(argv[4], 0, 10) * 2654435761ULL + 88172645463325252ULL;
     FULL = (n == 64) ? ~0ULL : ((1ULL << n) - 1);
     int bestever = -100;
