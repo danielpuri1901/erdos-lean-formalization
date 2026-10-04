@@ -97,3 +97,22 @@ Hence T = 1 and H c = 0, i.e. 255 holds.
 Lean: `Solution.lean`, `Eq677Sweep.affine_eq677_imp_eq255` (axioms: propext, Quot.sound only).
 This covers every affine model over every Z_n (so the problem file's 501 linear Z_n models
 and any larger n), and over every commutative ring, finite or not.
+
+## Phase C (cont.): non-commuting affine models (paper analysis, partly computer-checked)
+
+Over any ring with B invertible (automatic for a finite magma, since L_y is x ↦ Bx + const),
+677's linear relations g1: BA + B²AB = 1, g2: A + B²A² + B³ = 0 give (derived by hand, each
+step re-checked):
+- AB = B⁻² − B⁻¹A,  AB⁻¹ = B⁻² − BA,  A² = −B⁻²A − B;
+- computing A²B in two ways yields (★) q(B)·(B(B²+1)A − 1) = 0 with q(t) = t³ − t − 1.
+So if q(B) is invertible, A = (B³+B)⁻¹ commutes with B and the commutative certificate gives 255.
+Computer: every 677 solution (A, B) found in the F_p^k search above has AB = BA.
+Non-commuting solutions therefore need an eigenvalue λ of B with q(λ) = 0.
+Block analysis (B diagonalizable, eigenvalues λ and μ = −1/λ, λ² ≠ −1): A's diagonal blocks are
+forced to α_λ = 1/(λ³+λ); off-diagonal blocks E (λ←μ), F (μ←λ) need q(λ) = 0 (resp. q(μ) = 0) and
+EF = s_λ I, FE = s_μ I with s_b = −(α_b + b²α_b² + b³)/b². In Q(λ) (λ³ = λ+1):
+s_λ − s_μ = −λ − λ², norm −1 (a unit, so never 0 in any characteristic), N(s_λ) = −11/25,
+N(s_μ) = 19/25 (never both 0). Hence no such 2-eigenvalue non-commuting model exists in any
+characteristic (numfield.py; block2.py confirms numerically for all p < 200 with q split-root in F_p).
+Not covered: λ² = −1 (e.g. char 5, λ = 2), non-semisimple B, several interacting eigenvalue pairs,
+coefficient rings that are not fields (Z_{p^k}).
