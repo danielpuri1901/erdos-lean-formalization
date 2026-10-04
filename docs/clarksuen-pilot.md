@@ -29,3 +29,9 @@ By the decision rule, Clark-Suen is too easy for a harness comparison; Daniel pr
 Same setup on branch `run/st-pilot` and target `suentarr`, with the same prompt adapted to `suen_tarr` and `submit(suentarr): bare pilot`.
 Session `session_014VGamm5mVYUGQH3wXG8xwt`, launched 2026-10-03 at about 23:03 UTC with the credit meter at 221 USD.
 
+Green: commit `4f02cd1` (first submission, 23:21 UTC, about 19 minutes after launch), checker verdict "Your solution is okay!" at 23:33 UTC ([checker run](https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37161591605)).
+Minutes to green: about 31. Cost: about 3 USD (meter 221 to 218 USD). Submissions: 1.
+The proof is 244 lines: the Clark-Suen double count with a gain of one for every dominator whose column meets D, then a case split on which of γ(G) and γ(H) is smaller.
+
+Finding: one bare Opus 5.5 session formalized both inequalities, each on its first submission, in 22 and 31 minutes.
+Short combinatorics proofs of one to three pages are not hard enough to show whether the harness helps.
