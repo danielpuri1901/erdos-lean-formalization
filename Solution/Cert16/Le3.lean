@@ -10,7 +10,7 @@ namespace CatchUpDeep
 -- nodes: 40630
 -- (claim: chkGe [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] 3 cert16le_3 = true)
 set_option maxRecDepth 100000 in
-def cert16le_3 : Cert :=
+noncomputable def cert16le_3 : Cert :=
    (Cert.pick 1 (Cert.pick 2 (Cert.all (CertList.cons 4 (Cert.pick 5 (Cert.all (CertList.cons 6 (Cert.pick
   9 (Cert.all (CertList.cons 7 (Cert.pick 10 (Cert.all (CertList.cons 8 (Cert.pick 14 (Cert.all (CertList.cons
   11 (Cert.all (CertList.cons 12 (Cert.pick 13 (Cert.all (CertList.cons 15 (Cert.pick 16 Cert.leaf) (CertList.cons

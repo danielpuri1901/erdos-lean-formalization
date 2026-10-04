@@ -39,9 +39,9 @@ namespace CatchUpDeep
 
 open CatchUp
 
-def cert16ge : Cert := .pick 1 (.all (.cons 2 cert16ge_2 (.cons 3 cert16ge_3 (.cons 4 cert16ge_4 (.cons 5 cert16ge_5 (.cons 6 cert16ge_6 (.cons 7 cert16ge_7 (.cons 8 cert16ge_8 (.cons 9 cert16ge_9 (.cons 10 cert16ge_10 (.cons 11 cert16ge_11 (.cons 12 cert16ge_12 (.cons 13 cert16ge_13 (.cons 14 cert16ge_14 (.cons 15 cert16ge_15 (.cons 16 cert16ge_16 .nil))))))))))))))))
+noncomputable def cert16ge : Cert := .pick 1 (.all (.cons 2 cert16ge_2 (.cons 3 cert16ge_3 (.cons 4 cert16ge_4 (.cons 5 cert16ge_5 (.cons 6 cert16ge_6 (.cons 7 cert16ge_7 (.cons 8 cert16ge_8 (.cons 9 cert16ge_9 (.cons 10 cert16ge_10 (.cons 11 cert16ge_11 (.cons 12 cert16ge_12 (.cons 13 cert16ge_13 (.cons 14 cert16ge_14 (.cons 15 cert16ge_15 (.cons 16 cert16ge_16 .nil))))))))))))))))
 
-def cert16le : Cert := .all (.cons 1 cert16le_1 (.cons 2 cert16le_2 (.cons 3 cert16le_3 (.cons 4 cert16le_4 (.cons 5 cert16le_5 (.cons 6 cert16le_6 (.cons 7 cert16le_7 (.cons 8 cert16le_8 (.cons 9 cert16le_9 (.cons 10 cert16le_10 (.cons 11 cert16le_11 (.cons 12 cert16le_12 (.cons 13 cert16le_13 (.cons 14 cert16le_14 (.cons 15 cert16le_15 (.cons 16 cert16le_16 .nil))))))))))))))))
+noncomputable def cert16le : Cert := .all (.cons 1 cert16le_1 (.cons 2 cert16le_2 (.cons 3 cert16le_3 (.cons 4 cert16le_4 (.cons 5 cert16le_5 (.cons 6 cert16le_6 (.cons 7 cert16le_7 (.cons 8 cert16le_8 (.cons 9 cert16le_9 (.cons 10 cert16le_10 (.cons 11 cert16le_11 (.cons 12 cert16le_12 (.cons 13 cert16le_13 (.cons 14 cert16le_14 (.cons 15 cert16le_15 (.cons 16 cert16le_16 .nil))))))))))))))))
 
 theorem cert16ge_ok : chkGe (List.range' 1 16) 0 cert16ge = true := by
   unfold cert16ge
