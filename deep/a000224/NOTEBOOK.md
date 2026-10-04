@@ -113,6 +113,14 @@ Stage 2 route B (general reduction, then more families):
   (mod X) holds (3000 random cases); F = k(cw−p−1)² + (4−k)(p+1)² exactly; k(k−4) is a square only for k = 4;
   for e ≥ 4: k ≤ 28, k ≥ 17 ⇒ p ≤ 31 with max B/δ = 3027, k = 16 ⇒ w ≤ (p+3)/2 and e ≤ 8 (e ≤ 4 for p ≥ 29),
   k ≤ 15 ⇒ F ≤ 1.4·10¹¹ so e ≤ 23; direct search for p ≤ 31, e ∈ 4..12, all k, w ≤ B/δ: no solution of (E).
+  Lean so far (attempt 9): `q4_dvd_F`, `q4_F_ne_zero`, `q4_X_le` (Solution/A224/Uniform.lean). Attempt 10 (running):
+  `UniformBounds.lean` (k ≤ 28; k ≥ 17 ⇒ p ≤ 32; k ≤ 15 ⇒ w ≤ 15; k = 16 ⇒ 2w ≤ p + 5 for X ≥ p⁴) and
+  `P4QAlg.lean` (k = 16, e = 4: 2A = p⁴ − p³ + p² − p + 2, Disc of degree 16 with coefficients
+  [192, −192, 240, −288, 336, −192, 144, −96, 0, 0, 16, −32, 48, −64, 48, −32, 16] (low→high),
+  g = 4p⁸ − 4p⁷ + 4p⁶ − 4p⁵, (g−1)² < Disc < g² for p ≥ 12, table for p ≤ 11). What would remain for a
+  complete Q4: the mod-p reduction of F (F ≡ 4(kw(w−1)+1) or kw(w−2)+4 mod p), the finite checks over e
+  (k ≤ 15: 6,028 cases; k ≥ 17: ~90,000 cases; k = 16, e ∈ 5..8, p ≤ 29), and the assembly through `reduction`
+  with m = p^e (needs `a (p^e)` from R4a/R4b in the form 2(p+1)A = pX + c).
 - Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
   primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [proved in Lean:
   `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean;

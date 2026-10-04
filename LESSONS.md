@@ -107,3 +107,16 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+
+## From the a000224 deep attempt (2026-10-04, stage 2)
+
+- a000224 (deep): the stage 1 lemmas lived in `Solution.lean`, which submodules cannot import (cycle); move stage 1 content to `Solution/<id>/Sweep.lean` first and keep `Solution.lean` as imports only.
+- a000224 (deep): two parallel workers on dependent files: give the second a `sorry` stub with the exact statement of the first's lemma and delete the stub at merge time; when cutting the stub out with a script, cut only the stub block, not helpers the worker placed between the stub and the next lemma (a helper was lost this way and had to be re-proved).
+- a000224 (deep): `decide +kernel` on `∀ k < 16, ∀ w < 16, chk k w = true` where `chk` loops with `(List.range N).all` (N up to 3151, about 150 000 inner evaluations) took 36–42 s of kernel time and no special memory; the proof term stays tiny because the loops are inside the Bool. Prefer this over nested bounded `∀`.
+- a000224 (deep): a Bool checker that computes its own loop bound (`List.range (B / δ + 1)`) lets the unpacking lemma derive membership from `Nat.le_div_iff_mul_le`; no per-case bound is needed.
+- a000224 (deep): to show a quadratic `δ w² − B w + c = 0` has no integer root, prove `(2δw − B)² = Disc` by `linear_combination (4δ) * hE` and squeeze `Disc` strictly between consecutive squares `(g−1)² < Disc < g²` with an explicit polynomial `g` found from `isqrt` at large p; the helper `q2_no_sq_between` (Solution/A224/P2QAlg.lean) closes it; small p by `interval_cases` + `norm_num` with a tabulated `s₀`.
+- a000224 (deep): one monolithic proof with several degree-12 `nlinarith` bounds hit the heartbeat limit; split the large-p and small-p discriminant cases into separate helper lemmas and replace `nlinarith` by explicit `ring` identities plus `linarith`/`positivity`.
+- a000224 (deep): reducing a Diophantine equation modulo p via an explicit cofactor (`k w² − k w + 1 + 4·residual = p·Q`, Q found by polynomial division and checked in Python) and `linear_combination (-4) * hE` is faster than any ZMod argument; find Q numerically first.
+- a000224 (deep): `Nat.dvd_sub'` is gone (use `Nat.dvd_sub`); `Nat.odd_pow.mp` does not exist (use `Nat.odd_mul` after `pow_succ`/`pow_two`); `Nat.Coprime.dvd_of_dvd_mul_left` accepts `p ∣ 2 * (A - 1)` directly.
+- a000224 (deep): the Python family search needs `#include <math.h>` for `sqrtl`; an implicit declaration returns garbage silently. Cross-check new search code against the previous run's exact counts (pairs/roots) before trusting it.
+- a000224 (deep): the 10-attempt budget, not the 4 hours, was the binding limit (9 attempts in 60 minutes). Plan the attempt count: each attempt may hold two parallel workers, so pair independent items.
