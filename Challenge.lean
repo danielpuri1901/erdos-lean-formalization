@@ -1,15 +1,11 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Arxiv.«2507.17780».«3»
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the txgraffiti3 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+TxGraffiti conjecture 3 says that every r-regular graph (r ≥ 1) has independent domination number at most its saturation number.
+This target is its negation: the conjecture is false.
+The statement is `¬` applied to the type of `Arxiv.«2507.17780».tx_graffiti_conjecture_3` at formal-conjectures commit df3f12d7bd06, taken with `type_of%`, so it negates exactly that statement.
+`tests/statement/txgraffiti3.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem txgraffiti3_false : ¬ (type_of% @Arxiv.«2507.17780».tx_graffiti_conjecture_3) := by
   sorry
