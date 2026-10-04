@@ -19,3 +19,4 @@ Add one line for each problem that cost you time, with the fix.
 - eq677: after unfolding module expressions (`a • x + ...`), the `module` tactic closes them; `ring_nf; abel` did not.
 - eq677: `noncomm_ring` cannot use hypotheses such as `b * b⁻¹ = 1`; derive `∀ x, c * (b * x) = x` and alternate `rw [show _ = _ by noncomm_ring, ecb]` steps.
 - eq677: `IsUnit.mul_right_eq_zero` cancels a unit left factor in a non-commutative ring.
+- eq677: `pkill -f <script>` inside a Bash call also matches that call's own command line and kills the shell; find PIDs with `ps -eo pid,comm,args` and `kill` them.
