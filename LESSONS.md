@@ -107,3 +107,5 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- giuga: `rw [← ZMod.natCast_eq_zero_iff]` with no arguments also rewrites an unrelated `p - 1 ∣ a - 1` inside an `if`, giving "motive is not type correct"; pass the arguments `(ZMod.natCast_eq_zero_iff (a / p - 1) p)`.
+- giuga: `∑ x : ZMod p, x ^ k` for `k ≠ 0` follows from `FiniteField.sum_pow_units` by copying the `univ \ {0}` step of `FiniteField.sum_pow_lt_card_sub_one` (it uses `simpa ... using!`); `Finset.sum_bij'` with `ZMod.val` bridges `range p` and `ZMod p`.
