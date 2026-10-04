@@ -18,6 +18,10 @@ Written argument (see `sweep/wowii61/NOTES.md`):
    (`diam_half_le_card_sub_indepNum`).
 7. Hence, given `residue ≤ α`, the conjecture holds when `n - f + ⌈diam/3⌉ ≤ ⌊(diam+1)/2⌋`
    (`conjecture61_of_feedback_le`), in particular for trees (`conjecture61_of_isAcyclic`).
+8. If `x, y` are nonadjacent with no common neighbour, `I ∪ {x, y}` induces a forest
+   (`induce_insert_two_isAcyclic`); vertices outside `I` near the two ends of a diametral pair
+   are at distance `≥ diam - 2`, so `diam ≥ 5 → α + 2 ≤ f` (`indepNum_add_two_le`), and given
+   `residue ≤ α` the conjecture holds for `diam ∈ {5, 6}` (`conjecture61_of_diam_five_six`).
 -/
 
 namespace Wowii61Sweep
@@ -188,5 +192,116 @@ theorem conjecture61_of_isAcyclic [Nontrivial α] (G : SimpleGraph α) [Decidabl
     have := card_le_largestInducedForestSize G Finset.univ (hac.induce _)
     simpa using this
   omega
+
+omit [Fintype α] in
+/-- Step 9 (Lemma S for two added vertices). If `x, y` are nonadjacent and have no
+common neighbour, then `I ∪ {x, y}` induces a forest: every edge has an endpoint in `I` whose
+only neighbour is the other endpoint, so every edge is a bridge. -/
+theorem induce_insert_two_isAcyclic (G : SimpleGraph α) (I : Finset α)
+    (hI : G.IsIndepSet (I : Set α)) (x y : α)
+    (hxy : ¬ G.Adj x y) (hc : ∀ w, G.Adj w x → G.Adj w y → False) :
+    (G.induce ((insert x (insert y I) : Finset α) : Set α)).IsAcyclic := by
+  set H := G.induce ((insert x (insert y I) : Finset α) : Set α) with hH
+  have mem : ∀ z : ((insert x (insert y I) : Finset α) : Set α),
+      (z : α) = x ∨ (z : α) = y ∨ (z : α) ∈ I := by
+    intro z
+    have := z.2
+    simpa using this
+  have outside : ∀ a b : ((insert x (insert y I) : Finset α) : Set α), (a : α) ∈ I →
+      G.Adj a b → (b : α) = x ∨ (b : α) = y := by
+    intro a b ha hab
+    rcases mem b with h | h | h
+    · exact Or.inl h
+    · exact Or.inr h
+    · exact absurd hab (hI ha h hab.ne)
+  have key : ∀ a b : ((insert x (insert y I) : Finset α) : Set α), (a : α) ∈ I → H.Adj a b →
+      ∀ c, H.Adj a c → c = b := by
+    intro a b ha hab c hac
+    have hab' : G.Adj a b := hab
+    have hac' : G.Adj a c := hac
+    apply Subtype.ext
+    rcases outside a b ha hab' with hb | hb <;> rcases outside a c ha hac' with hc' | hc'
+    · rw [hb, hc']
+    · rw [hb] at hab'; rw [hc'] at hac'; exact (hc a hab' hac').elim
+    · rw [hb] at hab'; rw [hc'] at hac'; exact (hc a hac' hab').elim
+    · rw [hb, hc']
+  have bridge : ∀ a b : ((insert x (insert y I) : Finset α) : Set α), (a : α) ∈ I →
+      H.Adj a b → H.IsBridge s(a, b) := by
+    intro a b ha hab
+    rw [isBridge_iff]
+    apply not_reachable_of_neighborSet_left_eq_empty hab.ne
+    ext c
+    simp only [mem_neighborSet, deleteEdges_adj, Set.mem_singleton_iff, Set.mem_empty_iff_false,
+      iff_false, not_and, not_not]
+    intro hac
+    rw [key a b ha hab c hac]
+  rw [isAcyclic_iff_forall_adj_isBridge]
+  intro a b hab
+  have hab' : G.Adj a b := hab
+  rcases mem a with ha | ha | ha
+  · rcases mem b with hb | hb | hb
+    · exact absurd (Subtype.ext (ha.trans hb.symm)) hab.ne
+    · rw [ha, hb] at hab'; exact absurd hab' hxy
+    · rw [Sym2.eq_swap]; exact bridge b a hb hab.symm
+  · rcases mem b with hb | hb | hb
+    · rw [ha, hb] at hab'; exact absurd hab'.symm hxy
+    · exact absurd (Subtype.ext (ha.trans hb.symm)) hab.ne
+    · rw [Sym2.eq_swap]; exact bridge b a hb hab.symm
+  · exact bridge a b ha hab
+
+/-- Step 10. If `diam ≥ 5` then `α + 2 ≤ f`. -/
+theorem indepNum_add_two_le [Nontrivial α] (G : SimpleGraph α) (h : G.Connected)
+    (hd : 5 ≤ G.diam) : G.indepNum + 2 ≤ G.largestInducedForestSize := by
+  classical
+  obtain ⟨I, hI⟩ := G.exists_isNIndepSet_indepNum
+  obtain ⟨u, v, huv⟩ := G.exists_dist_eq_diam
+  have near : ∀ z : α, ∃ z', z' ∉ I ∧ G.dist z z' ≤ 1 := by
+    intro z
+    by_cases hz : z ∈ I
+    · obtain ⟨w, hw⟩ : ∃ w, G.Adj z w := by
+        obtain ⟨a, ha⟩ := exists_ne z
+        obtain ⟨p⟩ := h.preconnected z a
+        cases p with
+        | nil => exact absurd rfl ha
+        | cons hadj _ => exact ⟨_, hadj⟩
+      refine ⟨w, fun hwI => hI.isIndepSet hz hwI hw.ne hw, ?_⟩
+      rw [dist_eq_one_iff_adj.mpr hw]
+    · exact ⟨z, hz, by simp⟩
+  obtain ⟨x, hx, hux⟩ := near u
+  obtain ⟨y, hy, hvy⟩ := near v
+  have t1 : G.dist u v ≤ G.dist u x + G.dist x v := h.dist_triangle
+  have t2 : G.dist x v ≤ G.dist x y + G.dist y v := h.dist_triangle
+  have hvy' : G.dist y v ≤ 1 := by rw [dist_comm]; exact hvy
+  have hxy3 : 3 ≤ G.dist x y := by omega
+  have hnadj : ¬ G.Adj x y := fun hadj => by
+    rw [dist_eq_one_iff_adj.mpr hadj] at hxy3; omega
+  have hc : ∀ w, G.Adj w x → G.Adj w y → False := by
+    intro w hwx hwy
+    have := dist_le ((Walk.cons hwx.symm (Walk.cons hwy Walk.nil)) : G.Walk x y)
+    simp at this
+    omega
+  have hne : x ≠ y := by
+    rintro rfl
+    simp at hxy3
+  have hxI : x ∉ insert y I := by simp [hne, hx]
+  have key := card_le_largestInducedForestSize G (insert x (insert y I))
+    (induce_insert_two_isAcyclic G I hI.isIndepSet x y hnadj hc)
+  rw [Finset.card_insert_of_notMem hxI, Finset.card_insert_of_notMem hy, hI.card_eq] at key
+  omega
+
+/-- Step 11. Conditional on `residue ≤ α`: the conjecture holds when `diam ∈ {5, 6}`. -/
+theorem conjecture61_of_diam_five_six [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (hres : residue G ≤ G.indepNum) (hd5 : 5 ≤ G.diam) (hd6 : G.diam ≤ 6) :
+    (residue G : ℝ) + ⌈(G.diam : ℝ) / 3⌉ ≤ (G.largestInducedForestSize : ℝ) := by
+  have h1 : ⌈(G.diam : ℝ) / 3⌉ ≤ 2 := by
+    rw [Int.ceil_le]
+    have : (G.diam : ℝ) ≤ 6 := by exact_mod_cast hd6
+    push_cast
+    linarith
+  have h2 := indepNum_add_two_le G h hd5
+  have h3 : (residue G : ℝ) + 2 ≤ (G.largestInducedForestSize : ℝ) := by
+    exact_mod_cast (by omega : residue G + 2 ≤ G.largestInducedForestSize)
+  have h1' : ((⌈(G.diam : ℝ) / 3⌉ : ℤ) : ℝ) ≤ 2 := by exact_mod_cast h1
+  linarith
 
 end Wowii61Sweep

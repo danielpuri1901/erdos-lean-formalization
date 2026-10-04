@@ -118,3 +118,19 @@ So diam = 4, 7, 10, ... (where ceil(diam/3) jumps) are where counterexamples sho
   n=18 (minD 4): min slack 0 (D = 4); n=24 (minD 4): min slack 0 (D = 4);
   n=22 (minD 7): min slack 2 (D = 7, f - r = 5); n=26 (minD 10): min slack 3 (D = 10).
   All tight graphs found have diam exactly 4.
+
+### Paper lemma: f >= α + ceil(diam/4) (proved on paper), and what it gives
+Lemma S. If I is independent and S ⊆ V \ I has pairwise distances >= 3, then I ∪ S induces a
+forest. Proof: S is independent and no vertex of I is adjacent to two vertices of S (they would
+be at distance <= 2), so every vertex of I has at most one neighbour in I ∪ S; the induced graph
+is a disjoint union of stars centred at S-vertices plus isolated vertices.
+Corollary. Take a diametral geodesic v_0..v_D and a maximum independent set I. For each block
+{v_{4j}, v_{4j+1}} (4j+1 <= D) one of the two is outside I (they are adjacent); these choices
+are pairwise at distance >= 3 (geodesic). So f >= α + floor((D-1)/4) + 1 = α + ceil(D/4).
+Sharpness: chains of K_{2,2} with one pendant at each end (fam.py, m=2, p=0, pe=1) have
+f - α = ceil(D/4) exactly (e.g. k=8: D=18, α=18, f=23).
+Consequence (conditional on FMS residue <= α): conjecture 61 holds when ceil(D/4) >= ceil(D/3),
+i.e. D ∈ {1,2,3,5,6,9}. Open (needs residue < α): D = 4, 7, 8 and every D >= 10.
+D = 4 is exactly where all tight graphs found so far live.
+Simple version for D >= 5 used in Lean (no geodesic needed): with dist(u,v) = D, pick x = u if
+u ∉ I else a neighbour of u (then x ∉ I), likewise y near v; dist(x,y) >= D - 2 >= 3.
