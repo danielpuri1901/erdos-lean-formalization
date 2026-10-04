@@ -103,3 +103,19 @@ Quot.sound only):
 - helpers: `edgeCover_isPathCover`, `edgeCover_card`, `pathCoverNumber_le_card_sub_one`,
   `largestInducedBipartiteSubgraphSize_le_card`, `card_le_largestInducedForestSize`, `exists_adj`,
   `induce_insert_isAcyclic`, `b_add_two_le` (b + 2 ≤ 2f).
+
+## Phase B (continued): heuristic searches beyond n = 11 (not exhaustive)
+
+- Simulated annealing on slack (`anneal.c`, random connected starts, edge flips keeping
+  connectivity, 1200 s per run): n=12: 1,174,299 evaluations; n=13: 528,354 + 531,417; n=14: 249,748.
+  Minimum slack reached: 1 in every run (slack-1 graphs visited often). No counterexample.
+- Blow-ups (`blowup.c`): every connected base graph H on 2..5 vertices (30 classes), each vertex
+  replaced by an independent set (or, in the mixed run, an independent set or a clique) of size w_i,
+  adjacent classes completely joined. Independent-set blow-ups with n ≤ 15: 62,794 tested
+  (duplicates removed only for n ≤ 11); mixed with n ≤ 12: 256,435 tested. Minimum slack 1.
+- Chain through tight graphs (`ext3.c`): the complete n=10 slack-1 list (4960) extended in all 1023
+  ways keeping slack ≤ 1 gives 96,949 slack-1 graphs on 11 vertices (all with slack exactly 1). This
+  list is NOT all slack ≤ 2 graphs on 11 vertices (slack-2 graphs and graphs reached only through
+  slack-2 parents are missing). Extending these to 12 vertices in all 2047 ways (exact test after the
+  Δf filter), time-boxed: first pass ≥ 8000 parents (shuffled order) done, about 1.7M candidates
+  tested; 0 graphs with slack ≤ 0. Second pass: see the report block.
