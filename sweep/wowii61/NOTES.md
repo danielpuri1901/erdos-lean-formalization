@@ -50,3 +50,21 @@ Finding: the stronger statement f >= alpha + ceil(diam/3) is FALSE (9240 labeled
 residue = 3 (degrees 3,3,2,2,1,1 -> 2,1,1,1,1 -> 0,0,1,1 -> sorted 1,1,0,0 -> 0,0,0 -> 3).
 So 4 + 2 = 6 > 5 but 3 + 2 = 5 <= 5 (tight for conjecture 61).
 Consequence: any proof must use the residue itself, not just residue <= alpha.
+
+## Phase B: counterexample search (all with `timeout`, code `g61.c`, `fam.py`)
+
+slack := f - residue - ceil(diam/3); a counterexample needs slack < 0.
+- `./g61 search n 3e6 seed` (annealing over edge toggles, random start, n = 10,12,14,16):
+  min slack 0,0,0,2. Drifts to dense graphs with small diameter. No counterexample.
+- `./g61 band n iters seed w` (edges only between i,j with |i-j| <= w, so diam >= (n-1)/w;
+  annealing): (n,w) = (16,2),(18,3),(20,4),(22,3): min slack 2,2,1,2 with D = 10,7,7,10.
+  Longer runs (n,w) = (24,3),(26,4),(20,2),(28,5), 900 s each: see final numbers below.
+  Large-diameter graphs found have slack >= 1, typically growing with D.
+- Structured family (fam.py): chains of k copies of K_{2,m} glued at cut vertices c_0..c_k,
+  p pendants per inner c_i, pe pendants on c_0, c_k; k <= 8, m <= 5, p,pe <= 3, n <= 30
+  (287 graphs). k = 1 (one K_{2,m} plus pendants) is TIGHT (slack 0) for every m, p, pe
+  tested: an infinite-looking tight family with D = 4. For k >= 2 slack grows with k
+  (min slack 1,2,3,4,6,6,7 for k = 2..8): the residue drops to about k while alpha ~ 2k,
+  so residue is far below alpha in these chains. This family also shows f - alpha ~ D/4,
+  so the alpha-version fails by a linear amount.
+No counterexample found anywhere.
