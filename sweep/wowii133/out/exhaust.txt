@@ -1,0 +1,10 @@
+n=2 graphs=1 checked=1 fails=0 tight=1
+n=3 graphs=2 checked=2 fails=0 tight=1
+n=4 graphs=3 checked=3 fails=0 tight=0
+n=5 graphs=8 checked=8 fails=0 tight=1
+n=6 graphs=19 checked=19 fails=0 tight=1
+n=7 graphs=57 checked=57 fails=0 tight=0
+n=8 graphs=186 checked=186 fails=0 tight=0
+n=9 graphs=740 checked=740 fails=0 tight=0
+n=10 graphs=3389 checked=3389 fails=0 tight=1
+n=11 graphs=18502 checked=18502 fails=0 tight=0
