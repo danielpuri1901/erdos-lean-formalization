@@ -107,3 +107,6 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- witt24: in `decide +kernel`, a fuel-recursive popcount (`pc (n+1) x = x % 2 + pc n (x / 2)`) cost about 2 ms per call (15k calls: 30 s, 2.8 GB); clearing the lowest bit with `x &&& (x - 1)` four times was 8x faster at 0.8 GB. Bridge with `pc n y ≤ pc n (y &&& (y - 1)) + 1` by induction on `n` with odd/even cases (`Nat.eq_of_testBit_eq`, `Nat.testBit_land`, `Nat.testBit_succ`, `Nat.testBit_zero`).
+- witt24: a strict-subset argument (`card_lt_card`) does not give "at most one fewer element"; do not use it to bound how many bits one bit-clearing step removes.
+- witt24: `List.Pairwise.forall` takes `[Std.Symm R]` as an instance; provide it with `have : Std.Symm R := ⟨...⟩` first.

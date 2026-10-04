@@ -8,8 +8,11 @@
   Stored in Lean as 24-bit `Nat` masks; `toFS m = univ.filter (fun i => m.testBit i)`.
 - Facts checked by the kernel on the masks:
   1. every octad has popcount 8 (`pc 24 m = 8`);
-  2. for every pair of positions i < j in the list, `pc 24 (a &&& b) ≤ 4`
-     (287,661 pairs, split into chunks of rows in separate modules).
+  2. for every pair of positions i < j in the list, `clr^4 (a &&& b) = 0` where
+     `clr x = x &&& (x - 1)` clears the lowest set bit
+     (287,661 pairs, 24 chunks of about 12,000 pairs in 4 modules `Solution/Witt/Pairs{A,B,C,D}.lean`).
+- Bridge for the pair check: `pc n y ≤ pc n (clr y) + 1` (induction on `n`, odd/even cases of `y`),
+  so `clr^4 x = 0` gives `pc 24 x ≤ 4`.
 - Bridge: `(toFS m).card = pc 24 m` (induction on the fuel with `Fin.sum_univ_succ`,
   `Nat.testBit_succ`), and `toFS (a &&& b) = toFS a ∩ toFS b`.
 - Consequences: the 759 Finsets are pairwise distinct (two equal ones would meet in 8 points),
@@ -28,5 +31,11 @@
 
 ## Decisions
 
-- Pairwise check via popcount by structural fuel recursion (`pc`), not a Finset computation:
-  the bridge lemma is a short induction and the kernel only does `Nat` arithmetic.
+- Pairwise check via `clr` bit clearing, not `pc`: 20 rows (about 15,000 pairs) took 30 s and 2.8 GB
+  with `pc` (structural recursion in the kernel) but 4 s and 0.8 GB with `clr` (GMP-accelerated ops).
+  `pc` is kept only for the 759 block sizes.
+
+## Status
+
+- Full proof builds (`lake build Solution`, about 30 s for the pair modules on 4 cores);
+  `#print axioms witt_design_exists` gives `propext, Classical.choice, Quot.sound`.
