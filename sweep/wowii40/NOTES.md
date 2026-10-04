@@ -1,5 +1,36 @@
 # wowii40 sweep notes
 
+```
+result: partial
+claim: (1) Conjecture 40 holds for every connected graph on >= 2 vertices that is acyclic (trees)
+  and for every one with pathCoverNumber <= 1 (has a Hamiltonian path); (2) b + 2 <= 2f for every
+  connected graph on >= 2 vertices; (3) no counterexample on <= 11 vertices (computer).
+lean: Solution.lean (namespace Wowii40Sweep): conjecture40_of_isAcyclic,
+  conjecture40_of_pathCoverNumber_le_one, b_add_two_le, plus helper lemmas; builds with no sorry,
+  axioms propext, Classical.choice, Quot.sound only.
+computed: exhaustive up to isomorphism: no connected graph on 2..11 vertices violates the claim
+  (n <= 9 by full generation, 273,192 graphs; n = 10 and n = 11 by extending every connected graph of
+  slack 2f-b-p <= 2 on one fewer vertex, which is complete since slack drops by at most 2 per added
+  vertex). Heuristic only: annealing n = 12 (1.17M evaluations), n = 13 (1.06M), n = 14 (0.25M), min
+  slack 1; blow-ups of all connected graphs on <= 5 vertices with n <= 15 (independent sets, 62,794)
+  and n <= 12 (independent sets or cliques, 256,435), min slack 1; 12-vertex extensions of >= 22,000 of
+  the 96,949 slack-1 graphs on 11 vertices reachable through slack-1 chains (>= 4.6M exact tests),
+  none with slack <= 0.
+next idea: The claim is p <= 2f - b - 1. Gallai–Milgram (p <= alpha) plus f >= alpha + 1 settles every
+  graph with b <= 2f - alpha - 1, in particular b = f, so a counterexample needs a large induced
+  bipartite part that is far from a forest and few long paths. Formalising Gallai–Milgram for
+  undirected graphs would turn this into a Lean reduction. For computation: n = 12 exhaustively needs
+  the complete slack <= 4 list on 10 vertices (millions of graphs, then about 10^9 extension tests);
+  a faster exact test for Δp (store, per parent, the vertex pairs that are ends of distinct paths in
+  some minimum path cover, so Δp = -1 is decided without the DP) would make it feasible in C.
+dead ends: annealing on slack at n = 12-14 and blow-ups of small graphs never went below slack 1;
+  the bound b <= 2|Z| (larger colour class) is sharp on K_{n,n} and K_{a,a,a}, so no slack is left to
+  absorb p from that side; p <= alpha alone is too weak (b can be 2*alpha while f = alpha + 1).
+confidence: high because the Lean theorems build without sorry and the exhaustive search was
+  validated by reproducing the known graph counts and the problem file's n <= 9 numbers.
+```
+
+
 start: 1791105082 (date -u +%s), 2026-10-04 09:11 UTC
 
 ## Phase A: statement
@@ -119,3 +150,12 @@ Quot.sound only):
   slack-2 parents are missing). Extending these to 12 vertices in all 2047 ways (exact test after the
   Δf filter), time-boxed: first pass ≥ 8000 parents (shuffled order) done, about 1.7M candidates
   tested; 0 graphs with slack ≤ 0. Second pass: see the report block.
+  Second pass (lines 10001.. of the shuffled list): >= 14,000 parents done, about 2.95M candidates
+  tested; 0 graphs with slack <= 0. Lines about 8001..10000 may be only partly covered.
+
+## Phase D decisions
+
+- Reported `partial`: two special cases and the inequality b + 2 <= 2f are in Lean; the general claim
+  is neither proved nor refuted. Nothing here is claimed as solved.
+- Did not attempt to formalise Gallai–Milgram (too large for the time box); the b = f reduction in
+  L8 is paper-only and depends on it.
