@@ -107,3 +107,14 @@ propext, Classical.choice, Quot.sound):
 All of them have diam exactly 4 (no tight graph with diam >= 5 for n <= 7); they have
 r = 3, f = 5 (n = 6, 7) or r = 4, f = 6 (n = 7), with α in {r, r + 1}.
 So diam = 4, 7, 10, ... (where ceil(diam/3) jumps) are where counterexamples should be looked for.
+
+### More computation (Phase B/C, background)
+- `./g61 exh8 2 {0,1}`: every labeled graph on 8 vertices; connected count 251,548,592
+  (= OEIS A001187(8)); conjecture 61: 0 failures; tight: 3,150,534 labeled, of which
+  1,548,120 have diam >= 4. (Independent re-check of n = 8 beyond the problem file's Python.)
+- `./g61 mix n iters seed minD` (annealing with edge toggles AND degree-preserving double-edge
+  swaps, which keep the residue fixed; start from a random caterpillar with spine > minD;
+  only graphs with diam >= minD accepted):
+  n=18 (minD 4): min slack 0 (D = 4); n=24 (minD 4): min slack 0 (D = 4);
+  n=22 (minD 7): min slack 2 (D = 7, f - r = 5); n=26 (minD 10): min slack 3 (D = 10).
+  All tight graphs found have diam exactly 4.
