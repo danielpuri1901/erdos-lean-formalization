@@ -107,3 +107,17 @@ Independent builds in GitHub Actions passed for both branches: `lake build Chall
 The last step of that workflow, the axiom report, fails on these branches because it reads a theorem name from the placeholder `Challenge.lean`; it is not a proof failure, and the axioms of the partial theorems were reported by the sessions only.
 The partial theorems have not been through the checker, because they are not the frozen conjecture statements.
 
+## Remaining credit (2026-10-04, 67 USD on the meter)
+
+Daniel approved two more runs and a reserve of about 20 USD; no more credit goes to Catch-Up, which needs a new idea and not more attempts.
+
+| run | branch | session | goal | result |
+|-----|--------|---------|------|--------|
+| a000224 continuation | `deep/a000224` | session_018XUdyycEGiv3Vico6jo1YS (Fable 5.1 manager) | Q4: the conjecture for n = p^e q with every e ≥ 4; at most 5 attempts and 90 minutes | running |
+| TxGraffiti 3 disproof | `run/txg3-disproof` | session_013nzAAwLLQXTdW4fCA9Dn92 (Opus 5.5) | a Lean proof that conjecture 3 is false, from the public 48-vertex cubic graph, judged by the checker target `txgraffiti3` | running |
+
+The TxGraffiti 3 run is a known result, not an open problem: the graph comes from https://github.com/ipitchford/txgraffiti-order48-successor, whose authors call it an unrefereed, certificate-backed candidate.
+formal-conjectures issue 6737 asks for exactly this fix and had no pull request on 2026-10-04; no Lean proof was found.
+Before the run, separate code confirmed that the graph is cubic and connected, that the listed 15 edges are a maximal matching, and that no independent dominating set has 15 or fewer vertices.
+The session gets only the edge list and writes its own certificate.
+
