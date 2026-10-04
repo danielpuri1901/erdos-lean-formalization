@@ -12,17 +12,19 @@ open SnakeInBox SimpleGraph
 
 theorem snake_length_lt (n k : Nat) (S : (Hypercube n).Subgraph)
     (h : IsSnakeInGraphOfLength (Hypercube n) S k) : k < 2 ^ n := by
-  sorry
+  obtain ⟨-, u, v, P, hP, -, rfl⟩ := h
+  have := hP.length_lt
+  simpa [Fintype.card_finset] using this
 
 theorem snake_lengths_bddAbove (n : Nat) :
-    BddAbove {k | ∃ S : (Hypercube n).Subgraph, IsSnakeInGraphOfLength (Hypercube n) S k} := by
-  sorry
+    BddAbove {k | ∃ S : (Hypercube n).Subgraph, IsSnakeInGraphOfLength (Hypercube n) S k} :=
+  ⟨2 ^ n, fun _ ⟨S, hS⟩ => (snake_length_lt n _ S hS).le⟩
 
-theorem longest_le_two_pow_sub_one (n : Nat) : LongestSnakeInTheBox n ≤ 2 ^ n - 1 := by
-  sorry
+theorem longest_le_two_pow_sub_one (n : Nat) : LongestSnakeInTheBox n ≤ 2 ^ n - 1 :=
+  csSup_le' fun _ ⟨S, hS⟩ => by have := snake_length_lt n _ S hS; omega
 
-theorem snake_upper_bound_one : LongestSnakeInTheBox 1 ≤ 2 ^ (1 - 1) := by
-  sorry
+theorem snake_upper_bound_one : LongestSnakeInTheBox 1 ≤ 2 ^ (1 - 1) :=
+  longest_le_two_pow_sub_one 1
 
 end SnakeUpper
 
