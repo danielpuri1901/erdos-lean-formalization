@@ -1,2 +1,6 @@
 n=7 N=121 exists=0 nodes=190612
 n=7 N=122 exists=0 nodes=255133
+n=7 N=123 exists=0 nodes=235043
+  valid n=7 N=124: 0 1 3 7 15 31 63
+n=7 N=124 exists=1 nodes=6
+n=7 N=125 exists=0 nodes=245107

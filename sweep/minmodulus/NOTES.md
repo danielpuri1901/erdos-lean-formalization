@@ -62,3 +62,12 @@ closed: N = 13 (n=4), 29 (n=5), 61 (n=6) admit no valid set although a smaller m
 (each is minModulus + 1). So the conjecture cannot be reduced to checking N = minModulus − 1.
 `check.py` also confirms {2^k − 1} is valid mod minModulus n and not mod minModulus n − 1 for
 n = 6, 7.
+
+## Phase B: n = 7 (new range)
+
+`search2 7 N N` for every N = 7..125 (4 parallel chunks, files `n7a..n7d.txt`):
+no valid 7-set for N = 7..123; valid at N = 124 = minModulus 7 (found {0,1,3,7,15,31,63});
+none at N = 125. So the conjecture holds for n = 7 (computer only, not a proof).
+`search2` agrees with `search` (independent DFS, no unit normalisation) on every N ≤ 64 for
+n ≤ 6, and with `check.py` (pure brute force) for n ≤ 5.
+Pattern seen for n = 4..7: minModulus + 1 admits no valid set (13, 29, 61, 125).

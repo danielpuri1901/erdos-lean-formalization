@@ -87,3 +87,8 @@ n=7 N=92 exists=0 nodes=49131
 n=7 N=93 exists=0 nodes=44395
 n=7 N=94 exists=0 nodes=52853
 n=7 N=95 exists=0 nodes=47255
+n=7 N=96 exists=0 nodes=66901
+n=7 N=97 exists=0 nodes=51795
+n=7 N=98 exists=0 nodes=66425
+n=7 N=99 exists=0 nodes=60863
+n=7 N=100 exists=0 nodes=78396
