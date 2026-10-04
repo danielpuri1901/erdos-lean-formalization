@@ -37,4 +37,8 @@ Single file `Solution.lean` (no heavy kernel checks). Lemmas, in order:
 
 ## Status
 
-(updated below as work proceeds)
+- All lemmas of the plan proved in `Solution.lean`; `lake build Solution` passes with no warnings.
+- `#print axioms dihedral_leinster_iff`: `propext`, `Classical.choice`, `Quot.sound`.
+- `type_of% @dihedral_leinster_iff = type_of% @LeinsterGroup.dihedral_is_leinster_iff_odd_perfect` by `rfl`.
+- No `sorry`, `admit`, `axiom`, `native_decide`, `implemented_by`, `unsafe` in `Solution.lean`.
+- No kernel-heavy steps: only small `decide` checks over `ZMod 2`; the build of `Solution` takes about 10 s.

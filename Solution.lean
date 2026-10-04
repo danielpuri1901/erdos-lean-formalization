@@ -184,23 +184,116 @@ def phi (n : Nat) (h : 2 ∣ n) : DihedralGroup n →* Multiplicative (ZMod 2) w
     | r i => Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) i)
     | sr i => Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) i + 1)
   map_one' := by
-    sorry
+    show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) 0) = 1
+    rw [map_zero, ofAdd_zero]
   map_mul' := by
-    sorry
+    have k1 : ∀ a b : ZMod 2, b - a = a + 1 + (b + 1) := by decide
+    have k2 : ∀ a b : ZMod 2, b - a + 1 = a + (b + 1) := by decide
+    rintro (a | a) (b | b)
+    · show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) (a + b)) =
+        Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) a) *
+          Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) b)
+      rw [← ofAdd_add, map_add]
+    · show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) (b - a) + 1) =
+        Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) a) *
+          Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) b + 1)
+      rw [← ofAdd_add, map_sub, k2]
+    · show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) (a + b) + 1) =
+        Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) a + 1) *
+          Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) b)
+      rw [map_add (ZMod.castHom h (ZMod 2)), ← ofAdd_add]
+      congr 1
+      ring
+    · show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) (b - a)) =
+        Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) a + 1) *
+          Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) b + 1)
+      rw [← ofAdd_add, map_sub, k1]
 
 lemma card_ker_phi [NeZero n] (h : 2 ∣ n) : Nat.card (phi n h).ker = n := by
-  sorry
+  have hsurj : Function.Surjective (phi n h) := by
+    intro y
+    have : y = Multiplicative.ofAdd 0 ∨ y = Multiplicative.ofAdd 1 := by
+      revert y
+      decide
+    rcases this with rfl | rfl
+    · refine ⟨r 0, ?_⟩
+      show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) 0) = _
+      rw [map_zero]
+    · refine ⟨sr 0, ?_⟩
+      show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) 0 + 1) = _
+      rw [map_zero, zero_add]
+  have h1 := Subgroup.card_mul_index (phi n h).ker
+  rw [Subgroup.index_ker, MonoidHom.range_eq_top.mpr hsurj, Subgroup.card_top,
+    DihedralGroup.nat_card] at h1
+  have h2 : Nat.card (Multiplicative (ZMod 2)) = 2 := by
+    rw [Nat.card_eq_fintype_card]
+    rfl
+  rw [h2] at h1
+  omega
 
 lemma sr_one_mem_ker (h : 2 ∣ n) : sr 1 ∈ (phi n h).ker := by
-  sorry
+  rw [MonoidHom.mem_ker]
+  show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) 1 + 1) = 1
+  rw [map_one]
+  decide
 
 lemma sr_zero_not_mem_ker (h : 2 ∣ n) : sr 0 ∉ (phi n h).ker := by
-  sorry
+  rw [MonoidHom.mem_ker]
+  show Multiplicative.ofAdd (ZMod.castHom h (ZMod 2) 0 + 1) ≠ 1
+  rw [map_zero, zero_add]
+  decide
 
 lemma not_leinster_even [NeZero n] (hn : Even n)
     {F : Fintype {H : Subgroup (DihedralGroup n) // H.Normal}}
     (h : ∑ H : {H : Subgroup (DihedralGroup n) // H.Normal}, Nat.card H = 2 * (2 * n)) : False := by
-  sorry
+  classical
+  have h2 : 2 ∣ n := even_iff_two_dvd.mp hn
+  have hQnot : (phi n h2).ker ∉ insert ⊤ (n.divisors.image (K n)) := by
+    intro hmem
+    rcases Finset.mem_insert.mp hmem with e | e
+    · exact sr_zero_not_mem_ker h2 (e ▸ Subgroup.mem_top _)
+    · obtain ⟨d, -, hd⟩ := Finset.mem_image.mp e
+      have hR := K_le_R (n := n) d (hd ▸ sr_one_mem_ker h2)
+      obtain ⟨i, hi⟩ := mem_R.mp hR
+      cases hi
+  have hall : ∀ H ∈ insert (phi n h2).ker (insert ⊤ (n.divisors.image (K n))), H.Normal := by
+    intro H hH
+    rcases Finset.mem_insert.mp hH with rfl | hH
+    · exact MonoidHom.normal_ker _
+    · rcases Finset.mem_insert.mp hH with rfl | hH
+      · infer_instance
+      · obtain ⟨d, -, rfl⟩ := Finset.mem_image.mp hH
+        exact normal_of_le_R (K_le_R d)
+  have hsum : ∑ H ∈ insert (phi n h2).ker (insert ⊤ (n.divisors.image (K n))), Nat.card H =
+      n + (2 * n + ∑ d ∈ n.divisors, d) := by
+    rw [Finset.sum_insert hQnot, sum_insert_top_image, card_ker_phi h2]
+  have hle : ∑ H ∈ insert (phi n h2).ker (insert ⊤ (n.divisors.image (K n))), Nat.card H ≤
+      ∑ H : {H : Subgroup (DihedralGroup n) // H.Normal}, Nat.card H := by
+    have e1 : ∑ x ∈ (insert (phi n h2).ker (insert ⊤ (n.divisors.image (K n)))).subtype
+        (fun H => H.Normal), Nat.card x.1 =
+        ∑ H ∈ insert (phi n h2).ker (insert ⊤ (n.divisors.image (K n))), Nat.card H := by
+      refine (Finset.sum_subtype_eq_sum_filter (f := fun H : Subgroup (DihedralGroup n) => Nat.card H)
+        (p := fun H => H.Normal)).trans ?_
+      rw [Finset.filter_true_of_mem hall]
+    rw [← e1]
+    exact Finset.sum_le_sum_of_subset
+      (f := fun x : {H : Subgroup (DihedralGroup n) // H.Normal} => Nat.card x.1)
+      (@Finset.subset_univ _ F _)
+  have hσ : 1 + n ≤ ∑ d ∈ n.divisors, d := by
+    have hn0 := NeZero.ne n
+    have h1n : (1 : Nat) ≠ n := by
+      intro e
+      rw [← e] at hn
+      exact Nat.not_even_one hn
+    have hsub : ({1, n} : Finset Nat) ⊆ n.divisors := by
+      intro x hx
+      rw [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact Nat.one_mem_divisors.mpr hn0
+      · exact Nat.mem_divisors_self _ hn0
+    have := Finset.sum_le_sum_of_subset (f := fun i : Nat => i) hsub
+    rwa [Finset.sum_pair h1n] at this
+  omega
 
 end DihedralLeinster
 

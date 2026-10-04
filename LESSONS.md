@@ -107,3 +107,10 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+
+## dihedral (2026-10-04)
+
+- `rw [he] at h3` with `he : n = d * e` fails ("motive is not type correct") when some term has type `ZMod n`; rewrite the Nat goal instead: `have h' : e * d ∣ x := by rw [mul_comm e d, ← he]; exact h3`.
+- `rw [map_add]` on `ofAdd (f (a + b) + 1)` matched `Multiplicative.ofAdd` first and failed on `AddHomClass`; name the hom: `rw [map_add (ZMod.castHom h (ZMod 2))]`.
+- `rw [Finset.sum_subtype_eq_sum_filter]` cannot match a summand `Nat.card ↥↑x`; pass `(f := fun H : Subgroup G => Nat.card H) (p := ...)` and use it with `.trans`.
+- For a sum over `{H : Subgroup G // H.Normal}` with the classical instance from `IsLeinster`, state helper lemmas with an implicit `{F : Fintype {H // H.Normal}}`; `rw` and `exact` then unify `F` with the goal's instance (`Finset.sum_subtype` takes `F` the same way).
