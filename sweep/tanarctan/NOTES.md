@@ -94,3 +94,41 @@ A local obstruction was looked for and not found (on paper):
 
 Conclusion: the problem is archimedean.
 An integer value needs |cos θ_n| = c_n / sqrt(ω_n) exactly, with θ_n = Σ arctan k.
+
+## Phase C: proof attempt
+
+### What a full proof would need (plain mathematics)
+
+Let θ_n = Σ_{k≤n} arctan k, ω_n = ∏(1 + k^2) = A_n^2 + B_n^2, and c_n = gcd(A_n, B_n).
+1. A_n | B_n ⇔ |A_n| = c_n. [proved on paper; proved in Lean: `isIntegerValue_iff_gcd_eq_natAbs`]
+2. There is an explicit formula for c_n from the factorizations of 1 + k^2 (Phase A). [proved on paper; computed up to 3000]
+3. Integer value m = x_n ⇒ ω_n = c_n^2 (1 + m^2), so the squarefree kernel K_n divides 1 + m^2. [proved on paper]
+4. Largest-prime argument: let P be a prime factor of 1 + n^2 with P > 2n.
+   Then v_P(ω_n) = 1, because the other solutions j of j ≡ ±n (mod P) are P - n > n and n + P > n.
+   So P | K_n | 1 + m^2 and |m| ≥ sqrt(P - 1) > sqrt(2n - 1).
+   An integer value is therefore large, so θ_n is within about 1/|m| of π/2 (mod π). [proved on paper; this is the mechanism of Ono's theorem, from memory, unverified]
+5. MISSING: an inequality |cos θ_n| ≠ c_n / sqrt(ω_n) for every n ≥ 5.
+   It would need a lower bound for the distance from θ_n to π/2 + πℤ, a linear form in n logarithms of Gaussian integers (log(1 + k i)), sharp to about exp(-n log n).
+   Baker-type bounds for n logarithms lose a factor like C^n in the exponent, which is far too weak.
+   [unknown; this is the open core of the problem]
+6. MISSING alternative: a local (congruence) obstruction. Phase B shows there is none at 2, none at p ≡ 1 (mod 4), and none from q ≡ 3 (mod 4) classes. [ruled out on paper]
+
+Decision: step 5 is the whole difficulty and I have no idea that gets around it, so I do not try the full proof.
+What I formalize instead:
+(a) Reduction 1 in Lean.
+(b) The conjecture on the finite range 5 ≤ n ≤ 10000, by a Lean-checked computation.
+
+### Finite-range argument (what the Lean proof says, line by line)
+
+Lean file `Solution/TanArctanCheck.lean`, namespace `TanArctanSweep`:
+- Step 1, `gaussProd_succ`: Z_{n+1} = Z_n · (1 + (n+1) i). This is `Finset.prod_Icc_succ_top`.
+- Step 2, `zrec_eq`: the recursion zrec 0 = (1, 0), zrec (n+1) = (a - (n+1) b, b + (n+1) a) equals (A n, B n).
+  The proof is induction, using `Zsqrtd.re_mul` and `Zsqrtd.im_mul` with d = -1.
+- Step 3, `checkFrom_sound`: if `checkFrom fuel n a b = true` and zrec n = (a, b), then A_m ∤ B_m for n ≤ m < n + fuel.
+  The checker tests `b % a ≠ 0` at each index; `Int.dvd_iff_emod_eq_zero` holds even for a = 0.
+- Step 4, `check_to_10000`: `checkFrom 9996 5 190 (-90) = true` by `decide +kernel`, which takes about 300 s.
+- `not_isIntegerValue_of_check` and then `Solution.lean`'s `tan_arctan_sum_not_integer_of_le_10000` give:
+  ∀ n, 5 ≤ n → n ≤ 10000 → ¬ IsIntegerValue n.
+
+Kernel cost: 2000 → 5 s, 4000 → 30 s, 10000 → 300 s, so it scales like N^2.5.
+The overhead is in the kernel, not in GMP. A range of 10^5 by this method is out of reach.
