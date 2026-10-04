@@ -71,3 +71,48 @@ none at N = 125. So the conjecture holds for n = 7 (computer only, not a proof).
 `search2` agrees with `search` (independent DFS, no unit normalisation) on every N ≤ 64 for
 n ≤ 6, and with `check.py` (pure brute force) for n ≤ 5.
 Pattern seen for n = 4..7: minModulus + 1 admits no valid set (13, 29, 61, 125).
+
+## Phase C: proof attempts
+
+### Proved (paper and Lean): N ≥ 2^(n−1)
+
+Lemma W (witness). If a₀ ∈ A, D, P ⊆ A \ {a₀} disjoint, D ≠ ∅, |P| ≤ |D| and
+ΣD = ΣP + (|D| − |P|)·a₀ in Z/N, then A is not valid. Proof: the multiset m that drops D,
+doubles P and gives a₀ multiplicity 1 + |D| − |P| has size |A| and sum ΣA, and m = 0 on D.
+(Proved on paper; Lean `MinModulusSweep.not_isValidMod_of_witness`.)
+
+Lemma S. If S ≠ T ⊆ A \ {a₀} and Σ_S (a − a₀) = Σ_T (a − a₀), A is not valid.
+Proof: cancel S ∩ T (Mathlib `sum_sdiff_eq_sum_sdiff_iff`), WLOG |T\S| ≤ |S\T|, apply W with
+D = S\T, P = T\S. (Lean `not_isValidMod_of_shifted_sum_eq`.)
+
+Theorem. n ≥ 1, 0 < N < 2^(n−1), |A| = n ⇒ A not valid. Pigeonhole of the 2^(n−1) subsets of
+A \ {a₀} into Z/N under S ↦ Σ_S (a − a₀), then Lemma S.
+(Lean `not_isValidMod_of_lt_two_pow_pred`, builds, axioms: propext, Classical.choice, Quot.sound.)
+
+This is the "dissociated set" bound: A − a₀ minus {0} must have distinct subset sums mod N.
+It covers every N < 2^(n−1) for every n; the conjecture's range is N < 2^n − 2^⌊log₂ n⌋,
+so roughly half the range remains.
+
+### Plain-maths reformulation with a₀ = 0 (proved on paper)
+
+With 0 ∈ A and A' = A \ {0}, A is valid iff both:
+(C1) no nonempty set D ⊆ A' and multiset Q on A' \ D with |Q| ≤ |D| and ΣD = ΣQ;
+(C2) no set D' ⊆ A' and multiset P on A' \ D' with |P| = |D'| + 1 and ΣD' = ΣP.
+
+### One more value (paper): N ≥ 2^(n−1) + 1 for n ≥ 3
+
+Take b ∈ A' with 2b ≠ 0 (exists for n ≥ 3: Z/N has at most one element of order 2 and A'
+has ≥ 2 nonzero elements). Then 2b is not a subset sum of A': 2b = ΣT with b ∈ T is a
+subset-sum collision {b} vs T\{b} (C1); with b ∉ T, |T| ≥ 2 it is C1 with D = T, Q = {b,b};
+|T| = 1 is C2 with D' = T, P = {b,b}; T = ∅ is 2b = 0, excluded. So the 2^(n−1) distinct
+subset sums avoid the value 2b, and N ≥ 2^(n−1) + 1.
+
+### Why the counting does not easily reach 2^n
+
+Values 2b + ΣS (S ⊆ A' \ {b}) may legally coincide with ΣT when b ∉ T and |S\T| ≥ |T\S|
+(neither side is a set after cancellation and C2's size condition fails). Two base points
+a₀, a₁ give two families of size-(n−1) multisets, but cross-collisions are allowed whenever
+both padding elements have multiplicity ≥ 2. The extremal set {2^k − 1} shows the gap from
+2^(n−1) to 2^n − 2^⌊log₂ n⌋ comes from these multiset (not set) relations; a proof needs to
+control them, e.g. by an injection of ~2^n carefully chosen multisets whose pairwise
+cancellations always leave a set on one side.
