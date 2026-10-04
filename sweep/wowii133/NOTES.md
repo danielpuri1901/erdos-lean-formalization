@@ -21,7 +21,10 @@ lean: Solution.lean, namespace Wowii133Sweep, builds with no sorry (axioms: prop
 computed: EXHAUSTIVE (exhaust.c, canonical augmentation, counts 1,2,3,8,19 for n=2..6 match an
   independent brute force): all connected C4-free graphs n=2..12 (n=9: 740, n=10: 3389,
   n=11: 18502, n=12: 120221): 0 failures; ties only K2, K3, C5, C6 and one graph at n=10, which
-  is the Petersen graph (a known tie). n=13: see the Phase D note at the end.
+  is the Petersen graph (a known tie). n=13 also complete: every connected C4-free 13-vertex
+  graph extends a connected C4-free 12-vertex one, all 11,924,170 extensions of the 120,221
+  12-vertex graphs were generated (with repeats); the 8,208,955 with l(G) > 2 were checked
+  (those with l(G) <= 2 are covered by the Lean theorem): 0 failures.
   HEURISTIC: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
   q in {2,3,4,5,7,8,9,11,13}; PG(2,q) incidence graphs q in {2,3,4,5,7,8,9}; generalized Petersen
   GP(m,k) 5<=m<=15; all 548 connected C4-free circulants C_n(S), n<=60, |S|<=5; theta graphs
@@ -36,14 +39,14 @@ next idea: The open case is C4-free with l(G) > 2: show path >= rad + 3 when l(G
   argument modelled on the near-extremal families: double stars (rad 2, path 4, l -> 2), theta
   graphs theta(3,k) (two hubs joined by k paths of length 3: rad 3, path 6, l = 3k/(k+1) -> 3,
   margin 3/(k+1)), and Petersen (exact tie, l = 3). A counterexample must beat these limits;
-  search "hub + C4-free gadget" constructions and run the exhaustive check at n=14.
+  search "hub + C4-free gadget" constructions and run the exhaustive check at n=14 (n=13 took 6 minutes on 4 cores).
 dead ends: Pointwise greedy alone (needs min_v l(v), not the average). Extending only at the far
   end of a geodesic beyond one step (later steps can lose 2 components per step, giving only
   ~rad + l/2). Per-vertex inequality path >= rad + l(v) is false (stars). Annealing on
   rad + l - path drifts to trees; restricted to l > 2 it drifts to theta(3,k). Edge-switch chain
   never reached girth 5 for 4-regular n<=22 or 5-regular n=30..40.
 confidence: high for the Lean special cases (they build, axioms checked) and for the exhaustive
-  n<=12 C4-free check (cross-checked counts n<=6); medium that the conjecture is true (margins go
+  n<=13 C4-free check (cross-checked counts n<=6); medium that the conjecture is true (margins go
   to 0 along theta(3,k) and double stars, so it is sharp).
 ```
 
@@ -191,3 +194,6 @@ graph at n=10.
 
 Greedy theorem formalized at 09:38-09:40 (`add_two_le_path_of_minl`, ~110 lines, compiled on the
 first try once the counting lemma `indepNeighborsCard_le_of_cover` was isolated).
+
+n=13 result (09:48 UTC, `out/exhaust13_*.txt`): per process 2978553/2973336/2982108/2990173
+candidates, 2043922/2053074/2060713/2051246 with l(G) > 2, 0 failures each.

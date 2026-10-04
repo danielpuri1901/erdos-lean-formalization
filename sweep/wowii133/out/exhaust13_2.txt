@@ -8,3 +8,5 @@ n=8 graphs=186 checked=0 fails=0 tight=0
 n=9 graphs=740 checked=0 fails=0 tight=0
 n=10 graphs=3389 checked=0 fails=0 tight=0
 n=11 graphs=18502 checked=0 fails=0 tight=0
+n=12 graphs=120221 checked=0 fails=0 tight=0
+final n=13 proc=2/4 candidates=2982108 with_l_gt_2=2060713 fails=0
