@@ -1,7 +1,6 @@
 import FormalConjectures.Arxiv.«2607.05739».TanArctanSum
 
-/-! Checker for `tanarctan`: `Z_n` by recursion, a sound Boolean checker, and one kernel run.
-    Kept apart from `Solution.lean` so that editing the main file does not rerun the 300 s check. -/
+/-! Checker for `tanarctan`: `Z_n` by recursion (`zrec`, `zrec_eq`) and a sound Boolean checker. -/
 
 namespace TanArctanSweep
 
@@ -55,7 +54,7 @@ lemma not_isIntegerValue_of_check (fuel : Nat) (hc : checkFrom fuel 5 190 (-90) 
   rw [zrec_eq] at h
   exact h
 
-/-- Step 4: the kernel run, about 300 s: every `5 ≤ n ≤ 10000` passes. -/
-lemma check_to_10000 : checkFrom 9996 5 190 (-90) = true := by decide +kernel
+-- Step 4 used to be `checkFrom 9996 5 190 (-90) = true` by `decide +kernel` (300 s, 7.6 GB).
+-- It is superseded by the chunked runs of `runFrom` (see `Solution.lean`), which cover `5 ≤ n ≤ 50000`.
 
 end TanArctanSweep

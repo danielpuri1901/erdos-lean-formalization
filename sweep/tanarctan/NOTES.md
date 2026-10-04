@@ -1,5 +1,45 @@
 # Sweep notes: tanarctan
 
+```
+result: partial
+claim: (1) For every n with 5 ≤ n ≤ 50000, ¬ IsIntegerValue n, i.e. A_n ∤ B_n, so the conjecture holds on [5, 50000].
+       (2) IsIntegerValue n ↔ Int.gcd (A n) (B n) = |A n|.
+       The full conjecture (all n ≥ 5) is NOT established.
+lean: Solution.lean: TanArctanSweep.tan_arctan_sum_not_integer_of_le_50000 and TanArctanSweep.isIntegerValue_iff_gcd_eq_natAbs.
+      Both build with no sorry; #print axioms gives [propext, Classical.choice, Quot.sound].
+      Support files:
+        Solution/TanArctanCheck.lean: zrec, zrec_eq, plus checkFrom and checkFrom_sound, which are kept but unused (the old single run check_to_10000 was removed).
+        Solution/TanArctanRun.lean: runFrom, runFrom_sound.
+        Solution/TanArctanData/Z*.lean: boundary values from Python; untrusted, since each one is checked by a kernel run.
+        Solution/TanArctanChunk/K*.lean: one `decide +kernel` per 1250 indices.
+computed: search.c (exact modular filter): for every n with 5 ≤ n ≤ 4·10^9, A_n ≢ ±c_n (mod q) for at least one q in {2^61-1, 4611686018427387847, 4611686017427387867}.
+            So no integer value exists there (run_4e9.log; run_1e9.log covers 10^9 separately).
+            This relies on the content formula (proved on paper) and on the C code.
+            The code was validated against exact big integers: A_n mod q for every n ≤ 20000, and gcd mod q at 207 sampled n ≤ 20000, with three sieve bounds.
+          floatcheck.c (independent and non-rigorous, long double): for 5 ≤ n ≤ 10^9, x_n is not within 10^-6 of an integer, with |x_n| < 10^5, for all but 8734 n.
+          repro.py (exact Python): the content formula gcd(A_n, B_n) = 2^floor(o_n/2) · ∏ p^min(V+, V-) holds for every n ≤ 3000, and the only integer values with n ≤ 3000 are n = 1..4.
+next idea: The obstruction is archimedean, not arithmetic.
+          On paper, every prime p > 2n that divides some 1 + k^2 with k ≤ n divides ω_n exactly once.
+          (Its roots r and p - r cannot both be ≤ n, and p^2 > 1 + n^2.)
+          So K_n ≥ ω_n / (2n-smooth part of ω_n), which is about exp(c n log n), and an integer value m needs |m| ≥ sqrt(K_n - 1).
+          Since x_n = -tan S_n (n even) or cot S_n (n odd), with S_n = Σ arctan(1/k), an integer value needs S_n within about exp(-c n log n) of (π/2)ℤ.
+          S_n grows like log n in steps of about 1/n, so this can only happen at the O(1) indices next to each crossing of jπ/2, at n ≈ e^{jπ/2 - const}.
+          Next step 1: make c explicit and prove this reduction.
+            On paper, a Mertens-type estimate gives log K_n ≥ n log n - O(n); this is plausible, not fully written out.
+            The reduction is close to Ono's 2026 argument (from memory, unverified).
+          Next step 2: check the few critical n near each crossing far beyond 4·10^9 with high-precision Euler-Maclaurin values of S_n.
+            With step 1 proved explicitly, and with interval arithmetic, this needs no factorization and could verify the conjecture to astronomically large n.
+          The remaining infinite part is a Diophantine statement (S_n never comes super-exponentially close to (π/2)ℤ) that current transcendence methods cannot reach.
+dead ends: Local obstructions: 2-adic (o_n odd, or t + o/2 always even), p ≡ 1 (mod 4), and q ≡ 3 (mod 4) congruence classes all give nothing (NOTES Phase B).
+           A single long `decide +kernel` run scales like N^2.5 (10^4 in 300 s, 7.6 GB).
+           Chunks of 1250 to 2500 indices are about 10 times cheaper, so chunk any kernel run.
+           Baker-type lower bounds for linear forms in n logarithms are far too weak for step 5 of Phase C.
+confidence: high for the Lean claim (kernel-checked, standard axioms only).
+            high that no counterexample exists for n ≤ 4·10^9 (exact modular filter, validated against big integers, cross-checked by an independent float test).
+            The conjecture itself stays open.
+```
+
+
 start: 1791105290 (date -u +%s)
 
 ## Phase A: statement
@@ -97,7 +137,7 @@ Results:
 - Margin (`margin.py`, exact for n ≤ 3000): min over 5 ≤ n ≤ 9 of log10(|A_n|/c_n) is 1.28 (n = 5).
   Over [10, 100] it is 3.65 (n = 10), over [100, 1000] it is 82.9 (n = 100), and over [1000, 3000] it is 1393 (n = 1000).
   An integer value needs exactly 0.
-  The heuristic chance of a counterexample beyond n = 10 is about Σ_n c_n/|A_n|-scale, below 10^-3.
+  Heuristically, the chance of an integer value at n is about c_n/|A_n|-scale (10^-3.65 at n = 10), and it falls super-exponentially after that.
 
 A local obstruction was looked for and not found (on paper):
 - 2-adic: Z_n/2^floor(o/2) ≡ i^(t + o/2) (mod 2) when o is even, where t = #{k ≤ n : k ≡ 3 mod 4}.
@@ -141,9 +181,9 @@ Lean file `Solution/TanArctanCheck.lean`, namespace `TanArctanSweep`:
   The proof is induction, using `Zsqrtd.re_mul` and `Zsqrtd.im_mul` with d = -1.
 - Step 3, `checkFrom_sound`: if `checkFrom fuel n a b = true` and zrec n = (a, b), then A_m ∤ B_m for n ≤ m < n + fuel.
   The checker tests `b % a ≠ 0` at each index; `Int.dvd_iff_emod_eq_zero` holds even for a = 0.
-- Step 4, `check_to_10000`: `checkFrom 9996 5 190 (-90) = true` by `decide +kernel`, which takes about 300 s.
-- `not_isIntegerValue_of_check` and then `Solution.lean`'s `tan_arctan_sum_not_integer_of_le_10000` give:
-  ∀ n, 5 ≤ n → n ≤ 10000 → ¬ IsIntegerValue n.
+- Step 4 (first version, commit "phase C"): `check_to_10000 : checkFrom 9996 5 190 (-90) = true` by `decide +kernel`, about 300 s.
+  This gave `tan_arctan_sum_not_integer_of_le_10000`.
+  Both are superseded by the chunked version below and removed from the final files, to save 300 s and 7.6 GB per fresh build.
 
 Kernel cost: 2000 → 5 s, 4000 → 30 s, 10000 → 300 s, so it scales like N^2.5.
 The overhead is in the kernel, not in GMP. A range of 10^5 by this method is out of reach.
@@ -159,3 +199,10 @@ The overhead is in the kernel, not in GMP. A range of 10^5 by this method is out
   - `Solution.lean`: chains `runFrom_sound` through the chunks. The first chunk starts from zrec 5 = (190, -90), proved by `decide`.
 - Each boundary value is therefore proved equal to zrec b by the kernel run of the chunk before it, and a wrong Python value would make the build fail.
 - Test: 2 chunks of 2500 to 5000 built in 34 s.
+
+## Timeline
+
+- Start 1791105290.
+- Phase A done at about minute 3; phase B (10^9 search) at about minute 6.
+- Lean [5, 10000] at minute 19; Lean [5, 50000] by chunking at minute 35.
+- 4·10^9 search done at minute 40; report at minute 40.
