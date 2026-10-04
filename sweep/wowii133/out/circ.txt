@@ -1,0 +1,4 @@
+n=5 S=1, rad=2 l=2 path=4 score=0
+n=5 S=2, rad=2 l=2 path=4 score=0
+n=6 S=1, rad=3 l=2 path=5 score=0
+done tested=548 tight=3
