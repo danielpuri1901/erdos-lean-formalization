@@ -24,3 +24,7 @@ n=8 N=219 exists=0 nodes=12408963
 n=8 N=223 exists=0 nodes=13500297
 n=8 N=227 exists=0 nodes=15123079
 n=8 N=231 exists=0 nodes=17398485
+n=8 N=235 exists=0 nodes=18955219
+n=8 N=239 exists=0 nodes=20966147
+n=8 N=243 exists=0 nodes=23983299
+n=8 N=247 exists=0 nodes=25830391

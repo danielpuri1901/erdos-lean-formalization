@@ -24,3 +24,8 @@ n=8 N=218 exists=0 nodes=12754781
 n=8 N=222 exists=0 nodes=14855065
 n=8 N=226 exists=0 nodes=16063319
 n=8 N=230 exists=0 nodes=18103687
+n=8 N=234 exists=0 nodes=20834191
+n=8 N=238 exists=0 nodes=22419855
+n=8 N=242 exists=0 nodes=24878313
+n=8 N=246 exists=0 nodes=28749739
+Terminated

@@ -24,3 +24,9 @@ n=8 N=216 exists=0 nodes=12764087
 n=8 N=220 exists=0 nodes=13874951
 n=8 N=224 exists=0 nodes=15533983
 n=8 N=228 exists=0 nodes=18027965
+n=8 N=232 exists=0 nodes=19449193
+n=8 N=236 exists=0 nodes=21661889
+n=8 N=240 exists=0 nodes=25498451
+n=8 N=244 exists=0 nodes=26877235
+  valid n=8 N=248: 0 1 3 7 15 31 63 127
+n=8 N=248 exists=1 nodes=7
