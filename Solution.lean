@@ -264,4 +264,137 @@ theorem conjecture_le_two (k : Nat) (hk : k ≤ 2) : ∀ n < 10 ^ k - 1, a n < a
     · have := a_small_99 n hpos (by omega)
       omega
 
+/- ## General lower bound: 0/1 multiples of 10^k - 1 are ≥ 10^(9k-1) -/
+
+/-- Decimal digit sum. -/
+def ds (n : Nat) : Nat := (Nat.digits 10 n).sum
+
+lemma ds_eq (n : Nat) : ds n = n % 10 + ds (n / 10) := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [ds]
+  · unfold ds
+    rw [Nat.digits_def' (by norm_num) hn, List.sum_cons]
+
+lemma ds_one : ds 1 = 1 := by simp [ds]
+
+/-- Digit sum is subadditive. -/
+lemma ds_add_le (N : Nat) : ∀ a b, a + b = N → ds (a + b) ≤ ds a + ds b := by
+  induction N using Nat.strong_induction_on with
+  | _ N ih =>
+    intro a b hN
+    rcases Nat.eq_zero_or_pos (a + b) with h0 | hpos
+    · have ha : a = 0 := by omega
+      have hb : b = 0 := by omega
+      subst ha hb; simp
+    · rw [ds_eq (a + b), ds_eq a, ds_eq b]
+      by_cases hc : a % 10 + b % 10 < 10
+      · have h1 : (a + b) / 10 = a / 10 + b / 10 := by omega
+        have h2 : (a + b) % 10 = a % 10 + b % 10 := by omega
+        rw [h1, h2]
+        have := ih (a / 10 + b / 10) (by omega) (a / 10) (b / 10) rfl
+        omega
+      · have h1 : (a + b) / 10 = (a / 10 + b / 10) + 1 := by omega
+        have h2 : (a + b) % 10 + 10 = a % 10 + b % 10 := by omega
+        rw [h1]
+        have e1 := ih (a / 10 + b / 10 + 1) (by omega) (a / 10 + b / 10) 1 rfl
+        have e2 := ih (a / 10 + b / 10) (by omega) (a / 10) (b / 10) rfl
+        rw [ds_one] at e1
+        omega
+
+/-- Splitting off the low k digits. -/
+lemma ds_split (k : Nat) : ∀ H L, L < 10 ^ k → ds (10 ^ k * H + L) = ds H + ds L := by
+  induction k with
+  | zero =>
+    intro H L hL
+    have hL0 : L = 0 := by simpa using hL
+    subst hL0; simp [ds]
+  | succ k ih =>
+    intro H L hL
+    rw [ds_eq (10 ^ (k + 1) * H + L), ds_eq L]
+    have h1 : (10 ^ (k + 1) * H + L) % 10 = L % 10 := by
+      rw [pow_succ, mul_comm (10 ^ k) 10, mul_assoc, Nat.mul_add_mod]
+    have h2 : (10 ^ (k + 1) * H + L) / 10 = 10 ^ k * H + L / 10 := by
+      rw [pow_succ, mul_comm (10 ^ k) 10, mul_assoc, Nat.mul_add_div (by norm_num)]
+    have hL' : L / 10 < 10 ^ k := by
+      rw [pow_succ] at hL; omega
+    rw [h1, h2, ih H (L / 10) hL']
+    omega
+
+lemma ds_pow_sub_one (k : Nat) : ds (10 ^ k - 1) = 9 * k := by
+  induction k with
+  | zero => simp [ds]
+  | succ k ih =>
+    have hX : 1 ≤ 10 ^ k := Nat.one_le_pow _ _ (by norm_num)
+    rw [ds_eq, pow_succ]
+    have h1 : (10 ^ k * 10 - 1) % 10 = 9 := by omega
+    have h2 : (10 ^ k * 10 - 1) / 10 = 10 ^ k - 1 := by omega
+    rw [h1, h2, ih]
+    ring
+
+/-- Every positive multiple of 10^k - 1 has digit sum at least 9k (k ≥ 1). -/
+lemma ds_of_dvd (k : Nat) (hk : 1 ≤ k) (N : Nat) : 0 < N → (10 ^ k - 1) ∣ N → 9 * k ≤ ds N := by
+  have hX : 10 ≤ 10 ^ k := by
+    calc 10 = 10 ^ 1 := by norm_num
+      _ ≤ 10 ^ k := Nat.pow_le_pow_right (by norm_num) hk
+  induction N using Nat.strong_induction_on with
+  | _ N ih =>
+    intro hpos hdvd
+    by_cases hlt : N < 10 ^ k
+    · obtain ⟨q, hq⟩ := hdvd
+      have hq1 : q = 1 := by
+        rcases q with _ | _ | q
+        · simp at hq; omega
+        · rfl
+        · exfalso
+          have : (10 ^ k - 1) * (q + 1 + 1) ≥ (10 ^ k - 1) * 2 := Nat.mul_le_mul_left _ (by omega)
+          omega
+      subst hq1
+      rw [hq, mul_one, ds_pow_sub_one]
+    · replace hlt := not_lt.mp hlt
+      set H := N / 10 ^ k
+      set L := N % 10 ^ k
+      have hN : N = 10 ^ k * H + L := (Nat.div_add_mod N (10 ^ k)).symm
+      have hL : L < 10 ^ k := Nat.mod_lt _ (by omega)
+      have hH : 1 ≤ H := (Nat.le_div_iff_mul_le (by omega)).mpr (by omega)
+      have hlt2 : H + L < N := by
+        have : 10 * H ≤ 10 ^ k * H := Nat.mul_le_mul_right _ hX
+        omega
+      have hdvd2 : (10 ^ k - 1) ∣ H + L := by
+        have h3 : N = (10 ^ k - 1) * H + (H + L) := by
+          rw [hN]
+          have : 10 ^ k * H = (10 ^ k - 1) * H + H := by
+            rw [Nat.sub_mul, one_mul, Nat.sub_add_cancel (Nat.le_mul_of_pos_left H (by omega))]
+          omega
+        have := (Nat.dvd_add_right (Dvd.intro H rfl)).mp (h3 ▸ hdvd)
+        exact this
+      have h1 := ih (H + L) hlt2 (by omega) hdvd2
+      have h2 := ds_add_le (H + L) H L rfl
+      rw [hN, ds_split k H L hL]
+      omega
+
+/-- Every 0/1 multiple of 10^k - 1 (k ≥ 1) is at least 10^(9k-1). -/
+lemma ge_of_mem_rep (k : Nat) (hk : 1 ≤ k) {m : Nat} (hm : m ∈ S (10 ^ k - 1)) :
+    10 ^ (9 * k - 1) ≤ m := by
+  obtain ⟨hpos, hdvd, hdig⟩ := hm
+  have h1 := ds_of_dvd k hk m hpos hdvd
+  have h2 : ds m ≤ (Nat.digits 10 m).length := sum_le_length _ hdig
+  have hb := Nat.base_pow_length_digits_le 10 m (by norm_num) (by omega)
+  have h3 : 10 ^ (9 * k) ≤ 10 ^ (Nat.digits 10 m).length := Nat.pow_le_pow_right (by norm_num) (by omega)
+  have h4 : 10 ^ (9 * k) = 10 * 10 ^ (9 * k - 1) := by
+    rw [← pow_succ']; congr 1; omega
+  omega
+
+/-- Proved reduction: if `S (10^k - 1)` is nonempty (true: it contains the repunit R_{9k})
+and every `0 < n < 10^k - 1` has a 0/1 multiple below `10^(9k-1)`, the conjecture holds at k. -/
+theorem conjecture_of_witnesses (k : Nat) (hk : 1 ≤ k) (hne : (S (10 ^ k - 1)).Nonempty)
+    (hw : ∀ n, 0 < n → n < 10 ^ k - 1 → ∃ w ∈ S n, w < 10 ^ (9 * k - 1)) :
+    ∀ n < 10 ^ k - 1, a n < a (10 ^ k - 1) := by
+  intro n hn
+  have hlow : 10 ^ (9 * k - 1) ≤ a (10 ^ k - 1) :=
+    le_csInf hne (fun m hm => ge_of_mem_rep k hk hm)
+  rcases Nat.eq_zero_or_pos n with rfl | hpos
+  · rw [a_0]; exact lt_of_lt_of_le (by positivity) hlow
+  · obtain ⟨w, hwS, hwlt⟩ := hw n hpos hn
+    exact lt_of_le_of_lt (a_le_of_mem hwS) (lt_of_lt_of_le hwlt hlow)
+
 end SweepA4290
