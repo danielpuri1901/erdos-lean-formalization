@@ -86,4 +86,52 @@ Theorem B3 (proved). Self-centered, D>=3, b<=D+2, no all-clique root. Then for e
   k(u) >= 3 is impossible (w in L_2: ecc <= max(2, D-1) = D-1 < D);
   k(u) = 1 forces D = 3 (w in L_2: ecc <= max(3, D-1));
   k(u) = 2 forces D <= 4 (w in L_3: ecc <= max(4, D-2)).
-  So the only open sub-cases are D=3 (all k(u) in {1,2}) and D=4 (all k(u)=2).
+  So the only sub-cases left after B3 are D=3 (all k(u) in {1,2}) and D=4 (all k(u)=2). Both are closed below.
+
+Theorem B4 (proved on paper). No self-centered graph with D=3 has b <= 5.
+  By B3 every root u has exactly one non-clique layer, at k(u) in {1,2}.
+  Case I: some root u has k(u)=1 (L_1 has α=2 with p,q non-adjacent; L_2, L_3 cliques).
+    Let Y = vertices of L_1 with a neighbour in L_2 (Y nonempty: parents of L_2).
+    I-a: |L_3| >= 2. For x in L_2 and c != c' in L_3, S = {u,p,q,x,c,c'} has 6 vertices. In G[S] the
+      only edge inside a parity class (parity of dist(u,.)) is cc'. If x is not adjacent to both c and c',
+      one of c,c' has degree 1 in G[S], so cc' lies on no cycle and G[S] is bipartite: b >= 6, contradiction.
+      So every x in L_2 is adjacent to all of L_3, and L_2 ∪ L_3 is a clique. Then y in Y has
+      dist(y,u)=1, dist(y,L_1)<=2 (via u), dist(y, L_2 ∪ L_3)<=2 (via its L_2-neighbour): ecc(y)<=2. Contradiction.
+    I-b: L_3 = {d}. Let x0 in L_2 be a neighbour of d and y0 in L_1 a neighbour of x0. Then dist(y0,u)=1,
+      dist(y0,L_1)<=2, dist(y0,L_2)<=2 (L_2 clique), dist(y0,d)<=2: ecc(y0)<=2. Contradiction. (No b needed.)
+  Case II: every root has k=2. Fix u: L_1, L_3 cliques, α(L_2)=2.
+    (II.1) For d in L_3: u is in M_3(d) (layer 3 from d), which is a clique (k(d)=2); u has no neighbour in
+      L_2, so no x in L_2 has dist(x,d)=3. Hence dist(L_2, L_3) <= 2 pointwise.
+    (II.2) For x in L_2: dist(x,u)=2, dist(x,L_1)<=2 (parent, L_1 clique), dist(x,L_3)<=2 by II.1.
+      ecc(x)=3 gives x' in L_2 with dist(x,x')=3.
+    (II.3) If such x, x' both have L_3-neighbours c, c', then c != c', c~c', parents x1 != x1' in L_1 are adjacent,
+      and x,x1,x1',x',c',c is an induced 6-cycle (every chord would give dist(x,x')<=2 or join layers 1 and 3).
+      b >= 6, contradiction.
+    (II.4) Take d in L_3, x0 in L_2 adjacent to d, and y in L_2 with dist(x0,y)=3. By II.3, y has no
+      L_3-neighbour. By II.1, for every z in L_3, dist(y,z)=2, so y and z have a common neighbour m_z, which lies
+      in L_2 (adjacent to y: layers 1,2; adjacent to z: layers 2,3).
+    (II.5) Let a' be a neighbour of y in L_1. N(y) is a clique (k(y)=2) containing a' and every m_z, so
+      dist(a',z) <= 2 for all z in L_3. Also dist(a',u)=1, dist(a',L_1)<=1, dist(a',L_2)<=2. ecc(a')<=2. Contradiction.
+
+Theorem B5 (proved on paper). No self-centered graph with D=4 has b <= 6.
+  By B3 every root has k=2. Fix u: L_1, L_3, L_4 cliques, α(L_2)=2.
+  (1) Some z in L_2 has no neighbour in L_3: take w in L_3; dist(w,L_4)<=2, dist(w,L_3)<=1, dist(w,L_1)<=3,
+      dist(w,u)=3, so ecc(w)=4 needs z in L_2 with dist(w,z)=4; z cannot have an L_3-neighbour (L_3 clique).
+  (2) For d in L_4: M_4(d) is a clique containing u (k(d)=2), so every vertex at distance 4 from d is in
+      {u} ∪ L_1. Hence dist(z,d)<=3; and dist(z,d)>=3 since z has no L_3-neighbour. So dist(z,d)=3, and a
+      geodesic z-m-c-d has m in L_2 (m~z puts m in L_1 ∪ L_2; dist(m,d)=2 puts m in L_2 ∪ L_3 ∪ L_4).
+  (3) Let z1 in L_1 be a neighbour of z. N(z) is a clique (k(z)=2), so z1 ~ m and dist(z1,d) <= 3 for every
+      d in L_4. With dist(z1,u)=1, dist(z1,L_1)<=1, dist(z1,L_2)<=2, dist(z1,L_3)<=3: ecc(z1)<=3 < 4. Contradiction.
+
+Summary of the paper proof: a counterexample must be self-centered (Theorem A), with D >= 2 (B1),
+D not in {3,4} (B4, B5) and D <= 2 (B3 with B4, B5): so D = 2, which B2 settles using Chvátal–Erdős.
+So the conjecture is TRUE on paper, conditional only on the Chvátal–Erdős theorem (from memory, unverified)
+in the case "self-centered, diameter 2". Every other step is elementary and written above.
+
+Independent computer checks of intermediate claims (exhaustive, labeled graphs):
+- `layer.c`: every self-centered graph with D>=3 has a root whose layer α-sum is >= D+3, n<=8
+  (n=6: 60, n=7: 5400, n=8: 567840 graphs; 0 failures). This is stronger than B3+B4+B5 need.
+- `d2.c`: every self-centered D=2 graph with b<=4 has α<=3 and no cut vertex, n<=7
+  (3, 102, 2730, 83037 graphs for n=4..7; 0 failures).
+- `anneal.c` (simulated annealing toward self-centered D in {3,4} with all layer sums <= D+2, n=7..11,
+  3 seeds): never reached such a graph.
