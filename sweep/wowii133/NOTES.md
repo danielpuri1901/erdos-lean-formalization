@@ -1,39 +1,46 @@
 ```
 result: partial
 claim: Conjecture 133 (exact Lean statement, same `let` form) holds for every connected graph G on
-  >= 2 vertices that (a) contains a 4-cycle, or (b) has l(G) <= 2, or (c) has a vertex adjacent to
-  all others (radius 1), or (d) satisfies l(G)^cC4 <= diam + 1 - rad. Also proved: path >= diam+1
-  >= rad+1 for every connected G, and path >= rad + 2 for every C4-free connected G having a vertex
-  with two non-adjacent neighbours. The conjecture is therefore reduced to C4-free graphs with
-  l(G) > 2; that case is NOT proved.
-lean: Solution.lean, namespace Wowii133Sweep, all build with no sorry (axioms: propext,
+  >= 2 vertices that (a) contains a 4-cycle; or (b) has l(G) <= 2; or (c) has a vertex adjacent to
+  all others (radius 1); or (d) satisfies l(G)^cC4 <= diam + 1 - rad; or (e) has l(v) >= k >= 2
+  for all v and rad + l(G) <= k + 2, in particular (f) has radius <= 2 and l(v) = k >= 2 for all v
+  (all diameter-2 Moore graphs: C5, Petersen, Hoffman-Singleton, a 57-regular one if it exists).
+  Also proved: path >= diam+1 >= rad+1 (any connected G); path >= rad+2 (C4-free G with a vertex
+  having two non-adjacent neighbours); path >= k+2 (C4-free G with l(v) >= k >= 2 for all v).
+  The conjecture is reduced to C4-free graphs with l(G) > 2; that case is NOT proved.
+lean: Solution.lean, namespace Wowii133Sweep, builds with no sorry (axioms: propext,
   Classical.choice, Quot.sound only): conjecture133_of_hasC4, conjecture133_of_C4free_case,
   conjecture133_of_l_le_two, conjecture133_of_dominating, conjecture133_of_le_diam,
-  radius_toNat_add_one_le_path, diam_add_one_le_path, radius_toNat_add_two_le_path,
-  isInducedPath_support_of_length_eq_dist, isInducedPath_cons, geodesic_shortcut.
-computed: no counterexample in: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
+  conjecture133_of_minl, conjecture133_of_const_l, radius_toNat_add_one_le_path,
+  diam_add_one_le_path, radius_toNat_add_two_le_path, add_two_le_path_of_minl,
+  indepNeighborsCard_le_of_cover, isInducedPath_support_of_length_eq_dist, isInducedPath_cons,
+  geodesic_shortcut.
+computed: EXHAUSTIVE (exhaust.c, canonical augmentation, counts 1,2,3,8,19 for n=2..6 match an
+  independent brute force): all connected C4-free graphs n=2..11 (n=9: 740, n=10: 3389,
+  n=11: 18502): 0 failures; ties only K2, K3, C5, C6, Petersen. (n=12: see Phase D line below.)
+  HEURISTIC: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
   q in {2,3,4,5,7,8,9,11,13}; PG(2,q) incidence graphs q in {2,3,4,5,7,8,9}; generalized Petersen
   GP(m,k) 5<=m<=15; all 548 connected C4-free circulants C_n(S), n<=60, |S|<=5; theta graphs
-  (two hubs joined by k paths of length L) L=3 k<=12, L=4,5 k<=6; random/annealed connected C4-free
-  graphs n=10..60 (~170k random samples, annealing n=10..24); MCMC samples of cubic girth>=5 graphs
-  n=12..30 and 4-regular girth>=5 graphs n=24..32. Not exhaustive beyond the n<=9 check in the
-  problem file (not re-run here).
-next idea: The open case is C4-free with l(G) > 2, i.e. show path >= rad + 3 when l(G) > 2 (and
-  generally path - rad >= l(G)). The proven step extends a geodesic of length ecc(v) by one
-  vertex at a vertex with l(v) >= 2. Next: extend at both ends of a diametral/eccentric geodesic
-  (both endpoints with l >= 2 give path >= e + 3 when e >= 4), and handle low-l endpoints by a
-  charging argument that pays for high-l vertices with l=1,2 vertices, as in the near-extremal
-  families: double stars (rad 2, path 4, l -> 2), theta graphs theta(3,k) (two hubs joined by k
-  paths of length 3: rad 3, path 6, l = 3k/(k+1) -> 3), and Petersen (exactly tight, l = 3).
-  A counterexample, if any, must beat these limits; the theta family shows the margin can be
-  arbitrarily small, so a search should look at "hub" constructions with C4-free gadgets.
-dead ends: Pointwise greedy (needs min_v l(v), not the average; gives path >= min l + 2 only).
-  Extending only at the far end of a geodesic beyond one step (later steps can lose 2 components
-  per step, giving only ~rad + l/2). Per-vertex inequality path >= rad + l(v) is false (stars).
-  Annealing on score rad + l - path drifts to trees; restricting to l > 2 drifts to theta(3,k).
-  The edge-switch chain could not reach girth 5 for 4-regular n<=22 or 5-regular n=30..40.
-confidence: high for the Lean special cases (they build, axioms checked); medium that no small
-  counterexample exists in the searched families (searches are heuristic outside n<=9).
+  L=3 k<=12, L=4,5 k<=6; random/annealed connected C4-free graphs n=10..60 (~170k samples,
+  annealing n=10..24, also restricted to l>2); MCMC samples of cubic girth>=5 graphs n=12..30 and
+  4-regular girth>=5 graphs n=24..32. No failure anywhere.
+next idea: The open case is C4-free with l(G) > 2: show path >= rad + 3 when l(G) > 2, and in
+  general path - rad >= l(G). The two Lean tools are (1) extend a geodesic of length ecc(v) by one
+  vertex at a vertex with two non-adjacent neighbours, (2) the greedy prepend with the clique-cover
+  count of N(head). Next: extend at BOTH ends of an eccentric geodesic (both endpoints branching
+  give path >= e + 3 when e >= 4), and pay for high-l vertices with l <= 2 vertices by a charging
+  argument modelled on the near-extremal families: double stars (rad 2, path 4, l -> 2), theta
+  graphs theta(3,k) (two hubs joined by k paths of length 3: rad 3, path 6, l = 3k/(k+1) -> 3,
+  margin 3/(k+1)), and Petersen (exact tie, l = 3). A counterexample must beat these limits;
+  search "hub + C4-free gadget" constructions and exhaustive n=12,13.
+dead ends: Pointwise greedy alone (needs min_v l(v), not the average). Extending only at the far
+  end of a geodesic beyond one step (later steps can lose 2 components per step, giving only
+  ~rad + l/2). Per-vertex inequality path >= rad + l(v) is false (stars). Annealing on
+  rad + l - path drifts to trees; restricted to l > 2 it drifts to theta(3,k). Edge-switch chain
+  never reached girth 5 for 4-regular n<=22 or 5-regular n=30..40.
+confidence: high for the Lean special cases (they build, axioms checked) and for the exhaustive
+  n<=11 C4-free check (cross-checked counts n<=6); medium that the conjecture is true (margins go
+  to 0 along theta(3,k) and double stars, so it is sharp).
 ```
 
 # wowii133 sweep notes

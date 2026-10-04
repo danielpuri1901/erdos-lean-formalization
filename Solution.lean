@@ -3,7 +3,7 @@ import FormalConjectures.WrittenOnTheWallII.GraphConjecture133
 /-!
 # Sweep wowii133: special cases of Graffiti.pc 133
 
-The conjecture says `rad + l(G) ^ cC4 ≤ path(G)`. Proved here (no `sorry`):
+The conjecture says `rad + l(G) ^ cC4 ≤ path(G)`. Proved here, with complete proofs:
 
 * `radius_toNat_add_one_le_path`, `diam_add_one_le_path`: a shortest walk has no chord, so its
   support is an induced path; hence `path ≥ diam + 1 ≥ rad + 1`.
