@@ -31,4 +31,7 @@ The cases m = 0 (trivial) and m = 1 (`maximalLength_one`) are separate.
 
 ## State
 
-(updated below)
+- Proof complete in `Solution.lean`; `lake build Solution` passes with no warnings (about 11 s).
+- `#print axioms increasing_triples_square`: `[propext, Classical.choice, Quot.sound]`.
+- `example : type_of% @increasing_triples_square = type_of% @Arxiv.«1609.08688».maximalLength_ge_of_isSquare := rfl` checks.
+- No `decide`, so no large kernel checks; memory is not a concern.

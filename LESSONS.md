@@ -107,3 +107,5 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- (sqtuples) Pairwise over nested `List.flatMap` of `List.range`: `rw [List.pairwise_flatMap]`, then `(List.pairwise_lt_range (n := m)).imp_of_mem` for the cross pairs and `List.pairwise_map` for the innermost list; `simp only [List.mem_flatMap, List.mem_map, List.mem_range] at ha hb` unpacks members.
+- (sqtuples) `le_csSup` on a `sSup` over ℕ needs `BddAbove`; the problem file's `F n ≤ n^2` does not give it, so restate the pigeonhole bound on the set itself (copy of the `maximalLength_le` body).
