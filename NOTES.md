@@ -30,3 +30,10 @@ so the kernel checks are tiny.
 
 - Reuse the ramsey35 files with the namespace `R34`, drop the R(3,5) step.
 - Kernel checks in `Solution/Lower.lean`, upper bound in `Solution/Upper.lean`.
+
+## Status
+
+All proved, no `sorry`; `#print axioms ramsey_3_4` gives `propext, Classical.choice, Quot.sound`;
+`type_of% @RamseyNumbers.ramsey_number_three_four = type_of% @ramsey_3_4` by `rfl`.
+Build: `Solution.Lower` 9 s (two tiny `decide +kernel` checks on 8 vertices), `Solution.Upper` 10 s,
+`Solution` 7 s.
