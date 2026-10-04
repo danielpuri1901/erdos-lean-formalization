@@ -1,0 +1,2 @@
+F2 v(Q,2), Q even nonempty pair-union in {1..18}: without pair{2,3}: L=33 D=1563 W=0 ; with pair{2,3}: L=0 D=470 W=24
+F4 v({3}uQ',4), Q' pair-union in {4..18}: k odd: L=0 D=494 W=0 ; k even: L=250 D=0 W=243

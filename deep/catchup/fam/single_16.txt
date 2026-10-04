@@ -1,0 +1,141 @@
+# R = pair-union of k pairs (incl k=0) u {s}, s not in pairs, in {1..16}; groups by (kpar,d=g-s) and (kpar,g,s); ALL=100%, NEARLY>=99%
+## k even: groups by d=g-s
+keven d=g-s=-16 n=493 pb=429 87.018% 
+keven d=g-s=-15 n=798 pb=590 73.935% 
+keven d=g-s=-14 n=1175 pb=1025 87.234% 
+keven d=g-s=-13 n=1524 pb=1164 76.378% 
+keven d=g-s=-12 n=1884 pb=1572 83.439% 
+keven d=g-s=-11 n=2240 pb=1828 81.607% 
+keven d=g-s=-10 n=2597 pb=2061 79.361% 
+keven d=g-s=-9 n=2954 pb=2520 85.308% 
+keven d=g-s=-8 n=3311 pb=2467 74.509% 
+keven d=g-s=-7 n=3668 pb=3301 89.995% 
+keven d=g-s=-6 n=4024 pb=2755 68.464% 
+keven d=g-s=-5 n=4384 pb=4123 94.047% 
+keven d=g-s=-4 n=4733 pb=2838 59.962% 
+keven d=g-s=-3 n=5110 pb=4897 95.832% 
+keven d=g-s=-2 n=5415 pb=3110 57.433% 
+keven d=g-s=-1 n=5908 pb=5628 95.261% 
+keven d=g-s=0 n=5908 pb=3495 59.157% 
+keven d=g-s=1 n=5892 pb=5309 90.105% 
+keven d=g-s=2 n=5400 pb=3000 55.556% 
+keven d=g-s=3 n=5096 pb=4539 89.070% 
+keven d=g-s=4 n=4720 pb=2341 49.597% 
+keven d=g-s=5 n=4372 pb=4033 92.246% 
+keven d=g-s=6 n=4013 pb=1717 42.786% 
+keven d=g-s=7 n=3658 pb=3459 94.560% 
+keven d=g-s=8 n=3302 pb=1210 36.644% 
+keven d=g-s=9 n=2946 pb=2841 96.436% 
+keven d=g-s=10 n=2590 pb=814 31.429% 
+keven d=g-s=11 n=2232 pb=2191 98.163% 
+keven d=g-s=12 n=1878 pb=482 25.666% 
+keven d=g-s=13 n=1519 pb=1494 98.354% 
+keven d=g-s=14 n=1171 pb=302 25.790% 
+keven d=g-s=15 n=795 pb=786 98.868% 
+keven d=g-s=16 n=491 pb=120 24.440% 
+## k even: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+keven g=0 ALL s:
+keven g=1 ALL s: 1(n=493)
+keven g=2 ALL s: 2(n=305)
+keven g=3 ALL s:
+keven g=4 ALL s:
+keven g=5 ALL s:
+keven g=6 ALL s:
+keven g=7 ALL s: 10(n=357)
+keven g=8 ALL s:
+keven g=9 ALL s: 10(n=357) 12(n=360)
+keven g=10 ALL s: 11(n=356) 13(n=349)
+keven g=11 ALL s: 12(n=360) 14(n=377)
+keven g=12 ALL s: 13(n=349) 15(n=305)
+keven g=13 ALL s: 14(n=377) 16(n=493)
+keven g=14 ALL s: 15(n=305)
+keven g=15 ALL s: 16(n=493)
+keven g=16 ALL s:
+keven g=17 ALL s:
+## k even: NEARLY (>=99%, not 100%) (g,s) groups with exceptions
+keven (g=5,s=8) n=357 pb=356 99.72% NEARLY ex: pairs[2,4,9,15]=L
+keven (g=8,s=9) n=357 pb=355 99.44% NEARLY ex: pairs[7,14]=L pairs[7,15]=L
+keven (g=8,s=11) n=356 pb=354 99.44% NEARLY ex: pairs[3,5]=L pairs[3,5,12,14]=L
+keven (g=8,s=13) n=349 pb=346 99.14% NEARLY ex: pairs[3,5,11,14]=L pairs[3,6]=L pairs[3,6,9,15]=L
+keven (g=9,s=8) n=356 pb=354 99.44% NEARLY ex: pairs[6,11]=L pairs[12,15]=L
+keven (g=10,s=15) n=305 pb=303 99.34% NEARLY ex: pairs[3,7]=L pairs[4,7]=L
+keven (g=11,s=16) n=493 pb=491 99.59% NEARLY ex: pairs[4,7]=L pairs[4,8]=L
+keven (g=15,s=4) n=348 pb=346 99.43% NEARLY ex: pairs[1,15]=L pairs[2,15]=L
+keven (g=16,s=5) n=358 pb=357 99.72% NEARLY ex: pairs[3,13]=L
+## k odd: groups by d=g-s
+kodd d=g-s=-16 n=494 pb=415 84.008% 
+kodd d=g-s=-15 n=799 pb=705 88.235% 
+kodd d=g-s=-14 n=1176 pb=871 74.065% 
+kodd d=g-s=-13 n=1526 pb=1287 84.338% 
+kodd d=g-s=-12 n=1886 pb=1504 79.745% 
+kodd d=g-s=-11 n=2242 pb=1820 81.178% 
+kodd d=g-s=-10 n=2600 pb=2163 83.192% 
+kodd d=g-s=-9 n=2957 pb=2263 76.530% 
+kodd d=g-s=-8 n=3314 pb=2875 86.753% 
+kodd d=g-s=-7 n=3672 pb=2564 69.826% 
+kodd d=g-s=-6 n=4028 pb=3640 90.367% 
+kodd d=g-s=-5 n=4388 pb=2729 62.192% 
+kodd d=g-s=-4 n=4738 pb=4441 93.732% 
+kodd d=g-s=-3 n=5115 pb=3057 59.765% 
+kodd d=g-s=-2 n=5420 pb=5220 96.310% 
+kodd d=g-s=-1 n=5914 pb=3797 64.204% 
+kodd d=g-s=0 n=5914 pb=5264 89.009% 
+kodd d=g-s=1 n=5914 pb=3668 62.022% 
+kodd d=g-s=2 n=5420 pb=4734 87.343% 
+kodd d=g-s=3 n=5115 pb=2821 55.152% 
+kodd d=g-s=4 n=4727 pb=4286 90.671% 
+kodd d=g-s=5 n=4378 pb=2120 48.424% 
+kodd d=g-s=6 n=4010 pb=3759 93.741% 
+kodd d=g-s=7 n=3656 pb=1559 42.642% 
+kodd d=g-s=8 n=3293 pb=3169 96.234% 
+kodd d=g-s=9 n=2939 pb=1010 34.365% 
+kodd d=g-s=10 n=2580 pb=2525 97.868% 
+kodd d=g-s=11 n=2226 pb=661 29.695% 
+kodd d=g-s=12 n=1870 pb=1855 99.198% NEARLY
+kodd d=g-s=13 n=1513 pb=375 24.785% 
+kodd d=g-s=14 n=1163 pb=1159 99.656% NEARLY
+kodd d=g-s=15 n=790 pb=177 22.405% 
+kodd d=g-s=16 n=488 pb=486 99.590% NEARLY
+## k odd: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+kodd g=0 ALL s: 1(n=494)
+kodd g=1 ALL s: 2(n=305)
+kodd g=2 ALL s: 1(n=494)
+kodd g=3 ALL s: 2(n=305)
+kodd g=4 ALL s:
+kodd g=5 ALL s: 7(n=358)
+kodd g=6 ALL s:
+kodd g=7 ALL s:
+kodd g=8 ALL s: 10(n=358)
+kodd g=9 ALL s:
+kodd g=10 ALL s:
+kodd g=11 ALL s:
+kodd g=12 ALL s: 12(n=360) 14(n=377)
+kodd g=13 ALL s: 13(n=350) 15(n=305)
+kodd g=14 ALL s: 14(n=377) 16(n=494)
+kodd g=15 ALL s: 15(n=305)
+kodd g=16 ALL s: 4(n=347) 16(n=494)
+kodd g=17 ALL s: 3(n=373) 5(n=357)
+## k odd: NEARLY (>=99%, not 100%) (g,s) groups with exceptions
+kodd (g=7,s=7) n=358 pb=355 99.16% NEARLY ex: pairs[5,9,15]=L pairs[14]=L pairs[15]=L
+kodd (g=7,s=9) n=357 pb=355 99.44% NEARLY ex: pairs[2,4,10,13,15]=L pairs[2,5,10,12,15]=L
+kodd (g=8,s=8) n=357 pb=356 99.72% NEARLY ex: pairs[4,6,11]=L
+kodd (g=9,s=9) n=357 pb=356 99.72% NEARLY ex: pairs[5,7,13]=L
+kodd (g=9,s=11) n=356 pb=355 99.72% NEARLY ex: pairs[6,8,13]=L
+kodd (g=9,s=13) n=350 pb=349 99.71% NEARLY ex: pairs[3,6,10]=L
+kodd (g=9,s=15) n=305 pb=302 99.02% NEARLY ex: pairs[3,7,10]=L pairs[3,7,11]=L pairs[4,7,11]=L
+kodd (g=10,s=10) n=358 pb=355 99.16% NEARLY ex: pairs[5,8,14]=L pairs[6,8,15]=L pairs[8,13,15]=L
+kodd (g=10,s=12) n=360 pb=359 99.72% NEARLY ex: pairs[7,9,15]=L
+kodd (g=10,s=14) n=377 pb=376 99.73% NEARLY ex: pairs[4,6,11]=L
+kodd (g=10,s=16) n=494 pb=490 99.19% NEARLY ex: pairs[3,8,11]=L pairs[3,8,12]=L pairs[4,7,12]=L pairs[4,8,12]=L
+kodd (g=11,s=11) n=356 pb=355 99.72% NEARLY ex: pairs[6,8,15]=L
+kodd (g=11,s=13) n=350 pb=349 99.71% NEARLY ex: pairs[1,3,6]=L
+kodd (g=11,s=15) n=305 pb=304 99.67% NEARLY ex: pairs[1,3,7]=L
+kodd (g=12,s=16) n=494 pb=493 99.80% NEARLY ex: pairs[4,6,13]=L
+kodd (g=14,s=2) n=302 pb=299 99.01% NEARLY ex: pairs[5,10,15]=L pairs[14]=L pairs[15]=L
+kodd (g=14,s=4) n=348 pb=346 99.43% NEARLY ex: pairs[14]=L pairs[15]=L
+kodd (g=15,s=1) n=489 pb=486 99.39% NEARLY ex: pairs[5,10,12]=L pairs[5,11,15]=L pairs[15]=L
+kodd (g=15,s=3) n=374 pb=373 99.73% NEARLY ex: pairs[15]=L
+kodd (g=15,s=5) n=357 pb=356 99.72% NEARLY ex: pairs[15]=L
+kodd (g=16,s=2) n=301 pb=300 99.67% NEARLY ex: pairs[5,11,14]=L
+kodd (g=16,s=6) n=352 pb=351 99.72% NEARLY ex: pairs[10]=L
+kodd (g=17,s=1) n=488 pb=486 99.59% NEARLY ex: pairs[5,12,14]=L pairs[6,12,14]=L

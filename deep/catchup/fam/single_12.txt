@@ -1,0 +1,85 @@
+# R = pair-union of k pairs (incl k=0) u {s}, s not in pairs, in {1..12}; groups by (kpar,d=g-s) and (kpar,g,s); ALL=100%, NEARLY>=99%
+## k even: groups by d=g-s
+keven d=g-s=-12 n=72 pb=53 73.611% 
+keven d=g-s=-11 n=116 pb=94 81.034% 
+keven d=g-s=-10 n=171 pb=127 74.269% 
+keven d=g-s=-9 n=222 pb=182 81.982% 
+keven d=g-s=-8 n=274 pb=184 67.153% 
+keven d=g-s=-7 n=326 pb=278 85.276% 
+keven d=g-s=-6 n=378 pb=243 64.286% 
+keven d=g-s=-5 n=430 pb=393 91.395% 
+keven d=g-s=-4 n=481 pb=252 52.391% 
+keven d=g-s=-3 n=536 pb=506 94.403% 
+keven d=g-s=-2 n=580 pb=320 55.172% 
+keven d=g-s=-1 n=652 pb=615 94.325% 
+keven d=g-s=0 n=652 pb=413 63.344% 
+keven d=g-s=1 n=640 pb=552 86.250% 
+keven d=g-s=2 n=569 pb=332 58.348% 
+keven d=g-s=3 n=526 pb=455 86.502% 
+keven d=g-s=4 n=472 pb=226 47.881% 
+keven d=g-s=5 n=422 pb=378 89.573% 
+keven d=g-s=6 n=371 pb=144 38.814% 
+keven d=g-s=7 n=320 pb=297 92.812% 
+keven d=g-s=8 n=269 pb=76 28.253% 
+keven d=g-s=9 n=218 pb=211 96.789% 
+keven d=g-s=10 n=168 pb=43 25.595% 
+keven d=g-s=11 n=114 pb=110 96.491% 
+keven d=g-s=12 n=71 pb=10 14.085% 
+## k even: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+keven g=0 ALL s:
+keven g=1 ALL s: 1(n=72)
+keven g=2 ALL s: 2(n=44)
+keven g=3 ALL s:
+keven g=4 ALL s:
+keven g=5 ALL s: 8(n=52)
+keven g=6 ALL s:
+keven g=7 ALL s: 6(n=51) 8(n=52) 10(n=55)
+keven g=8 ALL s: 7(n=51) 9(n=51)
+keven g=9 ALL s: 10(n=55) 12(n=72)
+keven g=10 ALL s: 11(n=44)
+keven g=11 ALL s: 12(n=72)
+keven g=12 ALL s: 3(n=54)
+keven g=13 ALL s: 4(n=50)
+## k even: NEARLY (>=99%, not 100%) (g,s) groups with exceptions
+## k odd: groups by d=g-s
+kodd d=g-s=-12 n=72 pb=68 94.444% 
+kodd d=g-s=-11 n=117 pb=96 82.051% 
+kodd d=g-s=-10 n=172 pb=144 83.721% 
+kodd d=g-s=-9 n=223 pb=172 77.130% 
+kodd d=g-s=-8 n=276 pb=224 81.159% 
+kodd d=g-s=-7 n=328 pb=226 68.902% 
+kodd d=g-s=-6 n=380 pb=332 87.368% 
+kodd d=g-s=-5 n=433 pb=254 58.661% 
+kodd d=g-s=-4 n=484 pb=445 91.942% 
+kodd d=g-s=-3 n=539 pb=282 52.319% 
+kodd d=g-s=-2 n=584 pb=557 95.377% 
+kodd d=g-s=-1 n=656 pb=371 56.555% 
+kodd d=g-s=0 n=656 pb=550 83.841% 
+kodd d=g-s=1 n=656 pb=371 56.555% 
+kodd d=g-s=2 n=584 pb=474 81.164% 
+kodd d=g-s=3 n=539 pb=254 47.124% 
+kodd d=g-s=4 n=477 pb=417 87.421% 
+kodd d=g-s=5 n=427 pb=177 41.452% 
+kodd d=g-s=6 n=370 pb=340 91.892% 
+kodd d=g-s=7 n=320 pb=108 33.750% 
+kodd d=g-s=8 n=267 pb=258 96.629% 
+kodd d=g-s=9 n=217 pb=42 19.355% 
+kodd d=g-s=10 n=165 pb=164 99.394% NEARLY
+kodd d=g-s=11 n=112 pb=20 17.857% 
+kodd d=g-s=12 n=68 pb=68 100.000% ALL
+## k odd: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+kodd g=0 ALL s: 1(n=72)
+kodd g=1 ALL s: 2(n=45)
+kodd g=2 ALL s: 1(n=72) 4(n=51)
+kodd g=3 ALL s: 2(n=45) 5(n=53)
+kodd g=4 ALL s: 6(n=52)
+kodd g=5 ALL s: 7(n=52)
+kodd g=6 ALL s: 6(n=52) 10(n=55)
+kodd g=7 ALL s: 7(n=52) 9(n=51)
+kodd g=8 ALL s: 10(n=55)
+kodd g=9 ALL s: 9(n=51) 11(n=45)
+kodd g=10 ALL s: 10(n=55) 12(n=72)
+kodd g=11 ALL s: 11(n=45)
+kodd g=12 ALL s: 2(n=43) 4(n=49) 12(n=72)
+kodd g=13 ALL s: 1(n=68) 3(n=53)
+## k odd: NEARLY (>=99%, not 100%) (g,s) groups with exceptions

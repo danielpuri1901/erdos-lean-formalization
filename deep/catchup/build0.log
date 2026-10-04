@@ -1,0 +1,7 @@
+✔ [8935/8937] Built FormalConjectures.Paper.CatchUpConjecture (24s)
+ℹ [8936/8937] Built Solution (69s)
+info: Solution.lean:215:0: 'CatchUpSweep.catchup_draw_le_8' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:216:0: 'CatchUpSweep.valueAux_eq_valL' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:217:0: 'CatchUpSweep.value_ne_draw_of_odd' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:218:0: 'CatchUpSweep.catchup_draw_iff_le_8' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (8937 jobs).

@@ -1,0 +1,256 @@
+# R = pair-union of k pairs (incl k=0) u {s}, s not in pairs, in {1..20}; groups by (kpar,d=g-s) and (kpar,g,s); ALL=100%, NEARLY>=99%
+## k even: groups by d=g-s
+keven d=g-s=-20 n=3383 pb=3199 94.561% 
+keven d=g-s=-19 n=5474 pb=3891 71.081% 
+keven d=g-s=-18 n=8058 pb=7565 93.882% 
+keven d=g-s=-17 n=10454 pb=7752 74.153% 
+keven d=g-s=-16 n=12922 pb=11806 91.364% 
+keven d=g-s=-15 n=15362 pb=12195 79.384% 
+keven d=g-s=-14 n=17813 pb=15836 88.901% 
+keven d=g-s=-13 n=20260 pb=16940 83.613% 
+keven d=g-s=-12 n=22708 pb=19447 85.639% 
+keven d=g-s=-11 n=25156 pb=21917 87.124% 
+keven d=g-s=-10 n=27604 pb=22691 82.202% 
+keven d=g-s=-9 n=30052 pb=27009 89.874% 
+keven d=g-s=-8 n=32499 pb=25208 77.565% 
+keven d=g-s=-7 n=34950 pb=32383 92.655% 
+keven d=g-s=-6 n=37390 pb=26857 71.829% 
+keven d=g-s=-5 n=39858 pb=37995 95.326% 
+keven d=g-s=-4 n=42254 pb=28186 66.706% 
+keven d=g-s=-3 n=44838 pb=43382 96.753% 
+keven d=g-s=-2 n=46929 pb=31457 67.031% 
+keven d=g-s=-1 n=50312 pb=48481 96.361% 
+keven d=g-s=0 n=50312 pb=33938 67.455% 
+keven d=g-s=1 n=50292 pb=46393 92.247% 
+keven d=g-s=2 n=46910 pb=30029 64.014% 
+keven d=g-s=3 n=44820 pb=41057 91.604% 
+keven d=g-s=4 n=42237 pb=24398 57.765% 
+keven d=g-s=5 n=39842 pb=37551 94.250% 
+keven d=g-s=6 n=37375 pb=19274 51.569% 
+keven d=g-s=7 n=34936 pb=33621 96.236% 
+keven d=g-s=8 n=32486 pb=15184 46.740% 
+keven d=g-s=9 n=30040 pb=29320 97.603% 
+keven d=g-s=10 n=27593 pb=11731 42.514% 
+keven d=g-s=11 n=25140 pb=24755 98.469% 
+keven d=g-s=12 n=22694 pb=8936 39.376% 
+keven d=g-s=13 n=20244 pb=20071 99.145% NEARLY
+keven d=g-s=14 n=17800 pb=6247 35.096% 
+keven d=g-s=15 n=15348 pb=15259 99.420% NEARLY
+keven d=g-s=16 n=12912 pb=4011 31.064% 
+keven d=g-s=17 n=10442 pb=10395 99.550% NEARLY
+keven d=g-s=18 n=8050 pb=2133 26.497% 
+keven d=g-s=19 n=5467 pb=5446 99.616% NEARLY
+keven d=g-s=20 n=3378 pb=739 21.877% 
+## k even: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+keven g=0 ALL s:
+keven g=1 ALL s: 1(n=3383)
+keven g=2 ALL s: 2(n=2091)
+keven g=3 ALL s:
+keven g=4 ALL s:
+keven g=5 ALL s:
+keven g=6 ALL s:
+keven g=7 ALL s:
+keven g=8 ALL s:
+keven g=9 ALL s: 12(n=2448)
+keven g=10 ALL s:
+keven g=11 ALL s: 12(n=2448) 14(n=2451)
+keven g=12 ALL s:
+keven g=13 ALL s: 14(n=2451) 16(n=2468)
+keven g=14 ALL s:
+keven g=15 ALL s: 18(n=2584)
+keven g=16 ALL s: 17(n=2396) 19(n=2091)
+keven g=17 ALL s: 18(n=2584)
+keven g=18 ALL s: 19(n=2091)
+keven g=19 ALL s: 20(n=3383)
+keven g=20 ALL s:
+keven g=21 ALL s:
+## k even: NEARLY (>=99%, not 100%) (g,s) groups with exceptions
+keven (g=5,s=8) n=2447 pb=2436 99.55% NEARLY ex: pairs[1,4,9,11,14,18]=L pairs[1,4,9,11,14,19]=L pairs[2,4,9,15]=L pairs[3,5,10,12,14,17]=L pairs[3,5,10,14,17,19]=L pairs[3,5,11,13,16,18]=L
+keven (g=7,s=8) n=2447 pb=2431 99.35% NEARLY ex: pairs[3,5,10,12,16,18]=L pairs[6,10,12,15]=L pairs[6,10,12,16]=L pairs[6,11,13,15]=L pairs[6,11,13,15,17,19]=L pairs[6,11,13,16]=L
+keven (g=7,s=10) n=2448 pb=2447 99.96% NEARLY ex: pairs[4,7,14,17]=L
+keven (g=8,s=9) n=2448 pb=2437 99.55% NEARLY ex: pairs[3,5,10,13,17,19]=L pairs[6,11,13,18]=L pairs[7,12,14,16]=L pairs[7,12,14,17]=L pairs[7,12,14,18]=L pairs[7,12,14,19]=L
+keven (g=8,s=11) n=2448 pb=2437 99.55% NEARLY ex: pairs[3,5]=L pairs[3,5,9,13,17,19]=L pairs[3,5,12,14]=L pairs[3,5,12,14,16,18]=L pairs[3,5,12,19]=L pairs[3,5,13,15,17,19]=L
+keven (g=8,s=13) n=2447 pb=2424 99.06% NEARLY ex: pairs[1,3,5,14,16,18]=L pairs[1,3,5,14,16,19]=L pairs[1,3,5,15,17,19]=L pairs[3,5,11,14]=L pairs[3,5,11,14,16,18]=L pairs[3,5,11,19]=L
+keven (g=9,s=10) n=2448 pb=2444 99.84% NEARLY ex: pairs[8,13,16,19]=L pairs[8,14,16,18]=L pairs[8,16]=L pairs[8,17]=L
+keven (g=9,s=14) n=2451 pb=2432 99.22% NEARLY ex: pairs[3,6]=L pairs[3,6,10,15]=L pairs[3,6,10,16]=L pairs[3,6,10,17]=L pairs[3,6,10,18]=L pairs[3,6,11,15]=L
+keven (g=10,s=11) n=2448 pb=2443 99.80% NEARLY ex: pairs[1,3,5,13,15,18]=L pairs[1,3,5,13,15,19]=L pairs[3,5,9,19]=L pairs[9,18]=L pairs[9,19]=L
+keven (g=10,s=13) n=2447 pb=2444 99.88% NEARLY ex: pairs[1,3,6,14,16,18]=L pairs[1,3,6,14,16,19]=L pairs[4,7,14,17]=L
+keven (g=10,s=15) n=2440 pb=2422 99.26% NEARLY ex: pairs[1,3,6,13,16,18]=L pairs[1,3,6,13,16,19]=L pairs[1,3,7,17]=L pairs[1,3,7,18]=L pairs[3,7]=L pairs[3,7,11,16]=L
+keven (g=11,s=16) n=2468 pb=2459 99.64% NEARLY ex: pairs[1,3,8,18]=L pairs[1,3,8,19]=L pairs[4,7]=L pairs[4,7,12,17]=L pairs[4,7,12,18]=L pairs[4,8]=L
+keven (g=11,s=18) n=2584 pb=2565 99.26% NEARLY ex: pairs[1,5,7,12]=L pairs[2,4,6,13]=L pairs[2,4,6,15]=L pairs[4,7,12,16]=L pairs[4,8]=L pairs[4,8,12,16]=L
+keven (g=12,s=13) n=2447 pb=2446 99.96% NEARLY ex: pairs[6,9,11,16]=L
+keven (g=12,s=15) n=2440 pb=2439 99.96% NEARLY ex: pairs[1,4,7,18]=L
+keven (g=12,s=17) n=2396 pb=2391 99.79% NEARLY ex: pairs[1,4,8,19]=L pairs[4,8]=L pairs[4,8,13,18]=L pairs[4,9,13,18]=L pairs[5,8]=L
+keven (g=12,s=19) n=2091 pb=2079 99.43% NEARLY ex: pairs[2,4,7,15]=L pairs[3,7,10,14]=L pairs[4,6,10,14]=L pairs[4,8]=L pairs[4,8,13,15]=L pairs[4,8,13,17]=L
+keven (g=13,s=18) n=2584 pb=2579 99.81% NEARLY ex: pairs[2,4,7,15]=L pairs[5,8]=L pairs[5,8,14,19]=L pairs[5,9]=L pairs[5,9,15,19]=L
+keven (g=13,s=20) n=3383 pb=3368 99.56% NEARLY ex: pairs[1,4,9,15]=L pairs[2,4,8,16]=L pairs[3,8,11,15]=L pairs[4,8,14,17]=L pairs[4,9]=L pairs[4,9,14,16]=L
+keven (g=14,s=15) n=2440 pb=2438 99.92% NEARLY ex: pairs[2,4,7,18]=L pairs[7,11,13,19]=L
+keven (g=14,s=17) n=2396 pb=2395 99.96% NEARLY ex: pairs[2,4,8,19]=L
+keven (g=14,s=19) n=2091 pb=2088 99.86% NEARLY ex: pairs[4,7,11,15]=L pairs[5,9]=L pairs[6,9,12,16]=L
+keven (g=15,s=4) n=2395 pb=2376 99.21% NEARLY ex: pairs[1,15]=L pairs[1,15,17,19]=L pairs[1,16]=L pairs[1,17]=L pairs[1,18]=L pairs[1,19]=L
+keven (g=15,s=14) n=2450 pb=2431 99.22% NEARLY ex: pairs[5,7,11,19]=L pairs[5,7,12,17]=L pairs[5,7,12,18]=L pairs[5,8]=L pairs[5,8,12,17]=L pairs[5,8,12,18]=L
+keven (g=15,s=16) n=2468 pb=2466 99.92% NEARLY ex: pairs[2,4,8,19]=L pairs[9,11,13,19]=L
+keven (g=15,s=20) n=3383 pb=3382 99.97% NEARLY ex: pairs[2,5,8,17]=L
+keven (g=16,s=3) n=2582 pb=2557 99.03% NEARLY ex: pairs[1,4,16,18]=L pairs[1,4,16,19]=L pairs[1,4,17,19]=L pairs[1,16]=L pairs[1,17]=L pairs[1,18]=L
+keven (g=16,s=5) n=2466 pb=2446 99.19% NEARLY ex: pairs[1,3,16,18]=L pairs[1,3,16,19]=L pairs[1,3,17,19]=L pairs[1,16]=L pairs[1,17]=L pairs[1,18]=L
+keven (g=16,s=15) n=2439 pb=2423 99.34% NEARLY ex: pairs[5,7,12,19]=L pairs[5,8,13,18]=L pairs[5,8,13,19]=L pairs[5,9]=L pairs[5,9,12,18]=L pairs[5,9,13,18]=L
+keven (g=17,s=2) n=2090 pb=2072 99.14% NEARLY ex: pairs[3,17]=L pairs[3,18]=L pairs[3,19]=L pairs[4,17]=L pairs[4,18]=L pairs[4,19]=L
+keven (g=17,s=4) n=2395 pb=2380 99.37% NEARLY ex: pairs[1,17]=L pairs[1,18]=L pairs[1,19]=L pairs[2,17]=L pairs[2,18]=L pairs[2,19]=L
+keven (g=17,s=6) n=2438 pb=2418 99.18% NEARLY ex: pairs[1,3,17,19]=L pairs[1,17]=L pairs[1,18]=L pairs[1,19]=L pairs[2,17]=L pairs[2,18]=L
+keven (g=17,s=16) n=2467 pb=2457 99.59% NEARLY ex: pairs[6,9]=L pairs[8,10,12,14]=L pairs[9,13]=L pairs[9,14]=L pairs[10,12]=L pairs[10,13]=L
+keven (g=17,s=20) n=3383 pb=3382 99.97% NEARLY ex: pairs[1,3,5,7]=L
+keven (g=18,s=1) n=3380 pb=3358 99.35% NEARLY ex: pairs[2,18]=L pairs[2,19]=L pairs[3,18]=L pairs[3,19]=L pairs[4,18]=L pairs[4,19]=L
+keven (g=18,s=3) n=2581 pb=2567 99.46% NEARLY ex: pairs[1,18]=L pairs[1,19]=L pairs[4,18]=L pairs[4,19]=L pairs[5,15]=L pairs[5,18]=L
+keven (g=18,s=5) n=2466 pb=2460 99.76% NEARLY ex: pairs[1,18]=L pairs[1,19]=L pairs[2,18]=L pairs[2,19]=L pairs[3,18]=L pairs[3,19]=L
+keven (g=18,s=7) n=2449 pb=2431 99.27% NEARLY ex: pairs[1,18]=L pairs[1,19]=L pairs[2,18]=L pairs[2,19]=L pairs[3,8]=L pairs[3,11]=L
+keven (g=18,s=11) n=2447 pb=2423 99.02% NEARLY ex: pairs[1,9]=L pairs[1,9,13,19]=L pairs[1,12]=L pairs[1,18]=L pairs[1,19]=L pairs[2,9]=L
+keven (g=18,s=17) n=2395 pb=2380 99.37% NEARLY ex: pairs[6,8,13,15]=L pairs[6,10]=L pairs[7,9]=L pairs[9,11,13,15]=L pairs[9,12,15,19]=L pairs[9,15]=L
+keven (g=19,s=2) n=2090 pb=2079 99.47% NEARLY ex: pairs[3,19]=L pairs[4,19]=L pairs[5,19]=L pairs[6,13]=L pairs[6,14]=L pairs[6,19]=L
+keven (g=19,s=4) n=2394 pb=2383 99.54% NEARLY ex: pairs[1,19]=L pairs[2,19]=L pairs[5,10]=L pairs[5,15]=L pairs[5,16]=L pairs[5,19]=L
+keven (g=19,s=6) n=2437 pb=2430 99.71% NEARLY ex: pairs[1,19]=L pairs[2,19]=L pairs[3,19]=L pairs[4,10]=L pairs[4,15]=L pairs[4,16]=L
+keven (g=19,s=8) n=2445 pb=2429 99.35% NEARLY ex: pairs[1,11]=L pairs[1,19]=L pairs[2,19]=L pairs[3,12]=L pairs[3,16]=L pairs[3,19]=L
+keven (g=19,s=10) n=2447 pb=2424 99.06% NEARLY ex: pairs[1,11]=L pairs[1,11,13,19]=L pairs[1,12]=L pairs[1,19]=L pairs[2,11]=L pairs[2,19]=L
+keven (g=19,s=12) n=2447 pb=2424 99.06% NEARLY ex: pairs[1,9]=L pairs[1,10]=L pairs[1,10,13,19]=L pairs[1,13]=L pairs[1,19]=L pairs[2,9]=L
+keven (g=19,s=18) n=2583 pb=2564 99.26% NEARLY ex: pairs[6,8,14,16]=L pairs[6,9,14,16]=L pairs[6,11]=L pairs[7,9,14,16]=L pairs[7,10]=L pairs[9,11,13,15]=L
+keven (g=20,s=1) n=3378 pb=3367 99.67% NEARLY ex: pairs[6,8]=L pairs[6,8,14,17]=L pairs[6,14]=L pairs[6,15]=L pairs[7,14]=L pairs[7,15]=L
+keven (g=20,s=3) n=2580 pb=2574 99.77% NEARLY ex: pairs[6,14]=L pairs[6,17]=L pairs[7,14]=L pairs[7,15]=L pairs[7,17]=L pairs[7,18]=L
+keven (g=20,s=5) n=2466 pb=2461 99.80% NEARLY ex: pairs[6,11]=L pairs[6,11,16,18]=L pairs[6,16]=L pairs[6,17]=L pairs[6,18]=L
+keven (g=20,s=7) n=2448 pb=2441 99.71% NEARLY ex: pairs[4,16]=L pairs[4,17]=L pairs[5,11]=L pairs[5,11,16,18]=L pairs[5,16]=L pairs[5,17]=L
+keven (g=20,s=9) n=2446 pb=2427 99.22% NEARLY ex: pairs[1,11]=L pairs[1,12]=L pairs[2,11]=L pairs[3,13]=L pairs[3,17]=L pairs[4,12]=L
+keven (g=20,s=11) n=2447 pb=2432 99.39% NEARLY ex: pairs[1,12]=L pairs[1,13]=L pairs[2,12]=L pairs[3,13]=L pairs[3,14]=L pairs[3,17]=L
+keven (g=20,s=13) n=2446 pb=2428 99.26% NEARLY ex: pairs[1,10]=L pairs[1,11]=L pairs[1,14]=L pairs[2,10]=L pairs[2,11]=L pairs[2,15]=L
+keven (g=20,s=15) n=2439 pb=2418 99.14% NEARLY ex: pairs[1,10]=L pairs[1,11]=L pairs[1,12]=L pairs[1,13]=L pairs[6,8,16,18]=L pairs[7,9]=L
+keven (g=20,s=17) n=2395 pb=2373 99.08% NEARLY ex: pairs[6,8,15,18]=L pairs[7,9,14,18]=L pairs[7,9,15,18]=L pairs[7,10]=L pairs[10,12,14,18]=L pairs[10,13]=L
+keven (g=21,s=2) n=2089 pb=2079 99.52% NEARLY ex: pairs[6,8]=L pairs[6,15]=L pairs[7,14]=L pairs[7,14,16,19]=L pairs[7,15]=L pairs[7,16]=L
+keven (g=21,s=4) n=2392 pb=2384 99.67% NEARLY ex: pairs[5,17]=L pairs[6,17]=L pairs[6,18]=L pairs[7,14]=L pairs[7,15]=L pairs[7,17]=L
+keven (g=21,s=6) n=2436 pb=2435 99.96% NEARLY ex: pairs[4,17]=L
+keven (g=21,s=8) n=2444 pb=2429 99.39% NEARLY ex: pairs[4,9]=L pairs[4,13]=L pairs[4,17]=L pairs[4,18]=L pairs[5,11]=L pairs[5,11,16,19]=L
+keven (g=21,s=20) n=3382 pb=3354 99.17% NEARLY ex: pairs[7,9,16,18]=L pairs[7,10,15,18]=L pairs[7,10,16,18]=L pairs[7,12]=L pairs[8,10,16,18]=L pairs[8,11]=L
+## k odd: groups by d=g-s
+kodd d=g-s=-20 n=3382 pb=2734 80.840% 
+kodd d=g-s=-19 n=5472 pb=5129 93.732% 
+kodd d=g-s=-18 n=8056 pb=5865 72.803% 
+kodd d=g-s=-17 n=10451 pb=9634 92.183% 
+kodd d=g-s=-16 n=12918 pb=9898 76.622% 
+kodd d=g-s=-15 n=15358 pb=13841 90.122% 
+kodd d=g-s=-14 n=17808 pb=14428 81.020% 
+kodd d=g-s=-13 n=20254 pb=17772 87.746% 
+kodd d=g-s=-12 n=22702 pb=19311 85.063% 
+kodd d=g-s=-11 n=25149 pb=21419 85.168% 
+kodd d=g-s=-10 n=27596 pb=24409 88.451% 
+kodd d=g-s=-9 n=30044 pb=24449 81.377% 
+kodd d=g-s=-8 n=32490 pb=29476 90.723% 
+kodd d=g-s=-7 n=34940 pb=26740 76.531% 
+kodd d=g-s=-6 n=37380 pb=34769 93.015% 
+kodd d=g-s=-5 n=39847 pb=28092 70.500% 
+kodd d=g-s=-4 n=42242 pb=40291 95.381% 
+kodd d=g-s=-3 n=44826 pb=29768 66.408% 
+kodd d=g-s=-2 n=46916 pb=45514 97.012% 
+kodd d=g-s=-1 n=50298 pb=33408 66.420% 
+kodd d=g-s=0 n=50298 pb=46224 91.900% 
+kodd d=g-s=1 n=50298 pb=31417 62.462% 
+kodd d=g-s=2 n=46916 pb=42414 90.404% 
+kodd d=g-s=3 n=44826 pb=26267 58.598% 
+kodd d=g-s=4 n=42227 pb=39241 92.929% 
+kodd d=g-s=5 n=39833 pb=21590 54.201% 
+kodd d=g-s=6 n=37354 pb=35605 95.318% 
+kodd d=g-s=7 n=34916 pb=17247 49.396% 
+kodd d=g-s=8 n=32457 pb=31491 97.024% 
+kodd d=g-s=9 n=30014 pb=13195 43.963% 
+kodd d=g-s=10 n=27560 pb=27057 98.175% 
+kodd d=g-s=11 n=25117 pb=10228 40.721% 
+kodd d=g-s=12 n=22667 pb=22420 98.910% 
+kodd d=g-s=13 n=20224 pb=7345 36.318% 
+kodd d=g-s=14 n=17778 pb=17671 99.398% NEARLY
+kodd d=g-s=15 n=15333 pb=5124 33.418% 
+kodd d=g-s=16 n=12892 pb=12850 99.674% NEARLY
+kodd d=g-s=17 n=10430 pb=3271 31.361% 
+kodd d=g-s=18 n=8037 pb=8019 99.776% NEARLY
+kodd d=g-s=19 n=5459 pb=1542 28.247% 
+kodd d=g-s=20 n=3374 pb=3364 99.704% NEARLY
+## k odd: (g,s) groups that are 100% parity-best (n>=5), as g: s-list
+kodd g=0 ALL s: 1(n=3382)
+kodd g=1 ALL s: 2(n=2090)
+kodd g=2 ALL s: 1(n=3382)
+kodd g=3 ALL s: 2(n=2090)
+kodd g=4 ALL s:
+kodd g=5 ALL s:
+kodd g=6 ALL s:
+kodd g=7 ALL s:
+kodd g=8 ALL s:
+kodd g=9 ALL s:
+kodd g=10 ALL s:
+kodd g=11 ALL s:
+kodd g=12 ALL s:
+kodd g=13 ALL s: 15(n=2440)
+kodd g=14 ALL s: 16(n=2467)
+kodd g=15 ALL s: 15(n=2440)
+kodd g=16 ALL s: 16(n=2467) 20(n=3382)
+kodd g=17 ALL s: 17(n=2395) 19(n=2090)
+kodd g=18 ALL s: 18(n=2584) 20(n=3382)
+kodd g=19 ALL s: 19(n=2090)
+kodd g=20 ALL s: 4(n=2390) 6(n=2436) 20(n=3382)
+kodd g=21 ALL s:
+## k odd: NEARLY (>=99%, not 100%) (g,s) groups with exceptions
+kodd (g=5,s=7) n=2450 pb=2430 99.18% NEARLY ex: pairs[1,3,8,10,12,14,19]=L pairs[1,3,8,11,13,15,19]=L pairs[1,3,8,12,14,16,18]=L pairs[4,8,13,16,19]=L pairs[4,8,14,16,18]=L pairs[4,8,14,17,19]=L
+kodd (g=7,s=9) n=2448 pb=2440 99.67% NEARLY ex: pairs[2,4,10,12,15,17,19]=L pairs[2,4,10,12,17]=L pairs[2,4,10,13,15]=L pairs[2,4,10,13,16]=L pairs[2,4,10,13,17]=L pairs[2,4,10,14,16]=L
+kodd (g=8,s=8) n=2446 pb=2431 99.39% NEARLY ex: pairs[4,6,11]=L pairs[4,6,11,14,16]=L pairs[4,6,11,14,19]=L pairs[4,6,11,17,19]=L pairs[6,10,12,16,18]=L pairs[6,11,18]=L
+kodd (g=8,s=10) n=2447 pb=2442 99.80% NEARLY ex: pairs[3,5,11,13,17]=L pairs[3,5,14,17,19]=L pairs[3,5,16]=L pairs[3,5,17]=L pairs[3,5,19]=L
+kodd (g=8,s=12) n=2448 pb=2434 99.43% NEARLY ex: pairs[3,5,9]=L pairs[3,5,9,13,15]=L pairs[3,5,9,16,19]=L pairs[3,5,10,13,17]=L pairs[3,5,13]=L pairs[3,6,13,15,18]=L
+kodd (g=9,s=9) n=2448 pb=2442 99.75% NEARLY ex: pairs[5,7,12,14,17]=L pairs[5,7,12,14,18]=L pairs[5,7,13]=L pairs[6,11,18]=L pairs[18]=L pairs[19]=L
+kodd (g=9,s=11) n=2447 pb=2441 99.75% NEARLY ex: pairs[3,5,12,15,18]=L pairs[3,5,12,15,19]=L pairs[3,5,12,16,19]=L pairs[3,5,12,17,19]=L pairs[3,5,13,17,19]=L pairs[6,8,13]=L
+kodd (g=9,s=13) n=2446 pb=2434 99.51% NEARLY ex: pairs[3,5,11,15,18]=L pairs[3,5,11,15,19]=L pairs[3,5,11,16,19]=L pairs[3,5,11,17,19]=L pairs[3,6,10]=L pairs[3,6,10,14,16]=L
+kodd (g=9,s=15) n=2440 pb=2416 99.02% NEARLY ex: pairs[2,8,16]=L pairs[3,6,10,13,16]=L pairs[3,6,10,13,17]=L pairs[3,6,13,17,19]=L pairs[3,7,10]=L pairs[3,7,10,13,19]=L
+kodd (g=10,s=10) n=2447 pb=2440 99.71% NEARLY ex: pairs[5,8,12,14,17]=L pairs[5,8,14]=L pairs[6,8,13,15,17]=L pairs[6,8,14,16,18]=L pairs[6,8,15]=L pairs[6,8,15,17,19]=L
+kodd (g=10,s=12) n=2448 pb=2447 99.96% NEARLY ex: pairs[7,9,15]=L
+kodd (g=10,s=14) n=2450 pb=2446 99.84% NEARLY ex: pairs[3,7,11,15,17]=L pairs[4,6,11]=L pairs[4,6,16]=L pairs[4,8,11,15,19]=L
+kodd (g=10,s=16) n=2467 pb=2452 99.39% NEARLY ex: pairs[3,7,11,14,17]=L pairs[3,8,11]=L pairs[3,8,12]=L pairs[3,8,13,17,19]=L pairs[3,8,17]=L pairs[4,7,12]=L
+kodd (g=11,s=11) n=2447 pb=2439 99.67% NEARLY ex: pairs[6,8,14,16,18]=L pairs[6,8,15]=L pairs[6,8,15,17,19]=L pairs[6,9,14,16,18]=L pairs[6,9,16]=L pairs[7,9,15,17,19]=L
+kodd (g=11,s=13) n=2446 pb=2442 99.84% NEARLY ex: pairs[1,3,6]=L pairs[4,7,14,16,19]=L pairs[8,10,16]=L pairs[8,10,17]=L
+kodd (g=11,s=15) n=2440 pb=2437 99.88% NEARLY ex: pairs[1,3,7]=L pairs[4,7,13,16,19]=L pairs[4,7,17]=L
+kodd (g=11,s=17) n=2395 pb=2382 99.46% NEARLY ex: pairs[1,3,8]=L pairs[2,4,6]=L pairs[3,9,13]=L pairs[4,7,13]=L pairs[4,7,13,15,19]=L pairs[4,8,11]=L
+kodd (g=11,s=19) n=2090 pb=2075 99.28% NEARLY ex: pairs[1,3,9]=L pairs[1,7,13]=L pairs[4,8,12,14,17]=L pairs[4,8,17]=L pairs[4,9,12]=L pairs[4,9,13]=L
+kodd (g=12,s=12) n=2448 pb=2441 99.71% NEARLY ex: pairs[6,10,17]=L pairs[7,9,17]=L pairs[7,10,18]=L pairs[8,10,19]=L pairs[9,15,17]=L pairs[10,16,18]=L
+kodd (g=12,s=14) n=2450 pb=2448 99.92% NEARLY ex: pairs[9,11,18]=L pairs[9,11,19]=L
+kodd (g=12,s=16) n=2467 pb=2466 99.96% NEARLY ex: pairs[4,6,13]=L
+kodd (g=12,s=18) n=2584 pb=2572 99.54% NEARLY ex: pairs[2,4,7]=L pairs[2,4,7,15,19]=L pairs[4,8,13]=L pairs[4,8,14]=L pairs[4,9,13]=L pairs[4,9,14]=L
+kodd (g=12,s=20) n=3382 pb=3362 99.41% NEARLY ex: pairs[1,8,14]=L pairs[2,4,7,15,18]=L pairs[2,4,8]=L pairs[2,5,7]=L pairs[4,8,10]=L pairs[4,8,10,13,15]=L
+kodd (g=13,s=13) n=2446 pb=2442 99.84% NEARLY ex: pairs[7,10,18]=L pairs[7,11,19]=L pairs[8,10,19]=L pairs[10,17,19]=L
+kodd (g=13,s=17) n=2395 pb=2394 99.96% NEARLY ex: pairs[1,4,8]=L
+kodd (g=13,s=19) n=2090 pb=2080 99.52% NEARLY ex: pairs[1,4,9]=L pairs[4,9,14]=L pairs[4,9,15]=L pairs[4,10,14]=L pairs[5,8,15]=L pairs[5,9,13]=L
+kodd (g=14,s=14) n=2450 pb=2449 99.96% NEARLY ex: pairs[8,10,19]=L
+kodd (g=14,s=18) n=2584 pb=2583 99.96% NEARLY ex: pairs[4,8,15]=L
+kodd (g=14,s=20) n=3382 pb=3375 99.79% NEARLY ex: pairs[3,5,7]=L pairs[5,9,15]=L pairs[5,9,16]=L pairs[5,10,15]=L pairs[5,10,16]=L pairs[6,9,16]=L
+kodd (g=15,s=17) n=2395 pb=2394 99.96% NEARLY ex: pairs[2,4,8]=L
+kodd (g=15,s=19) n=2090 pb=2089 99.95% NEARLY ex: pairs[2,4,9]=L
+kodd (g=16,s=4) n=2392 pb=2373 99.21% NEARLY ex: pairs[1,16,18]=L pairs[1,16,19]=L pairs[1,17,19]=L pairs[2,16,18]=L pairs[2,16,19]=L pairs[2,17,19]=L
+kodd (g=16,s=18) n=2584 pb=2583 99.96% NEARLY ex: pairs[3,5,7]=L
+kodd (g=17,s=1) n=3376 pb=3348 99.17% NEARLY ex: pairs[2,4,17]=L pairs[2,4,18]=L pairs[2,4,19]=L pairs[2,5,18]=L pairs[2,5,19]=L pairs[2,17,19]=L
+kodd (g=17,s=3) n=2580 pb=2563 99.34% NEARLY ex: pairs[1,4,17]=L pairs[1,4,18]=L pairs[1,4,19]=L pairs[1,5,18]=L pairs[1,5,19]=L pairs[1,17,19]=L
+kodd (g=17,s=5) n=2464 pb=2455 99.63% NEARLY ex: pairs[1,3,17]=L pairs[1,3,18]=L pairs[1,3,19]=L pairs[1,17,19]=L pairs[2,17,19]=L pairs[3,17,19]=L
+kodd (g=17,s=7) n=2446 pb=2425 99.14% NEARLY ex: pairs[1,3,18]=L pairs[1,3,19]=L pairs[1,17,19]=L pairs[2,17,19]=L pairs[3,10,18]=L pairs[3,14,18]=L
+kodd (g=18,s=2) n=2085 pb=2079 99.71% NEARLY ex: pairs[6,13,16]=L pairs[6,13,18]=L pairs[6,13,19]=L pairs[7,13,19]=L pairs[18]=L pairs[19]=L
+kodd (g=18,s=4) n=2391 pb=2383 99.67% NEARLY ex: pairs[1,5,19]=L pairs[5,15,18]=L pairs[5,15,19]=L pairs[6,12,16]=L pairs[6,15,19]=L pairs[6,16,19]=L
+kodd (g=18,s=6) n=2436 pb=2429 99.71% NEARLY ex: pairs[1,3,18]=L pairs[1,3,19]=L pairs[1,4,19]=L pairs[4,15,18]=L pairs[4,15,19]=L pairs[18]=L
+kodd (g=18,s=8) n=2442 pb=2427 99.39% NEARLY ex: pairs[1,3,19]=L pairs[1,10,13]=L pairs[3,11,19]=L pairs[3,15,19]=L pairs[4,11,16]=L pairs[4,11,19]=L
+kodd (g=18,s=10) n=2444 pb=2428 99.35% NEARLY ex: pairs[1,11,13]=L pairs[1,11,18]=L pairs[1,11,19]=L pairs[1,12,19]=L pairs[11]=L pairs[11,13,15]=L
+kodd (g=19,s=1) n=3375 pb=3364 99.67% NEARLY ex: pairs[2,4,19]=L pairs[2,5,19]=L pairs[6,13,15]=L pairs[6,14,16]=L pairs[6,14,19]=L pairs[7,13,15]=L
+kodd (g=19,s=3) n=2579 pb=2574 99.81% NEARLY ex: pairs[1,4,19]=L pairs[1,5,19]=L pairs[6,13,16]=L pairs[6,13,17]=L pairs[19]=L
+kodd (g=19,s=5) n=2463 pb=2457 99.76% NEARLY ex: pairs[1,3,19]=L pairs[6,10,16]=L pairs[6,11,15]=L pairs[6,12,16]=L pairs[6,13,17]=L pairs[19]=L
+kodd (g=19,s=7) n=2445 pb=2437 99.67% NEARLY ex: pairs[1,3,19]=L pairs[4,16,19]=L pairs[5,10,16]=L pairs[5,11,15]=L pairs[5,12,16]=L pairs[5,13,17]=L
+kodd (g=19,s=9) n=2444 pb=2424 99.18% NEARLY ex: pairs[1,10,12]=L pairs[1,10,13]=L pairs[1,11,14]=L pairs[1,11,19]=L pairs[2,10,12]=L pairs[2,10,14]=L
+kodd (g=19,s=11) n=2444 pb=2427 99.30% NEARLY ex: pairs[1,9,12]=L pairs[1,9,13]=L pairs[1,12,14]=L pairs[1,12,19]=L pairs[2,9,12]=L pairs[2,9,14]=L
+kodd (g=19,s=17) n=2395 pb=2373 99.08% NEARLY ex: pairs[3,5,8]=L pairs[6,8,14]=L pairs[9]=L pairs[9,13,15]=L pairs[10]=L pairs[10,12,14]=L
+kodd (g=20,s=2) n=2084 pb=2080 99.81% NEARLY ex: pairs[6,14,16]=L pairs[7,14,16]=L pairs[7,14,18]=L pairs[7,15,18]=L
+kodd (g=20,s=8) n=2441 pb=2432 99.63% NEARLY ex: pairs[4,12,16]=L pairs[4,12,17]=L pairs[4,12,18]=L pairs[5,12,17]=L pairs[5,12,18]=L pairs[5,13,17]=L
+kodd (g=20,s=10) n=2443 pb=2425 99.26% NEARLY ex: pairs[1,11,13]=L pairs[1,11,14]=L pairs[1,12,15]=L pairs[2,11,13]=L pairs[2,11,15]=L pairs[2,11,18]=L
+kodd (g=20,s=12) n=2445 pb=2429 99.35% NEARLY ex: pairs[1,10,13]=L pairs[1,10,14]=L pairs[1,13,15]=L pairs[2,10,13]=L pairs[2,10,15]=L pairs[2,10,18]=L
+kodd (g=20,s=14) n=2448 pb=2429 99.22% NEARLY ex: pairs[1,10,12]=L pairs[1,10,15]=L pairs[1,11,15]=L pairs[1,12,15]=L pairs[2,10,12]=L pairs[7,9,15]=L
+kodd (g=20,s=16) n=2466 pb=2445 99.15% NEARLY ex: pairs[1,10,12]=L pairs[1,10,13]=L pairs[1,10,14]=L pairs[1,11,13]=L pairs[1,11,14]=L pairs[1,12,14]=L
+kodd (g=20,s=18) n=2584 pb=2567 99.34% NEARLY ex: pairs[7,9,16]=L pairs[7,10,14]=L pairs[7,10,15]=L pairs[10]=L pairs[10,13,15]=L pairs[10,13,16]=L
+kodd (g=21,s=1) n=3374 pb=3364 99.70% NEARLY ex: pairs[3,5,18]=L pairs[6,8,17]=L pairs[7,14,16]=L pairs[7,14,17]=L pairs[7,15,17]=L pairs[7,16,18]=L
+kodd (g=21,s=3) n=2578 pb=2575 99.88% NEARLY ex: pairs[7,14,18]=L pairs[7,15,18]=L pairs[7,15,19]=L
+kodd (g=21,s=5) n=2462 pb=2459 99.88% NEARLY ex: pairs[6,11,18]=L pairs[6,17,19]=L pairs[7,14,19]=L
+kodd (g=21,s=7) n=2445 pb=2443 99.92% NEARLY ex: pairs[5,11,18]=L pairs[5,17,19]=L
+kodd (g=21,s=9) n=2443 pb=2428 99.39% NEARLY ex: pairs[1,12,16]=L pairs[4,13,17]=L pairs[4,13,18]=L pairs[4,13,19]=L pairs[5,12,18]=L pairs[5,12,19]=L
+kodd (g=21,s=11) n=2443 pb=2424 99.22% NEARLY ex: pairs[1,12,14]=L pairs[1,12,15]=L pairs[1,13,16]=L pairs[2,12,14]=L pairs[2,12,16]=L pairs[2,12,19]=L

@@ -1,0 +1,27 @@
+  T2 member R=1.2.3.4. g=2, mover takes 1 2 -> no reply into family (opp value D)
+  T2 member R=1.2.3.4. g=2, mover takes 1 3 -> no reply into family (opp value D)
+  T2 member R=1.2.3.4. g=2, mover takes 3 -> no reply into family (opp value D)
+  T2 member R=1.2.4.5. g=2, mover takes 1 2 -> no reply into family (opp value D)
+  T2 member R=1.2.4.5. g=2, mover takes 1 4 -> no reply into family (opp value W)
+  T2 member R=1.2.4.5. g=2, mover takes 4 -> no reply into family (opp value W)
+  T4 member R=3.4.5. g=4, mover takes 4 -> no reply into family (opp value W)
+  T4 member R=3.4.5. g=4, mover takes 5 -> no reply into family (opp value D)
+  T4 member R=3.5.6. g=4, mover takes 5 -> no reply into family (opp value W)
+  T4 member R=3.5.6. g=4, mover takes 6 -> no reply into family (opp value D)
+  T4 member R=3.6.7. g=4, mover takes 6 -> no reply into family (opp value W)
+  T4 member R=3.6.7. g=4, mover takes 7 -> no reply into family (opp value D)
+  >=D fail T1 R=1.2.3.4. g=0
+  >=D fail T1 R=1.2.4.5. g=0
+  >=D fail T1 R=2.3.4.5. g=0
+  >=D fail T1 R=1.2.5.6. g=0
+  >=D fail T1 R=2.3.5.6. g=0
+  >=D fail T2 R=1.2.3.4.5.6. g=1
+  >=D fail T2 R=1.2.3.4.6.7. g=1
+  >=D fail T2 R=1.2.4.5.6.7. g=1
+  >=D fail T2 R=2.3.4.5.6.7. g=1
+  >=D fail T2 R=1.2.3.4.7.8. g=1
+>=D half (exists mover pick s.t. every opponent turn lands in family): failures T0=797 T1=784 T4=0
+T0 pairs k even g=0: members 797 (v=W: 0), mover turns 6860, turns with no reply into family 0
+T1 pairs k odd g=1: members 799 (v=W: 0), mover turns 6870, turns with no reply into family 0
+T2 pairs k even g=2 no {2,3}: members 609 (v=W: 0), mover turns 7470, turns with no reply into family 3735
+T4 {3}u odd pairs>=4 g=4: members 188 (v=W: 0), mover turns 2608, turns with no reply into family 1236

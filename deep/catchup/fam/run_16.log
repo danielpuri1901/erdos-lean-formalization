@@ -1,0 +1,17 @@
+== sanity v({1..N},0): 0:D 1:W 2:W 3:D 4:D 5:W 6:W 7:D 8:D 9:L 10:L 11:D 12:D 13:W 14:L 15:D 16:D
+   mismatches vs expected: 0
+== (P): 1596 nonempty pair-unions in {1..16}, 0 violations
+== (P3): 189 sets {1,2,3}u(k even pairs >=4) (incl k=0) in {1..16}, 0 violations;  [k odd: v(.,1)=D in 188 of 188]
+== hard case: 3435 positions (R odd pair-union, a pair start); positions with NO good reply: 0
+  r1 a+1                          : 66 fail  (2.4.6.,a=6) (2.4.6.8.11.,a=6) (2.4.6.8.12.,a=6) (2.4.6.8.13.,a=6) (2.4.6.9.12.,a=6) (2.4.6.9.13.,a=6) (2.4.6.9.14.,a=6) (2.4.6.9.15.,a=6) (2.4.6.10.13.,a=6) (2.4.6.10.14.,a=6) 
+  r2 tie a-1 if avail else a+1    : 243 fail  (1.3.5.,a=3) (1.3.5.8.13.,a=3) (1.3.5.9.12.,a=3) (1.3.5.9.13.,a=3) (1.3.5.9.14.,a=3) (1.3.5.9.15.,a=3) (1.3.5.10.13.,a=3) (1.3.5.10.14.,a=3) (1.3.5.10.15.,a=3) (1.3.5.11.14.,a=3) 
+  r3 smallest y>=a-1              : 243 fail  (1.3.5.,a=3) (1.3.5.8.13.,a=3) (1.3.5.9.12.,a=3) (1.3.5.9.13.,a=3) (1.3.5.9.14.,a=3) (1.3.5.9.15.,a=3) (1.3.5.10.13.,a=3) (1.3.5.10.14.,a=3) (1.3.5.10.15.,a=3) (1.3.5.11.14.,a=3) 
+  r4a a+1 | {23,45}: p in2..5 then a+1 : 0 fail  
+  r4b a+1 | {23,45}: p in2..5 then best: 0 fail  
+  r5  a+1 | any pre-pick p<a-1 then best: 0 fail  
+  r1 failures with {2,3},{4,5}: 66 of 66; parity of #pairs below a among r1 failures: even 53 odd 13
+  r1 failures by a: a=1:0/305 a=2:0/189 a=3:0/233 a=4:0/216 a=5:0/223 a=6:14/220 a=7:11/221 a=8:7/221 a=9:4/221 a=10:4/220 a=11:5/223 a=12:5/216 a=13:5/233 a=14:4/189 a=15:7/305
+  r6  if {2,3} a pair and a>=4: 2 then a+1, else a+1 : 0 fail  
+  r6b a+1 if good, else 2 then a+1 : 0 fail  
+  among r1 failures, fixed pre-pick p then a+1 fails: p=1:66 p=2:0 p=3:66 p=4:66 p=5:66 p=6:66 p=7:66 p=8:66
+== done gaps_16.txt single_16.txt

@@ -53,9 +53,11 @@ Route (lemma list, status in brackets):
 3. L3 (P) "≤ draw" half for k even, g = 0, from the k−1 case: partner reply.
    [proved on paper in stage 1, not reviewed; Lean: open]
 4. L4 (P) "≤ draw" half for k odd, g = 1: mover takes a+1 → reply a, ties, k−1 even pairs at gap 0;
-   mover takes a (smaller) → reply unknown (natural reply a+1 fails in 307 of 29,581 cases). [open, key]
+   mover takes a (smaller) → reply rule r6 (attempt 2) works in all 29,581 cases inside {1..20}, landing in T2/T4,
+   which are computed-only and do not close. [reduced to T2, T4 (computed only)]
 5. L5 (P) "≥ draw" halves (mover has a good pick). No fixed rule works. [open, key]
-6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [open, key]
+6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [BLOCKED after attempt 2: no small family exists; see D5]
+7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 (attempt 4) and 15, 16 (attempts 5–6) by kernel-checked strategy trees. [open]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
 (it tells soonest whether this route can work). In parallel one worker does L1 in Lean (needed by
@@ -93,6 +95,10 @@ From stage 1 (`sweep/catchup/*.c`, see NOTES.md):
 - F4. v(Q, 2) = win for exactly 24 even pair-unions Q inside {1..18}, all containing {2,3},{4,5} (`g2ex.c`).
 - F5. Fixed rules for the mover in a pairs position fail in about 1 % of positions inside {1..20} (`grule.c`).
 - F6. General positions: 24–43 % of (R, g) with R ⊆ {1..14}, g ≥ 1 are not parity-best (`parity.c`).
+- F8. (attempt 2) Rule r6 closes the hard case computationally inside {1..20}; T2 (v(Q,2) ≠ W, Q even pair-union without {2,3}) and
+  T4 (v({3} ∪ Q', 4) = D, Q' odd pair-union inside {4..}) hold inside {1..20}; `deep/catchup/fam/`.
+- F9. (manager) Minimal certificate tree sizes (ge/le nodes) for ({1..N},0): N=11: 2,097/3,129; N=12: 4,937/7,442;
+  N=15: 80,269/119,525; N=16: 212,094/316,289 (`deep/catchup/certsize.py`).
 - F7. Kernel evaluation without memoisation: N = 8 (43 K nodes) takes 30 s; N = 11 needs 15 M nodes.
 
 ## 4. Attempts
@@ -115,7 +121,33 @@ Files: `Solution/Gap.lean`, `Solution.lean` (import line only).
 - Equal-sum pairs (R = union of pairs {a, c−a} with a common sum c, g = 0 for even total, g = 1 for odd):
   121 of 632 such sets inside {1..14} are NOT draws (already {1,3} at g = 0, {1,4} at g = 1). Dead end.
 
-### Attempt 2 — computational search for a closed family F (L6) — running (worker B, deadline 1791110700)
+### Attempt 2 — computational search for a closed family F (L6) — result: partial (8 min); L6 marked BLOCKED
+Worker (opus), `deep/catchup/fam/` (solver `fam.c` checked against a Python reference on all of {1..10}, g ≤ 11, 0 mismatches).
+Findings:
+- (P) re-verified: 0 violations in 1,596 / 4,180 / 10,945 pair-unions inside {1..16} / {1..18} / {1..20}. (P3): 189 / 493 / 1,292 sets, all D.
+- Hard case L4 has an explicit reply rule **r6** with 0 failures in all 29,581 hard-case positions inside {1..20}:
+  mover (k odd, gap 1) takes the smaller a of {a,a+1}. If {2,3} is a pair of R and a ≥ 4: reply 2 (still behind,
+  gap a−3), then a+1: lead 4, mover faces T4 = ({3} ∪ Q', 4) with Q' the k−2 remaining pairs inside {4..}.
+  Otherwise reply a+1: mover faces T2 = (Q, 2) with Q the k−1 remaining pairs, no pair {2,3}.
+  Plain a+1 fails 66 / 155 / 307 times (M = 16/18/20); every failure contains pairs {2,3},{4,5} and has a ≥ 6; the pre-pick 2 is the only pre-pick that always repairs it.
+- T2: v(Q,2) ≤ D for every even pair-union Q without {2,3} inside {1..20} (4,180 sets: L 59, D 4,121, W 0).
+  T4: v({3} ∪ Q', 4) = D for every odd pair-union Q' inside {4..20} (1,292/1,292); the k-even version of T4 is not D.
+- But T2 and T4 do NOT close: 3,735 of 7,470 (T2) and 1,236 of 2,608 (T4) mover turns have no reply back into
+  {pairs k even g=0, pairs k odd g=1, T2, T4} (M = 16). Their replies need pairs at gap 3 and pairs ∪ {s} shapes, and
+  pairs at gap 3 have 45 W exceptions spread over 6 low patterns inside {1..18}; more at g ≥ 4.
+- Parity-best table for pair-unions by gap (M = 20): only (g=0, k even) and (g=1, k odd) are 100 %; g=2 k even 98.2 %, g=3 k odd 93.5 %.
+- "≥ D" half: requiring every opponent turn to land in the family fails for 797/797 (k even, g=0) and 784/799 (k odd, g=1) members at M = 16.
+- Greedy closure of the "≤ D" certificate from the 232 pairs positions inside {1..12}: 1,866 members (355 of them L positions), singleton counts 0..5. No small family.
+Manager check: `deep/catchup/r6check.py` (independent Python): hard cases inside {1..14}: 1,145; r1 fails 23; r6 fails 0; T2: 233 sets, 0 W; T4: 72 sets, all D. Agrees.
+Files: `deep/catchup/fam/*` (hard.txt, gaps.txt, single.txt, closure.txt, logs).
+
+**Decision D5 (manager).** The route through a small closed family is blocked: the "≤ D" side needs a family that grows
+without a visible pattern (1,866 members inside {1..12}) and the "≥ D" side has no family at all. The pairs conjecture
+(P) stays computed-only, but it is now reduced (on paper, with computation) to: T2, T4, the "≥ D" halves, and the
+closure of T2/T4. No route to a full proof is left that I believe in within this run. The remaining time goes to the
+strongest Lean record: the conjecture for N = 11, 12, 15, 16 by kernel-checked strategy certificates (D4), on top of the
+reduction `catchup_of_pairsConj` (attempt 3). One more mathematical item is kept open for the write-up: whether the
+Catch-Up value profile of {1..N} itself (F1 and the stage 1 gap profile) has a closed form.
 
 ### Attempt 3 — L2 reduction in Lean — result: proved-in-lean (2 min)
 Worker (opus) wrote `Solution/Reduction.lean`: `PairStarts A := 0 ∉ A ∧ ∀ a ∈ A, a+1 ∉ A`,

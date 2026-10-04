@@ -1,0 +1,43 @@
+# pair-unions R (nonempty) in {1..12}: per gap g, #R with sum>=g, #parity-best, exceptions (pairs starts, value)
+g=0 n=232 parity-best=221 (95.26%) ex: k5[1,3,5,7,9,]=L k5[1,3,5,7,10,]=L k5[1,3,5,7,11,]=L k5[2,4,6,8,10,]=L k5[2,4,7,9,11,]=L 
+   keven: n=116 parity-best=116 (100.00%)  L=0 D=116 W=0
+   kodd : n=116 parity-best=105 (90.52%)  L=11 D=0 W=105
+g=1 n=232 parity-best=207 (89.22%) ex: k4[1,3,5,10,]=L k4[2,4,6,10,]=L k4[2,4,7,9,]=L k4[2,5,8,10,]=L k2[3,5,]=L 
+   keven: n=116 parity-best=91 (78.45%)  L=25 D=0 W=91
+   kodd : n=116 parity-best=116 (100.00%)  L=0 D=116 W=0
+g=2 n=232 parity-best=152 (65.52%) ex: k5[1,3,6,8,11,]=L k3[1,3,7,]=L k5[1,3,7,9,11,]=L k3[1,3,8,]=L k3[1,3,9,]=L 
+   keven: n=116 parity-best=108 (93.10%)  L=6 D=108 W=2
+   kodd : n=116 parity-best=44 (37.93%)  L=72 D=0 W=44
+g=3 n=232 parity-best=152 (65.52%) ex: k2[1,4,]=L k4[1,4,6,9,]=L k4[1,4,6,11,]=L k4[1,4,7,11,]=L k4[1,4,8,10,]=L 
+   keven: n=116 parity-best=59 (50.86%)  L=57 D=0 W=59
+   kodd : n=116 parity-best=93 (80.17%)  L=15 D=93 W=8
+g=4 n=231 parity-best=160 (69.26%) ex: k3[1,4,6,]=L k5[1,4,6,9,11,]=L k3[1,4,7,]=L k3[1,5,7,]=L k5[1,5,7,9,11,]=L 
+   keven: n=116 parity-best=82 (70.69%)  L=18 D=82 W=16
+   kodd : n=115 parity-best=78 (67.83%)  L=37 D=0 W=78
+g=5 n=231 parity-best=158 (68.40%) ex: k3[1,3,6,]=W k3[1,4,8,]=W k2[1,5,]=L k4[1,5,7,9,]=L k4[1,5,8,10,]=L 
+   keven: n=116 parity-best=83 (71.55%)  L=33 D=0 W=83
+   kodd : n=115 parity-best=75 (65.22%)  L=13 D=75 W=27
+g=6 n=230 parity-best=150 (65.22%) ex: k2[1,3,]=W k4[1,3,5,8,]=W k4[1,3,6,9,]=W k4[1,3,6,10,]=W k4[1,3,6,11,]=W 
+   keven: n=116 parity-best=64 (55.17%)  L=13 D=64 W=39
+   kodd : n=114 parity-best=86 (75.44%)  L=28 D=0 W=86
+g=7 n=230 parity-best=151 (65.65%) ex: k3[1,3,5,]=W k5[1,3,5,7,11,]=W k3[1,3,6,]=W k3[1,3,7,]=W k3[1,3,8,]=W 
+   keven: n=116 parity-best=96 (82.76%)  L=20 D=0 W=96
+   kodd : n=114 parity-best=55 (48.25%)  L=12 D=55 W=47
+g=8 n=229 parity-best=138 (60.26%) ex: k2[1,3,]=W k4[1,3,5,8,]=W k4[1,3,5,9,]=W k4[1,3,5,10,]=W k4[1,3,5,11,]=W 
+   keven: n=116 parity-best=39 (33.62%)  L=11 D=39 W=66
+   kodd : n=113 parity-best=99 (87.61%)  L=14 D=0 W=99
+g=9 n=229 parity-best=142 (62.01%) ex: k3[1,3,5,]=W k5[1,3,5,7,11,]=W k5[1,3,5,8,11,]=W k3[1,3,6,]=W k3[1,3,7,]=W 
+   keven: n=116 parity-best=104 (89.66%)  L=12 D=0 W=104
+   kodd : n=113 parity-best=38 (33.63%)  L=4 D=38 W=71
+g=10 n=228 parity-best=142 (62.28%) ex: k4[1,3,5,8,]=W k3[1,3,11,]=L k2[1,4,]=W k4[1,4,6,8,]=W k4[1,4,6,9,]=W 
+   keven: n=116 parity-best=35 (30.17%)  L=7 D=35 W=74
+   kodd : n=112 parity-best=107 (95.54%)  L=5 D=0 W=107
+g=11 n=227 parity-best=143 (63.00%) ex: k3[1,3,5,]=W k5[1,3,5,7,10,]=W k5[1,3,5,7,11,]=W k5[1,3,5,8,11,]=W k3[1,4,6,]=W 
+   keven: n=115 parity-best=108 (93.91%)  L=7 D=0 W=108
+   kodd : n=112 parity-best=35 (31.25%)  L=1 D=35 W=76
+g=12 n=226 parity-best=139 (61.50%) ex: k4[1,3,5,7,]=W k4[1,3,5,9,]=W k4[1,3,5,10,]=W k4[1,3,6,8,]=W k4[1,3,6,9,]=W 
+   keven: n=115 parity-best=28 (24.35%)  L=2 D=28 W=85
+   kodd : n=111 parity-best=111 (100.00%)  L=0 D=0 W=111
+g=13 n=225 parity-best=134 (59.56%) ex: k3[1,3,5,]=W k5[1,3,5,7,9,]=W k5[1,3,5,7,10,]=W k5[1,3,5,7,11,]=W k5[1,3,5,8,10,]=W 
+   keven: n=114 parity-best=109 (95.61%)  L=5 D=0 W=109
+   kodd : n=111 parity-best=25 (22.52%)  L=0 D=25 W=86
