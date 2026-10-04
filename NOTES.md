@@ -28,4 +28,9 @@ Work inside one graph `G : SimpleGraph V` with finsets. `Good G k l s := (∃ t 
 - Paley checks live in `Solution/Paley.lean` so edits to the main file do not rerun them.
 
 ## Status
-(updated as work proceeds)
+- Complete: `Solution.lean` (upper bound, sInf argument) and `Solution/Paley.lean` (lower bound) build with no `sorry`;
+  `#print axioms ramsey_4_4` gives `propext`, `Classical.choice`, `Quot.sound`.
+- Paley checks: Bool checkers `noK4`, `noI4` over `List.range 17` with Nat adjacency `padj` (bitmask 107286),
+  `decide +kernel` on `noK4 = true`, then soundness by peeling `List.all_eq_true`.
+  The same check stated as `∀ a b c d : Fin 17, ...` with `decide +kernel` peaked at 9.9 GB; the Bool version stays at the
+  import baseline (about 7 GB RSS, mostly mmapped oleans; an import-only file shows the same).

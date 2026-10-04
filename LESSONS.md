@@ -107,3 +107,6 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- (ramsey44) `decide +kernel` on `∀ a b c d : Fin 17, adj → ... → False` peaked at 9.9 GB; a `List.range`-based Bool checker on `Nat` plus a soundness lemma (`List.all_eq_true.mp` step by step, then `simp only` with the hypotheses as Bool equalities) stayed at the import baseline.
+- (ramsey44) The import of `FormalConjectures.Wikipedia.RamseyNumbers` alone shows about 7 GB max RSS (mmapped oleans); measure a file's cost against an import-only file.
+- (ramsey44) Ramsey upper bounds go through cleanly at the Finset level inside one graph: `Good G k l s := (∃ t ⊆ s, G.IsNClique k t) ∨ (∃ t ⊆ s, Gᶜ.IsNClique l t)`, `IsNClique.insert` for the vertex step, and degree parity via `natCast_card_filter`, `sum_product'`, `sum_involution` with `Prod.swap` in `ZMod 2`.
