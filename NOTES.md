@@ -35,3 +35,5 @@ Main: `Filter.frequently_atTop`: for each A take m = n^(A+1) ≥ A.
 - The file ends with `example : type_of% @increasing_triples_power = type_of% @Arxiv.«1609.08688».maximalLength_pow := rfl`.
 - No `decide`, so no kernel-heavy checks; memory is not a concern.
 - Decision: `bdd` is copied from `origin/run/sqtuples` rather than imported, so the solution is one file.
+- Submitted: commit `e8dd57ce2c1391bca53902acbf969e8755a9f5e2`.
+  Verdict: `comparator/triplespow` = success ("Your solution is okay!"), about 6 minutes after the push.
