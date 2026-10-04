@@ -1,5 +1,18 @@
 # Deep attempt: catchup
 
+```
+result: partial
+claim: (1) value (Finset.Icc 1 N) = .draw for every N ≤ 16 with N*(N+1)/2 even (N = 0,3,4,7,8,11,12,15,16), and for N ≤ 16 the game is a draw iff N*(N+1)/2 is even; (2) the Catch-Up conjecture follows from four explicit statements about unions of pairs {a,a+1} (GE, T2, T4, PairsConj3), each checked by computer inside {1..20} or more but not proved; the conjecture itself is NOT proved.
+lean: Solution.lean and Solution/*.lean build with no sorry (axioms propext, Classical.choice, Quot.sound): CatchUpDeep.catchup_draw_le_16, catchup_draw_iff_le_16, catchup_draw_11/12/15/16 (Solution/Cert*.lean), value_eq_gv (Gap.lean), catchup_of_pairsConj (Reduction.lean), pairsConj_le_halves (Pairs.lean), hard_of_T2_T4, pairsConj_le_halves_of_T2_T4 (Hard.lean), pairsConj_of_GE_T2_T4, catchup_of_GE_T2_T4_P3 (Final.lean).
+computed: conjecture true for N ≤ 28 (stage 1 C search); pairs conjecture (P) for all 75,024 pair-unions inside {1..24}; GE, T2, T4 inside {1..20} (T2: 4,180 sets, T4: 1,292, hard case: 29,581 positions) and (P) inside {1..22}; minimal certificate sizes for N = 19, 20: 4.5 M/6.7 M and 12.8 M/19.1 M nodes.
+route: reduce to the pairs conjecture (done in Lean), split it into "≤ draw" halves (done in Lean from GE + T2 + T4 via the partner reply and rule r6) and the "≥ draw" half GE (open, no simple strategy exists: attempt 9); T2 and T4 do not close under replies (attempt 2), so the route stops at four computed statements.
+next idea: The open core is GE together with T2/T4: a theory of v(R, g) for R a pair-union plus at most one singleton at small gaps. The data say the exceptions to "parity-best" live on an arithmetic zone of low pair starts (a₁ ≥ 5, a₃ ≤ 2a₁−2 for k = 3, with holes), so a proof would need an exact description of v on pair-unions at gaps 0..4, possibly by a potential function of the gaps between consecutive pairs; a first step is to compute v(pairs ∪ {s}, g) for all shapes inside {1..24} and fit a closed form for the k ≤ 3 cases before attempting an induction. Independently, Lean verification for N = 19, 20 would need a certificate format with sharing (a DAG of positions checked once each) instead of trees.
+dead ends: fixed greedy strategies; "parity-best" for general sets; balanced sets; intervals; equal-sum pairs; general triples ∪ pairs; a small closed strategy family (the "≤ draw" closure inside {1..12} has 1,866 members); fixed pick rules for the mover (exception zone is arithmetic, new families at {1..22}); kernel evaluation of the raw recursion beyond N = 8; a disproof (next candidates N = 31, 32 need a 17 GB table).
+confidence: high for the Lean results (full build, no sorry, standard axioms, every certificate cross-checked by two independent checkers before the kernel); high for the computations (two or three independent implementations agree on every overlapping range); the conjecture itself remains open.
+```
+
+end: 1791112100 (date -u +%s); 10 attempts logged in 55 minutes; stop condition: ten attempts.
+
 start: 1791108800 (date -u +%s); hard stop at 1791123200 (start + 4 h)
 
 ## 1. Target
