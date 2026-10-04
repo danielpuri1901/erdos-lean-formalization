@@ -42,3 +42,14 @@ Single file `Solution.lean` (no heavy kernel checks). Lemmas, in order:
 - `type_of% @dihedral_leinster_iff = type_of% @LeinsterGroup.dihedral_is_leinster_iff_odd_perfect` by `rfl`.
 - No `sorry`, `admit`, `axiom`, `native_decide`, `implemented_by`, `unsafe` in `Solution.lean`.
 - No kernel-heavy steps: only small `decide` checks over `ZMod 2`; the build of `Solution` takes about 10 s.
+
+## Submission state (2026-10-04)
+
+- Submit commit: `4717d112ed9fc5d5e26f6821dc12ea9090fe9b6d` (`submit(dihedral): ...`), pushed to `run/dihedral`.
+- The checker is paused today, so per instruction the `comparator/dihedral` status was not polled.
+  No verdict is known yet. Next session: read
+  `gh api repos/danielpuri1901/erdos-lean-formalization/commits/4717d112ed9fc5d5e26f6821dc12ea9090fe9b6d/status`
+  and, on failure, fix and resubmit.
+- What is proved: the full theorem `dihedral_leinster_iff`, with no gaps (see Status above).
+  What is missing: only the external checker verdict.
+- Work time: about 25 minutes, within the 30 minute budget.
