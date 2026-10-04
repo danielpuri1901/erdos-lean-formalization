@@ -15,3 +15,7 @@ Add one line for each problem that cost you time, with the fix.
 - A `noncomputable` definition built from `sInf` cannot be evaluated by `decide`.
   Prove a bridge lemma to a computable version first, as `dom_num_eq_computable` does in `FormalConjecturesForMathlib/Combinatorics/SimpleGraph/Domination.lean`.
 - A theorem restated under the name of an imported declaration clashes; pick a new name.
+- With `open SimpleGraph`, `dist_self` and `dist_comm` are ambiguous with the metric-space lemmas; write `SimpleGraph.dist_self`, `SimpleGraph.dist_comm`.
+- `G.loopless` is now a `Std.Irrefl G.Adj` instance, not a function; use `G.irrefl h` to refute `G.Adj v v`.
+- `choose!` on `fun i (hi : i ≤ c) => ...` keeps a dependent function; first state `have : ∀ i, i ≤ c → ∃ w, ...` and put `Nonempty α` in context, then `choose!`.
+- To check a sweep theorem has exactly the imported statement, use `universe u in example : type_of% @orig.{u} = type_of% @mine.{u} := rfl` (without fixing the universe the two `Type*` universes differ and `rfl` fails).

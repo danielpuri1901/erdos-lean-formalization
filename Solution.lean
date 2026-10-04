@@ -247,4 +247,91 @@ lemma key (G : SimpleGraph α) (hc : G.Connected) (v x y : α) :
       Finset.card_union_of_disjoint hYX]
   omega
 
+/-- Eccentricity of a connected graph: attained, and an upper bound for all distances. -/
+lemma ecc_facts (G : SimpleGraph α) (hc : G.Connected) (v : α) :
+    ∃ w, (G.eccent v).toNat = G.dist v w ∧ ∀ u, G.dist v u ≤ G.dist v w := by
+  obtain ⟨w, hw⟩ := G.exists_edist_eq_eccent_of_finite v
+  refine ⟨w, ?_, fun u => ?_⟩
+  · rw [← hw, ← (hc v w).coe_dist_eq_edist]
+    rfl
+  · have h1 : G.edist v u ≤ G.eccent v := G.edist_le_eccent
+    rw [← hw, ← (hc v w).coe_dist_eq_edist, ← (hc v u).coe_dist_eq_edist] at h1
+    exact_mod_cast h1
+
+/-- WOWII conjecture 19 holds (new name; same statement as
+`WrittenOnTheWallII.GraphConjecture19.conjecture19`). -/
+theorem wowii19_holds (G : SimpleGraph α) [Nontrivial α] (h_conn : G.Connected) :
+    ⌊(∑ v ∈ Finset.univ, ((G.eccent v).toNat : ℝ)) / (Fintype.card α : ℝ) +
+      sSup (Set.range (indepNeighbors G))⌋ ≤ b G := by
+  classical
+  -- a vertex `vs` with the largest `l`
+  obtain ⟨vs, hvs⟩ : ∃ vs, sSup (Set.range (indepNeighbors G)) = indepNeighbors G vs := by
+    obtain ⟨w, hw⟩ := (Set.range_nonempty (indepNeighbors G)).csSup_mem (Set.finite_range _)
+    exact ⟨w, hw.symm⟩
+  -- a vertex `x` of largest eccentricity `D`, and `y` with `d(x,y) = D`
+  obtain ⟨x, -, hx⟩ := Finset.exists_max_image Finset.univ
+    (fun v => (G.eccent v).toNat) Finset.univ_nonempty
+  obtain ⟨y, hxy, -⟩ := ecc_facts G h_conn x
+  have hsum : (∑ v ∈ Finset.univ, ((G.eccent v).toNat : ℝ)) =
+      ((∑ v ∈ Finset.univ, (G.eccent v).toNat : ℕ) : ℝ) := by
+    rw [Nat.cast_sum]
+  rw [hvs, hsum]
+  unfold SimpleGraph.indepNeighbors SimpleGraph.b
+  set D := (G.eccent x).toNat with hD
+  set n := Fintype.card α with hn_def
+  set bN := G.largestInducedBipartiteSubgraphSize with hbN
+  set l := indepNeighborsCard G vs with hl
+  set Ssum := ∑ v ∈ Finset.univ, (G.eccent v).toNat with hSsum
+  have hn : (0:ℝ) < n := by exact_mod_cast Fintype.card_pos
+  have hle : ∀ v ∈ Finset.univ, (G.eccent v).toNat ≤ D := fun v hv => hx v hv
+  suffices h : ⌊(Ssum : ℝ) / n + (l : ℝ)⌋ ≤ (bN : ℤ) by exact_mod_cast h
+  rw [Int.floor_le_iff, Int.cast_natCast]
+  obtain ⟨y', hy', -⟩ := ecc_facts G h_conn vs
+  by_cases hcase : (G.eccent vs).toNat = D
+  · -- the vertex with the largest `l` has the largest eccentricity: corollary (A)
+    have hk := key G h_conn vs vs y'
+    rw [SimpleGraph.dist_self] at hk
+    have h1 : l + D ≤ bN := by omega
+    have hS : Ssum ≤ n * D := by
+      calc Ssum ≤ ∑ v ∈ Finset.univ, D := Finset.sum_le_sum hle
+        _ = n * D := by simp [n]
+    have hS' : (Ssum : ℝ) ≤ (n : ℝ) * D := by exact_mod_cast hS
+    have h2 : (Ssum : ℝ) / n ≤ D := by rw [div_le_iff₀ hn]; linarith
+    have h1' : (l : ℝ) + D ≤ bN := by exact_mod_cast h1
+    linarith
+  · -- otherwise the average eccentricity is `< D`: corollary (B)
+    have hlt : (G.eccent vs).toNat < D := lt_of_le_of_ne (hle vs (Finset.mem_univ _)) hcase
+    have hk := key G h_conn vs x y
+    have htri : G.dist x y ≤ G.dist vs x + G.dist vs y := by
+      have h1 : G.dist x y ≤ G.dist x vs + G.dist vs y := h_conn.dist_triangle
+      have h2 : G.dist x vs = G.dist vs x := SimpleGraph.dist_comm
+      omega
+    have h1 : l + D ≤ bN + 1 := by omega
+    have hS : Ssum < n * D := by
+      calc Ssum < ∑ v ∈ Finset.univ, D :=
+            Finset.sum_lt_sum hle ⟨vs, Finset.mem_univ _, hlt⟩
+        _ = n * D := by simp [n]
+    have hS' : (Ssum : ℝ) + 1 ≤ (n : ℝ) * D := by exact_mod_cast hS
+    have h2 : (Ssum : ℝ) / n < D := by rw [div_lt_iff₀ hn]; linarith
+    have h1' : (l : ℝ) + D ≤ bN + 1 := by exact_mod_cast h1
+    linarith
+
 end Wowii19Sweep
+
+namespace WrittenOnTheWallII.GraphConjecture19
+
+open SimpleGraph
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+/-- The exact statement of `conjecture19`, closed by `Wowii19Sweep.wowii19_holds`. -/
+theorem conjecture19_check (G : SimpleGraph α) [Nontrivial α] (h_conn : G.Connected) :
+    ⌊(∑ v ∈ Finset.univ, ((G.eccent v).toNat : ℝ)) / (Fintype.card α : ℝ) +
+      sSup (Set.range (indepNeighbors G))⌋ ≤ b G :=
+  Wowii19Sweep.wowii19_holds G h_conn
+
+universe u in
+/-- `conjecture19_check` has literally the type of the imported `conjecture19`. -/
+example : type_of% @conjecture19.{u} = type_of% @conjecture19_check.{u} := rfl
+
+end WrittenOnTheWallII.GraphConjecture19
