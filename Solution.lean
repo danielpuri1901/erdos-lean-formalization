@@ -1503,4 +1503,11 @@ theorem conjecture_three : ∀ n < 10 ^ 3 - 1, a n < a (10 ^ 3 - 1) := by
   · exact wit3_6 n (by omega) (by omega)
   exact wit3_7 n (by omega) (by omega)
 
+/-- `OeisA4290.conjecture` for every k ≤ 3. -/
+theorem conjecture_le_three (k : Nat) (hk : k ≤ 3) : ∀ n < 10 ^ k - 1, a n < a (10 ^ k - 1) := by
+  rcases Nat.lt_or_ge k 3 with h | h
+  · exact conjecture_le_two k (by omega)
+  · obtain rfl : k = 3 := by omega
+    exact conjecture_three
+
 end SweepA4290

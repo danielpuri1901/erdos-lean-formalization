@@ -1,5 +1,36 @@
 # Sweep notes: a004290
 
+```
+result: partial
+claim: (Lean) OeisA4290.conjecture holds for k ≤ 3; for every k ≥ 1, a(10^k - 1) ≥ 10^(9k-1),
+  and the conjecture at k follows from "every 0 < n < 10^k - 1 has a 0/1 multiple below 10^(9k-1)".
+  (Paper + computer) the conjecture holds for k ≤ 7; and there is an infinite family,
+  n = (10^(34m)-1)/103 and n = (10^(46m)-1)/139, where a(n) has exactly 9k digits, the same
+  number of digits as a(10^k - 1) (the conjecture still holds there: a(n) has fewer ones).
+lean: Solution.lean, namespace SweepA4290: conjecture_le_three (k ≤ 3; also conjecture_le_one,
+  conjecture_le_two, conjecture_three), a_rep_ge, ds_of_dvd, conjecture_of_witnesses'
+  all build with no sorry; axioms propext, Classical.choice, Quot.sound.
+computed: exact a(n) for all n ≤ 99998 (BFS); upper bounds for all n < 10^7 - 1 (meet-in-the-middle
+  + BFS fallback, every witness re-checked by an independent Python script): max digit length
+  ≤ 49 for k = 6 (need ≤ 53), ≤ 58 for k = 7 (need ≤ 62). Structured family n = c(10^r-1)/d,
+  c ∈ {1,2,4,5,8}: exact length formula (proved on paper, checked against BFS on 100 cases), all
+  d < 10^7 searched: minimum digit margin 0 (d = 103, 139), never negative.
+next idea: a counterexample would be a d coprime to 10 such that every orbit of x ↦ 10x mod d has a
+  digit 9 in the expansion of x/d ("V = 9") and the longest cyclic run of non-9 digits G satisfies
+  G < 9·floor(log10 d) (or G - 9j < max(a,b) for a multiplier c = 2^a5^b < d/10^j); then
+  n = c(10^r-1)/d, ord_d(10) | r, has a(n) > R_{9k}. Search d beyond 10^7 with v9fast.c (early exit
+  makes this cheap), and look at other multipliers c (3, 7, 9, ...) via the same exact formula.
+  Heuristically (1 - 0.9^(9j))^(d/p) kills large d, so a proof attempt should instead try to bound
+  len(a(n)) ≤ 9k for n < 10^k - 1 directly, which looks out of reach (no known O(log n) bound).
+dead ends: plain exhaustive BFS is O(n) per n (k=5 takes 50 s in C, k=6 would take hours); use the
+  2^a5^b reduction plus meet-in-the-middle instead. Families with V ≤ 8 have margin growing linearly
+  in r, so only V = 9 families matter. Pigeonhole and Olson-type zero-sum bounds are far too weak
+  for a proof.
+confidence: high because the Lean theorems build without sorry, the computer witnesses were checked
+  by independent code, and the family formula is proved on paper and matched exact BFS.
+```
+
+
 start: 1791105105 (date -u +%s)
 
 ## Phase A: statement
@@ -154,3 +185,13 @@ propext, Classical.choice, Quot.sound only)
   (the lower half of the docstring's "known" value a(10^k-1) = R_{9k}).
 - `conjecture_of_witnesses'`: for k ≥ 1, the conjecture at k follows from: every
   0 < n < 10^k - 1 has a 0/1 multiple below 10^(9k-1).  (Proved reduction.)
+- `wit3_0` .. `wit3_7` (998 witnesses, the exact BFS values of a n, checked by `norm_num`),
+  `conjecture_three` (k = 3 via the reduction), `conjecture_le_three` (all k ≤ 3).
+  Full file builds in about 100 s.
+- k = 4 by the same route needs 9998 witnesses; not tried (estimated 15-20 min build).
+
+Decisions taken without asking: worked on k-small Lean cases plus the general reduction rather
+than a full proof (no viable proof idea); searched structured families (n | 10^r - 1 with
+small cofactor d) rather than blind enumeration beyond 10^7; stopped the Lean work at k = 3.
+
+end: about 2050 s after start (34 min).
