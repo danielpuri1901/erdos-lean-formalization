@@ -103,5 +103,7 @@ Cost: the credit meter went from 135 to 67 USD, so stage 2 cost 68 USD.
 - The session's next step: finish p^e q for every e ≥ 4, which it estimates at three more attempts.
 
 The statements above are the sessions' own reports.
-Independent builds of both branches run in GitHub Actions (`build.yml` on each branch); the partial theorems have not been through the checker, because they are not the frozen conjecture statements.
+Independent builds in GitHub Actions passed for both branches: `lake build Challenge Solution` from a clean checkout succeeded for `deep/a000224` (run 37198914280, 630 seconds) and for `deep/catchup` (run 37198912579, 3709 seconds).
+The last step of that workflow, the axiom report, fails on these branches because it reads a theorem name from the placeholder `Challenge.lean`; it is not a proof failure, and the axioms of the partial theorems were reported by the sessions only.
+The partial theorems have not been through the checker, because they are not the frozen conjecture statements.
 
