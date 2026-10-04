@@ -41,3 +41,76 @@ to me; pigeonhole only gives n digits, Olson-type zero-sum bounds give O(sqrt p)
 
 Reduction used in search: write n = 2^a 5^b m with gcd(m,10) = 1. If y is a 0/1 multiple
 of m then 10^max(a,b) * y is a 0/1 multiple of n, so digits(a n) ≤ digits(a m) + max(a,b).
+
+## Phase A.6: reproduction
+
+`bfs_exact.c` (BFS over residues, digit 0 before 1): a(1..20) = 1, 10, 111, 100, 10, 1110,
+1001, 1000, 111111111, 10, 11, 11100, 1001, 10010, 1110, 10000, 11101, 1111111110, 11001, 100.
+Matches the problem file. Exact a(n) for all n ≤ 99998 (50 s): no violator for k = 1..5.
+Exact maximum of len(a(n)) over n in [10^(k-1)-1, 10^k-1):
+k=1: 4 (n=6), k=2: 12 (n=72), k=3: 21 (n=792), k=4: 30 (n=7992), k=5: 43 (n=76923 = 999999/13).
+Bound needed: len ≤ 9k-1 suffices (9k digits allowed unless a(n) = R_{9k}).
+k=5 margin is only 2 digits (43 vs 45).
+
+## Phase B: search
+
+### B1. Exhaustive k = 6, 7 (upper bounds, independently verified)
+
+Exact reduction (proved on paper): n = 2^a 5^b m, gcd(m,10) = 1, e = max(a,b). A 0/1 number x
+divisible by 2^a has its low a digits zero (if S = set of 1-positions below a, v2(Σ_{i∈S} 10^i)
+= min S < a), same for 5^b, so x = 10^e y with m | y. Hence len(a(n)) = e + len(a(m)).
+
+`mitm.c`: for every m < 10^7 coprime to 10, meet-in-the-middle over subset sums of 10^i mod m
+(low s positions in a hash table, high s+1 positions in Gray-code order; s grows on failure;
+exact BFS fallback, used for 88 values of m). Writes a witness per m.
+`verify.py` (independent, Python big ints): checks every witness is a positive 0/1 number
+divisible by m, then recomputes for every n < 10^7 - 1 the bound e + len(w(m)).
+Result (verified by verify.py over ALL n < 9999999):
+
+    k=6: max bound 49 at n=729927 (= (10^8-1)/137), need <= 53 -> ok
+    k=7: max bound 58 at n=8799912,                 need <= 62 -> ok
+
+So the conjecture holds for k ≤ 7 (computer check; bounds are upper bounds, k ≤ 5 exact).
+Run time: mitm 98 s on 4 cores; verify.py a few minutes.
+
+### B2. Structured family n = (10^r - 1)/d: exact formula (proved on paper)
+
+Let gcd(d,10)=1, p = ord_d(10), p | r, n = (10^r-1)/d, B = (10^p-1)/d.
+Claim: len(a(n)) = min over t = 1..d of [ max over q with c_q(t) > 0 of (q + r c_q(t)) ] - p + 1,
+where c(t) is the p-digit vector of t·B (q = 0 is the units digit).
+Proof: for a 0/1 multiple x of n let c_j = #{1-positions ≡ j mod r}. Then
+V = Σ c_j 10^j ≡ x ≡ 0 (mod n) because n | 10^r - 1, and V > 0. If every c_j ≤ 9 then
+V ≤ 10^r - 1 = d n, so V = t n with 1 ≤ t ≤ d and c is the digit vector of t n (which is
+t B repeated r/p times). c_j ones at positions ≡ j (mod r) force a position ≥ j + r(c_j - 1),
+and placing them at j, j+r, ... attains it. If some c_j ≥ 10 the length is ≥ 9r + 1, worse than
+t = d (all nines, length 9r). Repetition of the period-p block turns max_j(j + r(c_j-1)) into
+max_q (q + r c_q) - p.  ∎
+Checked against exact BFS for all 100 cases n = (10^r-1)/d < 10^7, r ≤ 7: 0 mismatches
+(`formula_check.py`).
+
+Consequence. If every multiple tB (t < d) contains a digit 9 ("V = 9"), then
+len(a(n)) = 9r - G, where G = max over orbits of x ↦ 10x mod d of the longest cyclic run of
+non-9 digits in the expansion of x/d. With j = floor(log10 d), n has r - j digits and
+k(n) = r - j, so the digit margin 9k - len = G - 9j, independent of r.
+Multiplying n by c = 2^a5^b with c·n < 10^k - 1 (roughly c < d/10^j) adds e = max(a,b)
+digits without changing k: effective margin G - 9j - e.
+If V ≤ 8 then len ≤ 8r and the margin grows linearly in r.
+
+`v9.c` / `v9fast.c` search over d:
+- d ≤ 30000, all periods: 5102 d have V = 9; smallest margins:
+  d=53 (p=13) G=12 margin 3, with c=4 effective margin 1 (n = 754716981132, len 107 vs 108);
+  d=103 (p=34) G=18 margin 0; d=139 (p=46) G=18 margin 0; d=1003 margin 3.
+- d in [30000, 10^6): no d with margin ≤ 3.  (d in [10^6,10^7): see below.)
+- `family.py` (all V, r ≤ 200, p ≤ 16, d ≤ 2·10^6): min margin 2 (n = 76923), none ≤ 1
+  except as above.
+
+FINDING: infinite family where a(n) has exactly as many digits as a(10^k - 1):
+n = (10^(34m) - 1)/103, k = 34m - 2, len(a(n)) = 9k = 288m - 18... (m=1: 288 digits);
+also n = (10^(46m)-1)/139, k = 46m - 2. Witnesses checked by independent Python
+(m=1,2 for d=103; m=1 for d=139). There a(n) has 153 (resp. 207) ones, so a(n) < R_{9k}
+and the conjecture still holds; but the digit-count version is tight, so any proof must
+compare more than lengths, and a d with V = 9 and G < 9j would be a counterexample.
+Heuristic: a random orbit word of length p has longest non-9 run ≈ log(p/10)/log(10/9);
+V = 9 with G ≤ 9j needs all ≈ d/p orbits to have 9s at least every 9j digits:
+probability ≈ (1 - 0.9^(9j))^(d/p), which collapses for j ≥ 3. So small d is where to look,
+and small d is now searched exhaustively.
