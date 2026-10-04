@@ -1,15 +1,10 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Wikipedia.RamseyNumbers
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the ramsey35 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+R(3, 5) = 14 (Greenwood and Gleason, 1955).
+The statement is taken with `type_of%` from `RamseyNumbers.ramsey_number_three_five` at formal-conjectures commit df3f12d7bd06, so it is that statement by construction.
+`tests/statement/ramsey35.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem ramsey_3_5 : type_of% @RamseyNumbers.ramsey_number_three_five := by
   sorry
