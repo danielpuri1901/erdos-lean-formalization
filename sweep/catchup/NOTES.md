@@ -51,3 +51,23 @@ statement check: matches
 Python run in the problem file. Values N = 0..22 agree exactly with the problem file:
 draw,win,win,draw,draw,win,win,draw,draw,loss,loss,draw,draw,win,loss,draw,draw,win,loss,draw,draw,win,win.
 Whole run N = 0..22 took 5.5 s.
+
+## Phase B: try to break it
+
+Exact search with `catchup.c` (same recursion as `valueAux`, dense memo over (mask, gap),
+win cut-off). `timeout 1500 ./catchup 23 29`, log in `run23_29.log`:
+- N=23 draw (95,871,146 states), N=24 draw (200,426,887), N=25 win (T odd), N=26 win (T odd),
+  N=27 draw (1,809,049,015 states).
+- So the conjecture holds for every N ≤ 27 (by computer, C, not a proof). N=28 running (see report).
+- N=29, 30 have odd T; N=31 needs a 17 GB table at 2 bits/entry, beyond this 15 GB machine,
+  so N ≤ 28 is the frontier for this method in this session.
+
+Simple-strategy test (`strat.c`): fixed strategies "largest", "smallest catching pick else
+largest", "smallest", and two mixtures, each played as P1 and as P2 against an optimal
+opponent for N ∈ {3,4,7,8,11,12,15,16}: every one of them LOSES already at N = 4 (only N = 3
+survives). So no simple greedy rule gives either player the draw; a proof cannot be a
+one-line greedy strategy.
+
+Naive search tree size (no memo, win cut-off, increasing pick order, `count.c`):
+N=7: 3,455 nodes, N=8: 43,341, N=11: 14.8 M, N=12: 160 M. So kernel evaluation without
+memoisation is feasible up to N = 8 only.
