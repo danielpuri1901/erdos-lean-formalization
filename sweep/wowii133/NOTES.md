@@ -1,3 +1,41 @@
+```
+result: partial
+claim: Conjecture 133 (exact Lean statement, same `let` form) holds for every connected graph G on
+  >= 2 vertices that (a) contains a 4-cycle, or (b) has l(G) <= 2, or (c) has a vertex adjacent to
+  all others (radius 1), or (d) satisfies l(G)^cC4 <= diam + 1 - rad. Also proved: path >= diam+1
+  >= rad+1 for every connected G, and path >= rad + 2 for every C4-free connected G having a vertex
+  with two non-adjacent neighbours. The conjecture is therefore reduced to C4-free graphs with
+  l(G) > 2; that case is NOT proved.
+lean: Solution.lean, namespace Wowii133Sweep, all build with no sorry (axioms: propext,
+  Classical.choice, Quot.sound only): conjecture133_of_hasC4, conjecture133_of_C4free_case,
+  conjecture133_of_l_le_two, conjecture133_of_dominating, conjecture133_of_le_diam,
+  radius_toNat_add_one_le_path, diam_add_one_le_path, radius_toNat_add_two_le_path,
+  isInducedPath_support_of_length_eq_dist, isInducedPath_cons, geodesic_shortcut.
+computed: no counterexample in: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
+  q in {2,3,4,5,7,8,9,11,13}; PG(2,q) incidence graphs q in {2,3,4,5,7,8,9}; generalized Petersen
+  GP(m,k) 5<=m<=15; all 548 connected C4-free circulants C_n(S), n<=60, |S|<=5; theta graphs
+  (two hubs joined by k paths of length L) L=3 k<=12, L=4,5 k<=6; random/annealed connected C4-free
+  graphs n=10..60 (~170k random samples, annealing n=10..24); MCMC samples of cubic girth>=5 graphs
+  n=12..30 and 4-regular girth>=5 graphs n=24..32. Not exhaustive beyond the n<=9 check in the
+  problem file (not re-run here).
+next idea: The open case is C4-free with l(G) > 2, i.e. show path >= rad + 3 when l(G) > 2 (and
+  generally path - rad >= l(G)). The proven step extends a geodesic of length ecc(v) by one
+  vertex at a vertex with l(v) >= 2. Next: extend at both ends of a diametral/eccentric geodesic
+  (both endpoints with l >= 2 give path >= e + 3 when e >= 4), and handle low-l endpoints by a
+  charging argument that pays for high-l vertices with l=1,2 vertices, as in the near-extremal
+  families: double stars (rad 2, path 4, l -> 2), theta graphs theta(3,k) (two hubs joined by k
+  paths of length 3: rad 3, path 6, l = 3k/(k+1) -> 3), and Petersen (exactly tight, l = 3).
+  A counterexample, if any, must beat these limits; the theta family shows the margin can be
+  arbitrarily small, so a search should look at "hub" constructions with C4-free gadgets.
+dead ends: Pointwise greedy (needs min_v l(v), not the average; gives path >= min l + 2 only).
+  Extending only at the far end of a geodesic beyond one step (later steps can lose 2 components
+  per step, giving only ~rad + l/2). Per-vertex inequality path >= rad + l(v) is false (stars).
+  Annealing on score rad + l - path drifts to trees; restricting to l > 2 drifts to theta(3,k).
+  The edge-switch chain could not reach girth 5 for 4-regular n<=22 or 5-regular n=30..40.
+confidence: high for the Lean special cases (they build, axioms checked); medium that no small
+  counterexample exists in the searched families (searches are heuristic outside n<=9).
+```
+
 # wowii133 sweep notes
 
 start: 1791105249 (date -u +%s), 2026-10-04 09:14 UTC
@@ -106,3 +144,20 @@ geodesic of length >= rad keeps the first extension free, but later steps can lo
 components per step (earlier geodesic vertices at distance 2), giving only path >= rad + λ/2.
 Lemma list for a full proof: (i) C1 proved; (ii) C2 proved; (iii) "Σ_v (path - rad - l(v)) >= 0"
 for C4-free G: unknown; no charging scheme found.
+
+
+C6 (paper = Lean `radius_toNat_add_two_le_path`, `conjecture133_of_l_le_two`), 09:30-09:33 UTC:
+G C4-free, v with distinct non-adjacent neighbours a, b. Let u be eccentric to v, p a shortest walk
+v = p_0, ..., p_e = u, e = ecc(v) >= rad, e >= 1. Some x in {a,b} has x != p_1 and x not~ p_1
+(if a = p_1 then b ~ p_1 = a, impossible; if both are adjacent to p_1, v a p_1 b is a C4).
+x is not on p (x = p_0 = v impossible, x = p_1 excluded, x = p_k with k >= 2 is a chord v p_k).
+x not~ p_2 (else v x p_2 p_1 is a C4; v != p_2 and x != p_2 by the geodesic property) and x not~ p_k,
+k >= 3 (v x p_k is a walk of length 2 < k). So x, p_0, ..., p_e is induced: path >= e + 2 >= rad + 2.
+If G is not complete, a shortest walk between two non-adjacent vertices gives such a v (its
+second vertex). If G is complete, l(G) <= 1. Hence l(G) <= 2 implies the conjecture.
+
+Near-extremal family found (09:34 UTC, `theta.py`, exact): theta(3,k), two hubs joined by k
+internally disjoint paths of length 3, n = 2k+2: C4-free, rad 3, path 6, l = 3k/(k+1),
+margin path - rad - l = 3/(k+1) -> 0 (k = 2 is C6, margin 0). theta(4,k), theta(5,k): large margins.
+Annealing restricted to l(G) > 2 (`anneal3`, n=11..24) converged to theta(3,k)-like graphs
+(best margins: n=14 0.4286, n=12 0.5) or worse; Petersen (n=10) is the only exact tie with l > 2.

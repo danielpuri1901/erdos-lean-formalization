@@ -1,13 +1,22 @@
 import FormalConjectures.WrittenOnTheWallII.GraphConjecture133
 
 /-!
-# Sweep wowii133: the C4 branch of Graffiti.pc 133
+# Sweep wowii133: special cases of Graffiti.pc 133
 
-The conjecture says `rad + l(G) ^ cC4 ≤ path(G)`. When `G` has a 4-cycle the exponent is `0`,
-so the claim is `rad + 1 ≤ path`. This holds for every connected graph:
-a shortest walk from `u` to a vertex `v` at distance `ecc u ≥ rad` has no chord,
-so its support is an induced path with `dist u v + 1 ≥ rad + 1` vertices.
-Hence the conjecture reduces to `C4`-free graphs (`conjecture133_of_C4free_case`).
+The conjecture says `rad + l(G) ^ cC4 ≤ path(G)`. Proved here (no `sorry`):
+
+* `radius_toNat_add_one_le_path`, `diam_add_one_le_path`: a shortest walk has no chord, so its
+  support is an induced path; hence `path ≥ diam + 1 ≥ rad + 1`.
+* `conjecture133_of_hasC4`: the conjecture holds for every connected graph with a 4-cycle
+  (the exponent is `0`), and `conjecture133_of_C4free_case` reduces it to its `C4`-free case.
+* `conjecture133_of_le_diam`: it holds whenever `l(G) ^ cC4 ≤ diam + 1 - rad`.
+* `conjecture133_of_dominating`: it holds for every graph with a vertex adjacent to all others
+  (radius 1).
+* `radius_toNat_add_two_le_path`: in a `C4`-free graph with a vertex having two non-adjacent
+  neighbours, `path ≥ rad + 2`.
+* `conjecture133_of_l_le_two`: it holds for every connected graph with `l(G) ≤ 2`.
+
+The full conjecture is NOT proved here; the open part is `C4`-free graphs with `l(G) > 2`.
 -/
 
 open SimpleGraph
