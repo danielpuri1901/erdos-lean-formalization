@@ -216,3 +216,98 @@ theorem semi_core (u v : Nat) (hu : 2 ≤ u) (huv : u < v) :
   omega
 
 end A224Sweep
+
+
+namespace A224Sweep
+open OeisA224
+
+/-- Bridge: `a n` counts the squares in `ZMod n`. -/
+theorem a_eq_card_zmod (n : Nat) [NeZero n] :
+    a n = (Finset.univ.image (fun x : ZMod n => x ^ 2)).card := by
+  have hn : n ≠ 0 := NeZero.ne n
+  unfold a
+  rw [if_neg hn]
+  have himg : (Finset.range n).image (fun k : Nat => k ^ 2 % n)
+      = (Finset.univ.image (fun x : ZMod n => x ^ 2)).image ZMod.val := by
+    ext m
+    simp only [Finset.mem_image, Finset.mem_range, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨k, -, rfl⟩
+      refine ⟨(k : ZMod n) ^ 2, ⟨(k : ZMod n), rfl⟩, ?_⟩
+      rw [← Nat.cast_pow, ZMod.val_natCast]
+    · rintro ⟨y, ⟨x, rfl⟩, rfl⟩
+      refine ⟨x.val, ZMod.val_lt x, ?_⟩
+      rw [← ZMod.val_natCast, Nat.cast_pow, ZMod.natCast_zmod_val]
+  rw [himg, Finset.card_image_of_injective _ (ZMod.val_injective n)]
+
+theorem card_sq_ringEquiv {R S : Type*} [CommRing R] [CommRing S] [Fintype R] [Fintype S]
+    [DecidableEq R] [DecidableEq S] (e : R ≃+* S) :
+    (Finset.univ.image (fun x : R => x ^ 2)).card = (Finset.univ.image (fun y : S => y ^ 2)).card := by
+  have : (Finset.univ.image (fun x : R => x ^ 2)).image e = Finset.univ.image (fun y : S => y ^ 2) := by
+    ext y
+    simp only [Finset.mem_image, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨_, ⟨x, rfl⟩, rfl⟩
+      exact ⟨e x, by rw [map_pow]⟩
+    · rintro ⟨s, rfl⟩
+      exact ⟨(e.symm s) ^ 2, ⟨e.symm s, rfl⟩, by rw [map_pow, RingEquiv.apply_symm_apply]⟩
+  rw [← this, Finset.card_image_of_injective _ e.injective]
+
+theorem card_sq_prod {R S : Type*} [CommRing R] [CommRing S] [Fintype R] [Fintype S]
+    [DecidableEq R] [DecidableEq S] :
+    (Finset.univ.image (fun z : R × S => z ^ 2)).card
+      = (Finset.univ.image (fun x : R => x ^ 2)).card * (Finset.univ.image (fun y : S => y ^ 2)).card := by
+  have : Finset.univ.image (fun z : R × S => z ^ 2)
+      = (Finset.univ.image (fun x : R => x ^ 2)) ×ˢ (Finset.univ.image (fun y : S => y ^ 2)) := by
+    ext ⟨s, t⟩
+    simp only [Finset.mem_image, Finset.mem_univ, true_and, Finset.mem_product, Prod.exists,
+      Prod.ext_iff, Prod.pow_fst, Prod.pow_snd]
+    constructor
+    · rintro ⟨x, y, hx, hy⟩
+      exact ⟨⟨x, hx⟩, ⟨y, hy⟩⟩
+    · rintro ⟨⟨x, hx⟩, ⟨y, hy⟩⟩
+      exact ⟨x, y, hx, hy⟩
+  rw [this, Finset.card_product]
+
+/-- `a` is multiplicative on coprime arguments (CRT). -/
+theorem a_mul {m n : Nat} (hm : m ≠ 0) (hn : n ≠ 0) (h : Nat.Coprime m n) :
+    a (m * n) = a m * a n := by
+  have : NeZero m := ⟨hm⟩
+  have : NeZero n := ⟨hn⟩
+  have : NeZero (m * n) := ⟨Nat.mul_ne_zero hm hn⟩
+  rw [a_eq_card_zmod, a_eq_card_zmod, a_eq_card_zmod,
+    card_sq_ringEquiv (ZMod.chineseRemainder h), card_sq_prod]
+
+/-- The conjecture holds for `n = p * q` with `p < q` odd primes (both sides are false). -/
+theorem conjecture_semiprime {p q : Nat} (hp : p.Prime) (hq : q.Prime) (hp2 : p ≠ 2)
+    (hq2 : q ≠ 2) (hpq : p < q) :
+    ((p * q).Prime ∧ p * q ≠ 2) ↔ (p * q) ^ 2 ≡ 1 [MOD a (p * q) * (a (p * q) - 1)] := by
+  constructor
+  · rintro ⟨hpr, -⟩
+    exact absurd (Nat.prime_mul_iff.mp hpr) (by
+      rintro (⟨-, h⟩ | ⟨-, h⟩)
+      · exact hq.one_lt.ne' h
+      · exact hp.one_lt.ne' h)
+  · intro h
+    have hcop : Nat.Coprime p q := (Nat.coprime_primes hp hq).mpr hpq.ne
+    rw [a_mul hp.ne_zero hq.ne_zero hcop, a_prime hp hp2, a_prime hq hq2] at h
+    have hpo : p % 2 = 1 := by
+      rcases Nat.even_or_odd p with he | ho
+      · exact absurd (hp.even_iff.mp he) hp2
+      · exact Nat.odd_iff.mp ho
+    have hqo : q % 2 = 1 := by
+      rcases Nat.even_or_odd q with he | ho
+      · exact absurd (hq.even_iff.mp he) hq2
+      · exact Nat.odd_iff.mp ho
+    have hp3 : 3 ≤ p := by have := hp.two_le; omega
+    set u := (p + 1) / 2 with hu
+    set v := (q + 1) / 2 with hv
+    have hpu : p = 2 * u - 1 := by omega
+    have hqv : q = 2 * v - 1 := by omega
+    have h1 : 1 ≤ (p * q) ^ 2 := Nat.one_le_iff_ne_zero.mpr
+      (pow_ne_zero _ (Nat.mul_ne_zero hp.ne_zero hq.ne_zero))
+    have hd := (Nat.modEq_iff_dvd' h1).mp h.symm
+    rw [hpu, hqv] at hd
+    exact (semi_core u v (by omega) (by omega) hd).elim
+
+end A224Sweep
