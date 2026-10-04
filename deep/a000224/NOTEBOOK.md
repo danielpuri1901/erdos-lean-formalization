@@ -84,7 +84,8 @@ Stage 2 route B (general reduction, then more families):
   Note: the Diophantine system without q ∤ m has the spurious solution p = q = 3 (n = 27); keep q ≠ p.
 - Q3 family pqr: k ≤ 63, bounded by the same method; large finite check (~10⁵ (u,v) pairs). [open, maybe out of reach]
 - Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
-  primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [in progress: worker E, attempt 3]
+  primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [proved in Lean:
+  `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean]
 
 ## 3. Facts
 
@@ -114,6 +115,11 @@ Stage 2 route B (general reduction, then more families):
    Classical.choice, Quot.sound. Worker C notes for LESSONS: `Nat.dvd_sub'` is gone, use `Nat.dvd_sub`;
    `Nat.Coprime.dvd_of_dvd_mul_left` takes `p ∣ 2 * (A - 1)` directly. Minutes: 4 + 3 (workers), 5 (manager).
    Wall clock so far: 20 min. Prime powers (stage 1's P3) are now in Lean.
+3. Item S (worker E): proved-in-lean, first build passed. File: Solution/A224/Summary.lean. Manager check:
+   imported into Solution.lean, `lake build Solution` passes, no sorry/admit/axiom/native_decide,
+   `#print axioms` on both theorems: propext, Classical.choice, Quot.sound. Minutes: 2 (worker), 3 (manager).
+   Wall clock so far: 25 min. Decision: go for the p²q family (route Q2 above), two workers: F = the two
+   finite checks (F1 for Q2.4, F2 for Q2.2), G = Q2.0, Q2.3 (k = 16 discriminant) and the mod-p lemma of Q2.4.
 
 ## 5. Dead ends
 
