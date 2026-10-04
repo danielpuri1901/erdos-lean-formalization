@@ -91,3 +91,35 @@ joined by the edge u–u' would have α = 2α(H)−1 and Z >= 2Z(H)−1 = 2α(H)
 Z−α >= 2: a counterexample. Search for such H: none among all labelled graphs n<=8 and
 none in the random subcubic runs above (counter `ess=0`). So the conjecture implies
 "no tight graph has an essential vertex of degree <= 2"; this is consistent with data.
+
+Later Phase B results:
+- Exhaustive all connected subcubic n=16: 414,762,605 labellings, 0 failures (354 s).
+- Exhaustive cubic n=18: 73,564,450 labellings, 0 failures (159 s).
+- `climb2` (objective 4(Z−α)+Z, pushes Z up): n=14 found Z=7, α=6 (Z = n/2);
+  n=16 Z=8, α=7. Every high-Z graph found had α = Z−1 exactly.
+
+## Phase C: proof attempt
+
+Decision: the full conjecture is out of reach in this session (open since 2017; no
+proof idea survived — see below). I formalized what I can prove completely:
+
+Paper arguments (all proved on paper, all formalized in `Solution.lean`):
+1. (certificate) If S is forcing and I independent with |S| <= |I|+1 then Z <= α+1.
+   Proof: Z <= |S| (sInf), |I| <= α.
+2. (Z <= n−1) If G connected, n >= 2: pick an edge vw (first edge of a walk between
+   two distinct vertices). In S = V∖{w}, v is black and w is its only white neighbour,
+   so one step gives V; V is fixed by the step, so card V >= 1 iterations give V.
+3. (special case) If n <= α+2 then Z <= α+1: for n >= 2 use (2); for n = 1, Z <= |V| = 1.
+4. (K4 sharpness) K4 is connected with maxDegree 3, every forcing set of K4 has >= 3
+   vertices and every independent set <= 1 vertex (both by `decide +kernel` over all 16
+   subsets, the definitions reduce in the kernel), so α+1 = 2 < 3 = Z.
+
+Ideas considered for the full statement (status):
+- Brooks: α >= n/3 for connected subcubic G ≠ K4 (known, from memory). Then
+  Z <= n/3 + 1 would suffice, but it is false (K3,3: Z=4 > 3; Petersen: Z=5 > 4.33;
+  climb found cubic n=16 with Z=8). Dead end.
+- Z <= (n+2)/2 for connected subcubic (Amos–Caro–Davila–Pepper, from memory,
+  unverified) gives the conjecture whenever α >= n/2 (e.g. bipartite). Not formalized:
+  I do not remember that proof.
+- Gadget reduction (Phase B): a tight graph with an essential vertex of degree <= 2
+  would give a counterexample via a bridge. Plausible, depends on edge spread lemma.

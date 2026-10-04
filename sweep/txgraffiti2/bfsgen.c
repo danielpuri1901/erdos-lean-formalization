@@ -79,16 +79,19 @@ static void choose_nt(int v, int u0) {
     adj[v] &= ~(1ULL << u); adj[u] &= ~(1ULL << v); deg[v]--; deg[u]--;
   }
 }
+static long splitcnt; static int part_k = 0, part_m = 1;
 static void process(int v) {
+  if (v == 5 && part_m > 1 && (splitcnt++ % part_m) != part_k) return;
   if (v == n) { if (next_label == n) test(); return; }
   if (v >= next_label) return; // disconnected
   choose_nt(v, v + 1);
 }
 int main(int argc, char **argv) {
   n = atoi(argv[1]); dumpmode = argc > 3 || (argc > 2 && !strcmp(argv[2], "dump")); cubic = argc > 2 && !strcmp(argv[2], "cubic"); FULL = (1ULL << n) - 1;
+  if (argc > 3 && !strcmp(argv[2], "part")) { part_k = atoi(argv[3]); part_m = atoi(argv[4]); dumpmode = 0; }
   memset(adj, 0, sizeof adj); memset(deg, 0, sizeof deg);
   next_label = 1; par[0] = -1;
   if (n == 1) { test(); } else process(0);
-  if (!dumpmode) printf("%sn=%d generated=%ld (k4 skipped=%ld) fails=%ld\n", cubic ? "cubic " : "", n, gen, k4, fails);
+  if (!dumpmode) printf("part %d/%d %sn=%d generated=%ld (k4 skipped=%ld) fails=%ld\n", part_k, part_m, cubic ? "cubic " : "", n, gen, k4, fails);
   return 0;
 }

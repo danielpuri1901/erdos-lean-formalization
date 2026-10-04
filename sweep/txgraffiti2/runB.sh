@@ -31,3 +31,6 @@ fi
 if [ "$1" = climb2 ]; then
   for n in 14 16 18 20; do timeout 150 ./zf5 climb2 $n 100000000 $((n+100)) > climb2_$n.log 2>&1; done; echo DONE > climb2_done.log
 fi
+if [ "$1" = p17 ]; then
+  s=$(date +%s); timeout 1800 ./bfsgen3 17 part $2 3; echo "part $2 n=17 secs=$(( $(date +%s) - s ))"; echo DONE
+fi

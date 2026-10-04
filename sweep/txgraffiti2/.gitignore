@@ -1,2 +1,6 @@
 zf
+zf[0-9]
+bfsgen
+bfsgen[0-9]
 *.log
+__pycache__/
