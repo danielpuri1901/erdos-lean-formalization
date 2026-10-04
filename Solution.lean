@@ -197,4 +197,39 @@ theorem star_star_relation {R : Type} [Ring R] (A : R) (B : Rˣ)
   rw [← neg_eq_zero, ← h, hqdef]
   noncomm_ring
 
+/-- If moreover `q(B)` is a unit, then `A = u(B)` with
+`u(t) = -t - t³ + t⁴ - 2t⁵ + t⁶ - t⁷` (so `A` commutes with `B`) and the linear part of
+Equation 255 holds: `A³ + A²B + AB + B = 1`. -/
+theorem linear_eq255_of_q_unit {R : Type} [Ring R] (A : R) (B : Rˣ)
+    (g1 : (B : R) * A + (B : R) * B * A * B = 1)
+    (g2 : A + (B : R) * B * A * A + (B : R) * B * B = 0)
+    (hq : IsUnit ((B : R) ^ 3 - B - 1)) :
+    A = -(B : R) - (B : R) ^ 3 + (B : R) ^ 4 - 2 * (B : R) ^ 5 + (B : R) ^ 6 - (B : R) ^ 7 ∧
+    A ^ 3 + A ^ 2 * B + A * B + B = 1 := by
+  have S := star_relation A B g1 g2
+  have SS := star_star_relation A B g1 g2
+  set b : R := (B : R) with hbdef
+  have ho : b ^ 8 + 2 * b ^ 6 + b ^ 4 + b ^ 2 + b + 1 = 0 := hq.mul_right_eq_zero.mp SS
+  have h1 : (b ^ 3 + b) * A = 1 := by
+    have := hq.mul_right_eq_zero.mp S
+    rw [← sub_eq_zero, ← this]; noncomm_ring
+  have bez : (-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) * (b ^ 3 + b)
+      + (1 - b + b ^ 2) * (b ^ 8 + 2 * b ^ 6 + b ^ 4 + b ^ 2 + b + 1) = 1 := by noncomm_ring
+  have hA : A = -b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7 := by
+    calc A = ((-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) * (b ^ 3 + b)
+          + (1 - b + b ^ 2) * (b ^ 8 + 2 * b ^ 6 + b ^ 4 + b ^ 2 + b + 1)) * A := by
+            rw [bez, one_mul]
+      _ = (-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) * ((b ^ 3 + b) * A)
+          + (1 - b + b ^ 2) * ((b ^ 8 + 2 * b ^ 6 + b ^ 4 + b ^ 2 + b + 1) * A) := by
+            noncomm_ring
+      _ = -b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7 := by
+            rw [h1, ho, zero_mul, mul_zero, add_zero, mul_one]
+  refine ⟨hA, ?_⟩
+  have key : (-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) ^ 3
+      + (-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) ^ 2 * b
+      + (-b - b ^ 3 + b ^ 4 - 2 * b ^ 5 + b ^ 6 - b ^ 7) * b + b - 1
+      = (-(1) + 2 * b - 2 * b ^ 2 + 2 * b ^ 4 - 4 * b ^ 5 + 5 * b ^ 6 - 8 * b ^ 7 + 10 * b ^ 8 - 12 * b ^ 9 + 10 * b ^ 10 - 7 * b ^ 11 + 3 * b ^ 12 - b ^ 13) * (b ^ 8 + 2 * b ^ 6 + b ^ 4 + b ^ 2 + b + 1) := by noncomm_ring
+  rw [ho, mul_zero, sub_eq_zero] at key
+  rw [hA]; exact key
+
 end Eq677Sweep
