@@ -28,8 +28,8 @@ Cap for stage 1: about 80 USD.
 
 | id | problem | session | start (UTC) | result | notes |
 |----|---------|---------|-------------|--------|-------|
-| a076495 | no x with sigma(x) mod x = 5 | session_01LBnzQfRuFdCotsipkQcjRJ | 2026-10-04 (pilot) | running | |
-| txgraffiti3 | i(G) ≤ saturation number, regular graphs | session_01EqkqwWzxQHEaZLRSn5eUdC | 2026-10-04 (pilot) | running | |
+| a076495 | no x with sigma(x) mod x = 5 | session_01LBnzQfRuFdCotsipkQcjRJ | 2026-10-04 09:00 (pilot) | running | |
+| txgraffiti3 | i(G) ≤ saturation number, regular graphs | session_01EqkqwWzxQHEaZLRSn5eUdC | 2026-10-04 09:00 (pilot) | running | |
 | a077408 | reverse and add in base 3 from 103 | | | todo | |
 | txgraffiti2 | zero forcing ≤ α + 1, subcubic | | | todo | |
 | catchup | Catch-Up draw when the total is even | | | todo | |
