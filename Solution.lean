@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Arxiv.«2507.17780».«2»
 
-open SimpleGraph
+/-! Solution for the txgraffiti2 target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem txgraffiti2_false : ¬ (type_of% @Arxiv.«2507.17780».tx_graffiti_conjecture_2) := by
   sorry

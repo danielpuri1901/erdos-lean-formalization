@@ -1,15 +1,10 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Arxiv.«2507.17780».«2»
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the txgraffiti2 target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+TxGraffiti conjecture 2 says that a connected graph with maximum degree at most 3, other than K4, has zero forcing number at most its independence number plus 1. This target is its negation; M. Fischer (arXiv 2607.23664) gives a 24-vertex counterexample.
+The statement is taken with `type_of%` from `Arxiv.«2507.17780».tx_graffiti_conjecture_2` at formal-conjectures commit df3f12d7bd06, so it is the negation of that statement by construction.
+`tests/statement/txgraffiti2.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem txgraffiti2_false : ¬ (type_of% @Arxiv.«2507.17780».tx_graffiti_conjecture_2) := by
   sorry
