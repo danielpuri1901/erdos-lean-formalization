@@ -25,4 +25,4 @@ Bijection Fin 6 → {N // N.Normal}; sum of cards = 1+3+6+5+15+30 = 60 = 2*30.
 ## Status
 - `Solution/Leinster.lean`: all finite checks (`decide +kernel`, each a few seconds, module builds in ~12 s) and the
   bijection Fin 6 → {N // N.Normal}; `Solution.lean` proves `leinster_nonabelian_exists` from it.
-- Axioms: propext, Classical.choice, Quot.sound. Submitted with a `submit(leinster):` commit.
+- Axioms: propext, Classical.choice, Quot.sound. Submitted as fbeaa29; `comparator/leinster` = success ("Your solution is okay!") at 19:16 UTC.
