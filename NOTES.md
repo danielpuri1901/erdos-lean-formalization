@@ -24,4 +24,11 @@ Decision: copy the strong proof's lemmas into Solution.lean rather than import a
 
 ## Status
 
-In progress.
+`Solution.lean` proves `weak_giuga_iff_sum` with no `sorry`; builds with no warnings in about 8 s.
+`#print axioms weak_giuga_iff_sum` gives `propext`, `Classical.choice`, `Quot.sound`.
+`example : type_of% @AgohGiuga.isWeakGiuga_iff_sum_primeFactors = type_of% @weak_giuga_iff_sum := rfl` checks.
+Banned tokens (`sorry`, `admit`, `axiom`, `native_decide`, `implemented_by`, `unsafe`): none in `Solution.lean`.
+
+Submitted with commit 4f00be3 (`submit(weakgiuga): ...`), pushed to `run/weakgiuga`.
+Verdict: not polled. The checker is paused today (instruction from the user for this session), so the status
+`comparator/weakgiuga` on 4f00be3 is still to be read. Nothing is known to be missing.
