@@ -107,3 +107,4 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- weakgiuga: with `open scoped Nat`, a local `let φ := ...` is parsed as the totient notation ("Invalid pattern variable ... Nat.totient"); rename the local (`ι`).
