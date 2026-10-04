@@ -32,20 +32,21 @@ def brute_mu(n, E):
             if not ok: continue
             if all(a in cov or b in cov for a,b in E): return k
 
-rng = random.Random(1)
-cases = []
-for n in range(3, 13): cases.append((n, [(k, (k+1)%n) for k in range(n)]))
-for _ in range(120):
-    r = rng.choice([1,2,3,4,5])
-    n = rng.choice([x for x in range(r+1, 13) if (x*r) % 2 == 0])
-    cases.append((n, rand_regular(n, r, rng)))
-inp = "".join(f"{n} {len(E)} " + " ".join(f"{a} {b}" for a,b in E) + "\n" for n,E in cases)
-out = subprocess.run(["./check"], input=inp, capture_output=True, text=True).stdout.split("\n")
-bad = 0
-for (n,E), line in zip(cases, out):
-    ci, cm = map(int, line.split())
-    bi, bm = brute_i(n,E), brute_mu(n,E)
-    if (ci,cm) != (bi,bm): bad += 1; print("MISMATCH", n, E, ci, cm, bi, bm)
-    if bi > bm: print("COUNTEREXAMPLE?", n, E)
-print("cases", len(cases), "mismatches", bad)
-print("cycles:", [l for l in out[:10]])
+if __name__ == "__main__":
+    rng = random.Random(1)
+    cases = []
+    for n in range(3, 13): cases.append((n, [(k, (k+1)%n) for k in range(n)]))
+    for _ in range(120):
+        r = rng.choice([1,2,3,4,5])
+        n = rng.choice([x for x in range(r+1, 13) if (x*r) % 2 == 0])
+        cases.append((n, rand_regular(n, r, rng)))
+    inp = "".join(f"{n} {len(E)} " + " ".join(f"{a} {b}" for a,b in E) + "\n" for n,E in cases)
+    out = subprocess.run(["./check"], input=inp, capture_output=True, text=True).stdout.split("\n")
+    bad = 0
+    for (n,E), line in zip(cases, out):
+        ci, cm = map(int, line.split()[:2])
+        bi, bm = brute_i(n,E), brute_mu(n,E)
+        if (ci,cm) != (bi,bm): bad += 1; print("MISMATCH", n, E, ci, cm, bi, bm)
+        if bi > bm: print("COUNTEREXAMPLE?", n, E)
+    print("cases", len(cases), "mismatches", bad)
+    print("cycles:", [l for l in out[:10]])

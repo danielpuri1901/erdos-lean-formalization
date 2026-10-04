@@ -94,3 +94,35 @@ static int sat_num(void) {
   satm(N == 64 ? ~0ULL : ((1ULL << N) - 1), 0, 0);
   return best_m;
 }
+
+/* ---------- count distinct independent dominating sets of size <= bound (capped) ---------- */
+static long cnt_sets, cnt_cap;
+static int cnt_bound;
+static void cdom(u64 dom, u64 excl, int sz) {
+  if (cnt_sets >= cnt_cap) return;
+  u64 und = (N == 64 ? ~0ULL : ((1ULL << N) - 1)) & ~dom;
+  if (!und) { cnt_sets++; return; }
+  if (sz >= cnt_bound) return;
+  int bv = -1, bc = 100, maxc = 0;
+  for (u64 t = und; t; t &= t - 1) {
+    int v = __builtin_ctzll(t);
+    u64 cand = (ADJ[v] | (1ULL << v)) & und & ~excl;
+    int c = popc(cand);
+    if (c == 0) return;
+    if (c < bc) { bc = c; bv = v; }
+    int cc = popc((ADJ[v] | (1ULL << v)) & und);
+    if (cc > maxc) maxc = cc;
+  }
+  if (sz + (popc(und) + maxc - 1) / maxc > cnt_bound) return;
+  u64 cand = (ADJ[bv] | (1ULL << bv)) & und & ~excl;
+  for (u64 t = cand; t; t &= t - 1) {
+    int w = __builtin_ctzll(t);
+    cdom(dom | ADJ[w] | (1ULL << w), excl, sz + 1);
+    excl |= 1ULL << w;
+  }
+}
+static long count_idom(int bound, long cap) {
+  cnt_sets = 0; cnt_cap = cap; cnt_bound = bound;
+  cdom(0, 0, 0);
+  return cnt_sets;
+}

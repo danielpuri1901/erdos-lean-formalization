@@ -6,6 +6,6 @@ int main(void){
   while(scanf("%d %d",&n,&e)==2){
     N=n; memset(ADJ,0,sizeof ADJ);
     for(int k=0;k<e;k++){int a,b;scanf("%d %d",&a,&b);ADJ[a]|=1ULL<<b;ADJ[b]|=1ULL<<a;}
-    printf("%d %d\n",indep_dom(),sat_num()); fflush(stdout);
+    {int ii=indep_dom(); printf("%d %d %ld\n",ii,sat_num(),count_idom(ii,1000000000L));} fflush(stdout);
   }
 }

@@ -29,13 +29,24 @@ static int mode, R, M;
 static int objective(void) {
   int i = indep_dom();
   if (mode == 0) return i - M;
+  if (mode == 2) {
+    if (i > M) return 1;
+    long c = count_idom(i, 100000);
+    return -(int)((long)(M - i) * 1000000 + c);
+  }
+  if (mode == 3) {
+    int mu = sat_num();
+    if (i > mu) return 1;
+    long c = count_idom(i, 100000);
+    return -(int)((long)(mu - i) * 1000000 + c);
+  }
   return i - sat_num();
 }
 
 static void init(void) {
   for (;;) {
     NE = 0;
-    if (mode == 0) {
+    if (mode == 0 || mode == 2) {
       int nu = 2 * M * (R - 1) / R;
       N = 2 * M + nu;
       int stubsA[2048], stubsB[2048], na = 0, nb = 0;
@@ -57,24 +68,27 @@ static void init(void) {
 int main(int argc, char **argv) {
   mode = atoi(argv[1]); R = atoi(argv[2]);
   int size = atoi(argv[3]); long iters = atol(argv[4]); rng_s = 88172645463325252ULL ^ (u64)atol(argv[5]) * 2654435761ULL;
-  if (mode == 0) M = size; else N = size;
+  if (mode == 0 || mode == 2) M = size; else N = size;
   init();
   int cur = objective(), best = cur;
+  static int BA[4096], BB[4096]; long lastimp = 0;
+  memcpy(BA, EA, sizeof EA); memcpy(BB, EB, sizeof EB);
   fprintf(stderr, "init obj %d n=%d\n", cur, N);
-  int first = (mode == 0) ? M : 0; /* in mode 0 the matching edges are fixed */
+  int first = (mode == 0 || mode == 2) ? M : 0; /* in mode 0 the matching edges are fixed */
   for (long it = 0; it < iters; it++) {
+    if (it - lastimp > 20000) { memcpy(EA, BA, sizeof EA); memcpy(EB, BB, sizeof EB); build_adj(); cur = best; lastimp = it; }
     int p = first + rnd() % (NE - first), q = first + rnd() % (NE - first);
     if (p == q) continue;
     int a = EA[p], b = EB[p], c0 = EA[q], d0 = EB[q];
     int c = c0, d = d0;
     /* mode 0: EA is the pair side, EB the U side; swap U endpoints */
-    if (mode == 1 && (rnd() & 1)) { c = d0; d = c0; }
+    if ((mode == 1 || mode == 3) && (rnd() & 1)) { c = d0; d = c0; }
     EB[p] = d; EA[q] = c; EB[q] = b;
     if (!build_adj()) { EA[p] = a; EB[p] = b; EA[q] = c0; EB[q] = d0; build_adj(); continue; }
     int o = objective();
     if (o >= cur || (rnd() % 1000) < 5) {
       cur = o;
-      if (o > best) { best = o; fprintf(stderr, "it %ld best %d\n", it, best); }
+      if (o > best) { best = o; lastimp = it; memcpy(BA, EA, sizeof EA); memcpy(BB, EB, sizeof EB); fprintf(stderr, "it %ld best %d\n", it, best); }
       if (o > 0) {
         printf("FOUND n=%d obj=%d\n%d %d", N, o, N, NE);
         for (int k = 0; k < NE; k++) printf(" %d %d", EA[k], EB[k]);
