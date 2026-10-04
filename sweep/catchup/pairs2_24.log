@@ -1,0 +1,10 @@
+G on {1..24}: 75024 pair-unions, 0 violations
+G3 triple start even, pairs even, g=0: L=13605 D=0 W=58651
+G3 triple start even, pairs even, g=1: L=0 D=69880 W=2376
+G3 triple start even, pairs odd, g=0: L=2 D=69662 W=2596
+G3 triple start even, pairs odd, g=1: L=22723 D=0 W=49537
+G3 triple start odd, pairs even, g=0: L=0 D=69884 W=2372
+G3 triple start odd, pairs even, g=1: L=25932 D=0 W=46324
+G3 triple start odd, pairs odd, g=0: L=11782 D=0 W=60478
+G3 triple start odd, pairs odd, g=1: L=0 D=70042 W=2218
+exit 0

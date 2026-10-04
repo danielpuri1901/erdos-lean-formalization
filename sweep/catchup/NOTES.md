@@ -88,3 +88,61 @@ axioms propext / Classical.choice / Quot.sound only)
   (induction on `card R`: a draw value needs a draw child, and taking x moves x from ∑R to a score).
 - `value_ne_draw_of_odd`: if `N*(N+1)/2` is odd then `value (Icc 1 N) ≠ draw` (all N).
 - `catchup_draw_iff_le_8`: for N ≤ 8, draw ⇔ `N*(N+1)/2` even.
+
+### Mathematics: structure found by computation
+
+1. Gap profile of the full set (`profile.c`, N ≤ 20): for R = {1..N} and 2 ≤ g ≤ N the value
+   v(R,g) is the parity-best outcome (D if T−g even, W if T−g odd), with the single exception
+   N = 13, g = 2 (L). For general subsets this is false: over all R ⊆ {1..14}, 24–43 % of
+   positions with gap g ≥ 1 are not parity-best (`parity.c`). So there is no
+   "the player behind always gets the parity-best result" lemma for arbitrary sets.
+2. First moves (`firstmove.c`, N ≤ 22): for T even and N = 8 or N ≥ 12 *every* first move
+   of P1 leads to a draw; for N = 3, 4, 7, 11 some first moves lose for P1 (P2 wins).
+   For T odd and N ≥ 9, P2 wins after all first moves except at most one small y ∈ {1,2,3}.
+3. Structured families (`family.c`, inside {1..20}, g = 0, even sum): every union of aligned
+   pairs {2k−1,2k}, every union of mirror pairs {k,21−k}, every union of blocks {4j+1..4j+4}
+   is a draw; intervals {a..b} are not (68 D, 32 W).
+4. **Pairs conjecture (new, computed only).** Let R be a disjoint union of k pairs {a, a+1}
+   (a ≥ 1, pairs arbitrary, not necessarily aligned). Then
+   v(R,0) = D if k is even, and v(R,1) = D if k is odd.
+   Variant: the same with R = {1,2,3} ∪ (k pairs with a ≥ 4).
+   Checked (`pairs2.c`, `triple.c`): all 28,656 pair-unions inside {1..22}: 0 violations;
+   all 3,383 sets {1,2,3} ∪ pairs inside {1..22}, for both (k even, g=0) and (k odd, g=1): all D.
+   Extended (`pairs2.c` with M = 24): all 75,024 pair-unions inside {1..24}: 0 violations.
+   Wrong parity gives no draw, as it must (D impossible by parity).
+   General triples {t,t+1,t+2} ∪ pairs are NOT always draws (~4 % W), so {1,2,3} is special.
+5. **Reduction (paper proof, trivial).** Pairs conjecture ⇒ Catch-Up conjecture:
+   N ≡ 0 (mod 4): {1..N} = {1,2} ∪ {3,4} ∪ … ∪ {N−1,N}, k = N/2 even, g = 0 → draw.
+   N ≡ 3 (mod 4): {1..N} = {1,2,3} ∪ {4,5} ∪ … ∪ {N−1,N}, k = (N−3)/2 even, g = 0 → draw.
+   Also: pairs conjecture with k odd, g = 1 alone already gives "P1 can secure ≥ draw" for
+   N ≡ 3 (mod 4): P1 takes 1, leaving {2,3} ∪ … ∪ {N−1,N}, an odd number of pairs at gap 1.
+   Decision: I did not formalize this reduction in Lean; it is an instantiation, and the time
+   was better spent on the evidence for the pairs conjecture.
+
+### Attempted proof of the pairs conjecture (incomplete)
+
+Key fact: when the gap is g ≤ 1 the mover takes exactly ONE number (every number is ≥ 1 ≥ g).
+So from a pairs position the mover takes one x from a pair {a, a+1}; the other player then
+faces gap x − g with the partner of x still available. Write G(k) for the claim at k pairs.
+
+Lemmas and status:
+- L1 (proved on paper): value depends only on (R, gap); mid-turn and start-of-turn positions
+  with the same (R, gap) have the same value; first-move flag irrelevant when 0 ∉ R.
+- L2 (proved on paper, uses G(k−1) in both directions): k even, g = 0 ⇒ v(R,0) ≤ D.
+  Partner reply: if the mover takes a, reply a+1 (lead 1; the mover then faces k−1 odd pairs
+  at gap 1, value D); if the mover takes a+1, reply a (still behind by 1, mid-turn at k−1
+  odd pairs and gap 1, value D for the replier).
+- L3 (partial): k odd, g = 1 ⇒ v(R,1) ≤ D. If the mover takes a+1, reply a ties and leaves
+  k−1 even pairs at gap 0 (value D). If the mover takes a, the gap is a−1 and the natural reply
+  a+1 leads by 2 to (R∖{a,a+1}, 2), which is not a pairs position; computed (`gmoves.c`,
+  inside {1..20}): this reply secures ≥ D in 29,274 of 29,581 cases, so 307 cases need
+  another reply. **Unknown** how to close.
+- L4 (unknown): the mover in a pairs position can secure ≥ D. Needs a good first pick and a
+  reply to every opponent turn. Computed (`gmoves.c`, `grule.c`, inside {1..20}): after a
+  single pick of the mover the other player never gets less than D (consistent with L2/L3),
+  and gets W after about 39 % of the picks, so the mover must choose. Fixed rules:
+  "take a1+1, the larger element of the lowest pair" draws in 5441/5472 (k even) and
+  5386/5473 (k odd) positions,
+  "take the smallest number" in 4915 / 4592; none is always right.
+So the pairs family is not closed under the obvious replies; a proof needs a larger family
+that also contains positions like (pairs, gap 2) and (pairs ∪ {one singleton}, gap a−1).

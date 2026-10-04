@@ -1,0 +1,5 @@
+{1,2,3}+pairs, k even, g=0: L=0 D=8855 W=0
+{1,2,3}+pairs, k even, g=1: L=5339 D=0 W=3516
+{1,2,3}+pairs, k odd, g=0: L=375 D=0 W=8481
+{1,2,3}+pairs, k odd, g=1: L=0 D=8856 W=0
+exit 0

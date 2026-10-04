@@ -3,3 +3,5 @@ N=24 T=300 Teven=1 value=draw states=200426887
 N=25 T=325 Teven=0 value=win states=415544168
 N=26 T=351 Teven=0 value=win states=867135501
 N=27 T=378 Teven=1 value=draw states=1809049015
+N=28 T=406 Teven=1 value=draw states=3753887518
+N=29 run stopped by hand after N=28 (T odd at N=29, 30; not needed)
