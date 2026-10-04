@@ -579,4 +579,195 @@ theorem conjecture198a_unless_selfCentered_ecc_two_to_four (G : SimpleGraph α) 
     obtain ⟨v, w, hvw⟩ := hsc
     exact conjecture198a_of_not_selfCentered G h hb ⟨v, w, hvw⟩
 
+theorem b_le_of_selfCentered (G : SimpleGraph α) (hb : b G ≤ 2 + averageEccentricity G)
+    (hsc : ∀ v w : α, G.eccent v = G.eccent w) (r : α) :
+    b G ≤ (G.eccent r).toNat + 2 := by
+  have havg : averageEccentricity G = (G.eccent r).toNat := by
+    unfold averageEccentricity
+    have : ∀ v ∈ (Finset.univ : Finset α), (G.eccent v).toNat = (G.eccent r).toNat :=
+      fun v _ => by rw [hsc v r]
+    rw [Finset.sum_congr rfl this, Finset.sum_const, Finset.card_univ, smul_eq_mul]
+    have hcard : (Fintype.card α : ℝ) ≠ 0 := by
+      have := Fintype.card_pos (α := α); positivity
+    push_cast
+    field_simp
+  linarith
+
+/-- For a self-centered graph with diameter `≥ 4` satisfying the hypothesis, around every root `r`
+the layers `j ≠ 2` are cliques. -/
+theorem cl_of_selfCentered (G : SimpleGraph α) (h : G.Connected)
+    (hb : b G ≤ 2 + averageEccentricity G) (hsc : ∀ v w : α, G.eccent v = G.eccent w)
+    (r : α) (hD : 4 ≤ (G.eccent r).toNat) (j : ℕ) (hj : j ≠ 2) :
+    ∀ x y, G.dist r x = j → G.dist r y = j → x ≠ y → G.Adj x y := by
+  classical
+  have hb' := b_le_of_selfCentered G hb hsc r
+  set D := (G.eccent r).toNat with hDdef
+  obtain ⟨v, hv⟩ := G.exists_edist_eq_eccent_of_finite r
+  have hecc : G.eccent r ≠ ⊤ :=
+    ne_top_of_le_ne_top (connected_iff_ediam_ne_top.mp h) eccent_le_ediam
+  have hdv : G.dist r v = D := by rw [SimpleGraph.dist, hv]
+  have hle : ∀ x, G.dist r x ≤ D := fun x => by
+    rw [SimpleGraph.dist]; exact ENat.toNat_le_toNat edist_le_eccent hecc
+  have tri : ∀ a c d : α, G.dist a d ≤ G.dist a c + G.dist c d := fun a c d => h.dist_triangle
+  -- layer 2 is not a clique
+  have nc2 : ¬ ∀ x y, G.dist r x = 2 → G.dist r y = 2 → x ≠ y → G.Adj x y := by
+    intro c2
+    obtain ⟨w2, hw2, -⟩ := ancestor G h r v 2 (by omega)
+    refine ecc_contra G h hsc r w2 (D - 1) (by omega) fun z => ?_
+    by_cases hz : 2 ≤ G.dist r z
+    · obtain ⟨z', hz', hz'z⟩ := ancestor G h r z 2 hz
+      have : G.dist w2 z' ≤ 1 := by
+        by_cases e : w2 = z'
+        · subst e; simp
+        · rw [dist_eq_one_iff_adj.mpr (c2 w2 z' hw2 hz' e)]
+      have := tri w2 z' z
+      have := hle z
+      omega
+    · have h1 := tri w2 r z
+      have e : G.dist w2 r = 2 := by rw [SimpleGraph.dist_comm]; exact hw2
+      omega
+  intro x y hx hy hxy
+  by_contra hadj
+  apply nc2
+  intro x' y' hx' hy' hxy'
+  by_contra hadj'
+  have := two_layers_bip G h r x y x' y' hxy hadj (hx.trans hy.symm) hxy' hadj'
+    (hx'.trans hy'.symm) (by omega)
+  linarith
+
+/-- **B5 (formalized).** No self-centered connected graph of diameter `4` satisfies the hypothesis. -/
+theorem no_selfCentered_of_diam_four (G : SimpleGraph α) (h : G.Connected)
+    (hb : b G ≤ 2 + averageEccentricity G) (hsc : ∀ v w : α, G.eccent v = G.eccent w)
+    (u : α) (hD : (G.eccent u).toNat = 4) : False := by
+  classical
+  have hD' : ∀ r, (G.eccent r).toNat = 4 := fun r => by rw [hsc r u]; exact hD
+  have hecc : ∀ r, G.eccent r ≠ ⊤ := fun r =>
+    ne_top_of_le_ne_top (connected_iff_ediam_ne_top.mp h) eccent_le_ediam
+  have hle : ∀ r x, G.dist r x ≤ 4 := fun r x => by
+    rw [SimpleGraph.dist, ← hD' r]; exact ENat.toNat_le_toNat edist_le_eccent (hecc r)
+  have cl : ∀ r j, j ≠ 2 → ∀ x y, G.dist r x = j → G.dist r y = j → x ≠ y → G.Adj x y :=
+    fun r j hj => cl_of_selfCentered G h hb hsc r (by rw [hD' r]) j hj
+  have tri : ∀ a c d : α, G.dist a d ≤ G.dist a c + G.dist c d := fun a c d => h.dist_triangle
+  have d1 : ∀ r j, j ≠ 2 → ∀ x y, G.dist r x = j → G.dist r y = j → G.dist x y ≤ 1 := by
+    intro r j hj x y hx hy
+    by_cases e : x = y
+    · subst e; simp
+    · rw [dist_eq_one_iff_adj.mpr (cl r j hj x y hx hy e)]
+  obtain ⟨v, hv⟩ := G.exists_edist_eq_eccent_of_finite u
+  have hdv : G.dist u v = 4 := by rw [SimpleGraph.dist, hv]; exact hD
+  obtain ⟨w3, hw3, -⟩ := ancestor G h u v 3 (by omega)
+  obtain ⟨w1, hw1, hw1w⟩ := ancestor G h u w3 1 (by omega)
+  rw [hw3] at hw1w
+  -- (1) some `z` in layer 2 has no neighbour in layer 3
+  have hz : ∃ z, G.dist u z = 2 ∧ ∀ c, G.dist u c = 3 → ¬ G.Adj z c := by
+    by_contra hcon
+    push Not at hcon
+    refine ecc_contra G h hsc u w3 3 (by omega) fun z => ?_
+    have hz4 := hle u z
+    by_cases hz3 : 3 ≤ G.dist u z
+    · obtain ⟨z', hz', hz'z⟩ := ancestor G h u z 3 hz3
+      have := d1 u 3 (by omega) w3 z' hw3 hz'
+      have := tri w3 z' z
+      omega
+    · by_cases hz2 : G.dist u z = 2
+      · obtain ⟨c, hc, hzc⟩ := hcon z hz2
+        have := d1 u 3 (by omega) w3 c hw3 hc
+        have := tri w3 c z
+        have : G.dist c z = 1 := dist_eq_one_iff_adj.mpr hzc.symm
+        omega
+      · by_cases hz1 : G.dist u z = 1
+        · have := d1 u 1 (by omega) w1 z hw1 hz1
+          have := tri w3 w1 z
+          have e : G.dist w3 w1 = G.dist w1 w3 := SimpleGraph.dist_comm
+          omega
+        · have := tri w3 u z
+          have e : G.dist w3 u = 3 := by rw [SimpleGraph.dist_comm]; exact hw3
+          have : G.dist u z = 0 := by omega
+          omega
+  obtain ⟨z, hz2, hz3⟩ := hz
+  obtain ⟨z1, hz1, hz1z⟩ := ancestor G h u z 1 (by omega)
+  rw [hz2] at hz1z
+  have hz1z' : G.Adj z1 z := by
+    have hne : z1 ≠ z := by intro e; rw [e] at hz1; omega
+    have : G.dist z1 z ≠ 0 := by
+      intro e0
+      exact hne ((SimpleGraph.Reachable.dist_eq_zero_iff (h.preconnected z1 z)).1 e0)
+    exact dist_eq_one_iff_adj.mp (by omega)
+  -- (2), (3): every `d` in layer 4 is within 3 of `z1`
+  have hd : ∀ d, G.dist u d = 4 → G.dist z1 d ≤ 3 := by
+    intro d hd4
+    -- dist z d = 3
+    have hzd_le : G.dist z d ≤ 3 := by
+      by_contra hgt
+      have h4 : G.dist d z = 4 := by
+        have := hle z d
+        rw [SimpleGraph.dist_comm]; omega
+      have hdu : G.dist d u = 4 := by rw [SimpleGraph.dist_comm]; exact hd4
+      have := d1 d 4 (by omega) u z hdu h4
+      have := tri u z u
+      have hzu : G.dist z u = 2 := by rw [SimpleGraph.dist_comm]; exact hz2
+      have := tri u u z
+      omega
+    have hzd_ge : 3 ≤ G.dist z d := by
+      have := tri u z d
+      by_contra hlt
+      have h2 : G.dist z d = 2 := by omega
+      obtain ⟨q, hq⟩ := h.exists_walk_length_eq_dist z d
+      have hadj1 : G.Adj z (q.getVert 1) := by
+        have := q.adj_getVert_succ (i := 0) (by omega)
+        simpa using this
+      have hm1 : G.dist (q.getVert 1) d ≤ 1 := by
+        have := dist_le (q.drop 1); rw [Walk.drop_length] at this; omega
+      have hm2 : G.dist u (q.getVert 1) ≤ 3 := by
+        have := tri u z (q.getVert 1)
+        rw [dist_eq_one_iff_adj.mpr hadj1] at this; omega
+      have hm3 := tri u (q.getVert 1) d
+      exact hz3 (q.getVert 1) (by omega) hadj1
+    obtain ⟨q, hq⟩ := h.exists_walk_length_eq_dist z d
+    set m := q.getVert 1 with hmdef
+    have hadjm : G.Adj z m := by
+      have := q.adj_getVert_succ (i := 0) (by omega)
+      simpa using this
+    have hmd : G.dist m d ≤ 2 := by
+      have := dist_le (q.drop 1); rw [Walk.drop_length, ← hmdef] at this; omega
+    have hum3 : G.dist u m ≤ 3 := by
+      have := tri u z m
+      rw [dist_eq_one_iff_adj.mpr hadjm] at this; omega
+    have hum2 : 2 ≤ G.dist u m := by have := tri u m d; omega
+    have hum : G.dist u m = 2 := by
+      by_contra hne
+      exact hz3 m (by omega) hadjm
+    -- `z1` and `m` are both neighbours of `z`, so adjacent (layer 1 around `z` is a clique)
+    have hz1m : G.dist z1 m ≤ 1 := by
+      have e1 : G.dist z z1 = 1 := dist_eq_one_iff_adj.mpr hz1z'.symm
+      have e2 : G.dist z m = 1 := dist_eq_one_iff_adj.mpr hadjm
+      exact d1 z 1 (by omega) z1 m e1 e2
+    have := tri z1 m d
+    omega
+  refine ecc_contra G h hsc u z1 3 (by omega) fun y => ?_
+  have hy4 := hle u y
+  by_cases hy0 : G.dist u y = 0
+  · have : G.dist z1 u = 1 := by rw [SimpleGraph.dist_comm]; exact hz1
+    have := tri z1 u y
+    omega
+  · by_cases hy4' : G.dist u y = 4
+    · exact hd y hy4'
+    · obtain ⟨y1, hy1, hy1y⟩ := ancestor G h u y 1 (by omega)
+      have := d1 u 1 (by omega) z1 y1 hz1 hy1
+      have := tri z1 y1 y
+      omega
+
+/-- **Combined (formalized).** Conjecture 198a holds for every connected graph except possibly
+self-centered graphs whose common eccentricity is `2` or `3`. -/
+theorem conjecture198a_unless_selfCentered_ecc_two_or_three (G : SimpleGraph α) (h : G.Connected)
+    (hb : b G ≤ 2 + averageEccentricity G)
+    (hnot : ¬ ((∀ v w : α, G.eccent v = G.eccent w) ∧
+      ∃ u : α, 2 ≤ (G.eccent u).toNat ∧ (G.eccent u).toNat ≤ 3)) :
+    ∃ a c : α, ∃ p : G.Walk a c, p.IsHamiltonian := by
+  refine conjecture198a_unless_selfCentered_ecc_two_to_four G h hb ?_
+  rintro ⟨hsc, u, h2, h4⟩
+  by_cases h3 : (G.eccent u).toNat ≤ 3
+  · exact hnot ⟨hsc, u, h2, h3⟩
+  · exact no_selfCentered_of_diam_four G h hb hsc u (by omega)
+
 end Sweep198a
