@@ -21,7 +21,7 @@ static int quiet=0;
 static void report(u64 x,u128 s,const char*how){ if(x>T && s%x==T){hits++; if(!quiet) printf("HIT x=%llu sigma=%llu (%s)\n",x,(u64)s,how); fflush(stdout);} }
 static void dfs(u64 n,u128 sn,long pi){
   nodes++;
-  if(n>1 && (H<=0 || (double)sn > H*(double)n)) report(n,sn,"node");
+  if(n>1 && (H<=0 || (double)sn > H*(1-1e-12)*(double)n)) report(n,sn,"node"); // slack: sigma(x)=3x+5 must not be lost to rounding
   u64 budget=L/n; if(budget<2) return;
   if(pi>=np) return;
   // pruning by abundancy
