@@ -1,0 +1,4 @@
+# compiled from search.c and floatcheck.c (gcc -O2 ...; floatcheck needs -lm)
+search
+search_test
+floatcheck
