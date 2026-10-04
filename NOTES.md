@@ -20,3 +20,8 @@ Then `Reachable.complexity_eq` gives `complexity (3^n) = 3n`.
 1. Skeleton in `Solution.lean` with `sorry`s, build.
 2. Fill `one_add_case`, `add_case`, `cube_le`, main theorem.
 No kernel computation is needed.
+
+## Status
+All lemmas are proved; `lake build Solution` passes with no `sorry`.
+`#print axioms complexity_of_three_pow` gave `[propext, Classical.choice, Quot.sound]` (the line was removed before submitting).
+The only snag: `nlinarith` could not prove `(1 + n)^3 ≤ 3 n^3` from `n ≥ 3` directly; substituting `n = t + 3` and `ring_nf` first fixed it.
