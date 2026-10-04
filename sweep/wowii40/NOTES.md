@@ -36,3 +36,34 @@ Basic facts (proved on paper):
   so G−s has slack 1 or 2.
 - Tight families (slack = 1): trees (f=b=n, p ≤ n−1, and slack = n−p ≥ 1 is just p ≤ n−1), K_{m,n},
   K_{a,a,a}, pendant additions preserve tightness.
+
+## Phase A.6: reproduction of the problem file's numbers
+
+Code: `sweep/wowii40/inv.h` (f, b, p exact by subset enumeration / path-cover DP over subsets),
+`sweep/wowii40/gen.c` (all graphs up to isomorphism by vertex augmentation + canonical codes).
+- Graph counts n=2..9: 2, 4, 11, 34, 156, 1044, 12346, 274668 (all), connected 1, 2, 6, 21, 112, 853,
+  11117, 261080; cumulative connected 2..9 = 273,192. Matches the problem file and OEIS A000088/A001349.
+- 0 failures for n ≤ 9.
+- "832 of 12,112 tight for n ≤ 8": I first got 120. Resolved: the problem file calls a graph tight when
+  f = ceil((p+b+1)/2) exactly, i.e. slack = 2f−b−p ∈ {1, 2}. My counts: slack 1: 120, slack 2: 712,
+  total 832. Reproduced.
+- Slack histograms (slack 1, 2, 3, ...):
+  n=8: 86 571 2863 3915 3393 288 1; n=9: 499 5599 45321 82101 93604 33058 897 1.
+
+## Phase B: exhaustive extension search
+
+Lemma (proved on paper): if s is any vertex, Δf, Δb ∈ {0,1} and Δp ∈ {−1,0,1} between G−s and G.
+Hence slack(G−s) ≤ slack(G) + 2. Every connected graph has a non-cut vertex s (leaf of a spanning
+tree), so every connected counterexample on n+1 vertices extends a connected n-vertex graph of slack ≤ 2,
+and every connected n+1 graph of slack ≤ 2 extends a connected n-vertex graph of slack ≤ 4.
+`ext.c` / `ext2.c`: extend each parent by a new vertex in all 2^n − 1 nonempty ways, with exact
+shortcuts: Δf = 1 iff some maximum forest F of the parent stays acyclic with s (N(s) meets each
+component of F at most once); Δb = 1 iff some maximum bipartite set stays bipartite (N(s) meets only
+one colour class of each component). Validation: extending the n=8 slack≤4 list with T=2 reproduces
+exactly the 6098 n=9 graphs of slack ≤ 2 from gen.c (`cmp` identical), for both ext and ext2.
+
+Results:
+- n=10, complete: 6098 parents (n=9, slack ≤ 2) × 511 extensions: 0 graphs with slack ≤ 0.
+  So no counterexample on 10 vertices.
+- n=10 slack ≤ 2 list, complete: from 133,520 n=9 parents of slack ≤ 4: 115,154 graphs
+  (slack 1: 4960, slack 2: 110194).
