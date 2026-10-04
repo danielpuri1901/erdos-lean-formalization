@@ -1,5 +1,39 @@
 # a000224 sweep notes
 
+```
+result: partial
+claim: For n > 1, the biconditional (n prime ∧ n ≠ 2) ↔ n^2 ≡ 1 [MOD a(n)(a(n)-1)] holds
+  (1) for every even n, and (2) for every n = p*q with p < q odd primes;
+  and (3) the direction "odd prime ⇒ congruence" holds for all n.
+  On paper only (not in Lean): it also holds for every odd prime power p^k, k ≥ 2 (see P3).
+  The open part is odd composite n with at least two distinct prime factors and Ω(n) ≥ 3.
+lean: Solution.lean, namespace A224Sweep, all build with no sorry (axioms: propext,
+  Classical.choice, Quot.sound only):
+  conjecture_of_even, conjecture_semiprime, modEq_of_odd_prime, not_modEq_of_even,
+  a_prime (a p = (p+1)/2), a_mul (a multiplicative on coprime args, via CRT), a_eq_card_zmod,
+  semi_core (for 2 ≤ u < v: uv(uv-1) ∤ ((2u-1)(2v-1))^2 - 1; uses decide +kernel on 32*121 cases).
+computed: exhaustive n in [2, 4*10^9): 0 mismatches (search.c, a(n) cross-checked with the
+  direct definition for n ≤ 3000; direct.py agrees for n ≤ 4000).
+  All n = m*q, m odd in [3, 10^6], q prime ∤ m of any size: 0 counterexamples (family.py, exact).
+  Relaxed semiprime system (no primality), 2 ≤ u < v ≤ 20000: 0 solutions (relaxed.c).
+next idea: Generalise the semiprime bounding argument. For n = m*q with q ∥ n, w = (q+1)/2,
+  A = a(m), the congruence is the quadratic (4m^2 - kA^2) w^2 - (4m^2 - kA) w + (m^2 - 1) = 0 with
+  an integer k < 4m^2/A^2. So w | m^2 - 1, and (4m^2 - kA^2) w < 4m^2. The proof breaks when
+  4m^2/A^2 lies just above an integer, because then the leading coefficient can be tiny. For
+  squarefree n = ∏(2u_i - 1), try bounding the largest u_i with the others fixed, using the
+  constraint for every prime factor at once: u_i | ∏_{j≠i}(2u_j-1)^2 - 1. Then decide the bounded
+  remainder. Next cases: n = p^2 q (needs a(p^2) = (p^2-p+2)/2 in Lean) and n = pqr.
+  Also formalise P3 (prime powers) in Lean: it needs a(p^k) = phi(p^k)/2 + a(p^{k-2}).
+dead ends: blind enumeration beyond 4*10^9 (heuristically pointless: a hit needs a modulus near
+  n^2/16 to divide n^2-1). Vieta jumping on the semiprime equation in (s, P) = (u+v, uv) is
+  circular: the discriminant is just n^2. The direct decide over u < 32, v < 3721 in nested
+  bounded foralls hits kernel deep recursion; enumerate the cofactor d = 4u(u-1)/v < 121 instead.
+confidence: high because every Lean theorem above builds with no sorry and only the standard
+  axioms, and the searches use exact integer arithmetic with sanity checks; the prime-power
+  paper proof (P3) is short and was checked numerically at a(27) = 11 but has no Lean proof.
+```
+
+
 start: 1791105350 (date -u +%s)
 
 ## Phase A: statement
@@ -88,3 +122,23 @@ Notation: odd n ≥ 3, M = a(a-1). The congruence is M | n^2 - 1 (M ≥ 2).
  Step 6: so p ≤ 61, q ≤ 7439, n < 4.6·10^5, inside the exhaustive range [2, 10^7): no hit.
          Independently, `relaxed.c` covers u < v ≤ 20000: no hit.
  Primality of p, q is used only to get a(pq) = uv.
+
+## Phase C: Lean (all in `Solution.lean`, namespace `A224Sweep`)
+
+- `two_le_a`, `not_modEq_of_even`, `conjecture_of_even`: P0.
+- `a_prime`, `modEq_of_odd_prime`: P1.
+- `a_eq_card_zmod` (a n = number of squares in ZMod n), `card_sq_ringEquiv`, `card_sq_prod`,
+  `a_mul` (multiplicativity via `ZMod.chineseRemainder`).
+- `semiChk`, `semiChk_all` (decide +kernel, u < 32, d < 121), `semi_core`: P4 Steps 1-6.
+- `conjecture_semiprime`: P4 with a(pq) = a(p)a(q) = uv.
+
+Decisions (made without asking):
+- I stopped the exhaustive search at 4*10^9, since a hit beyond that is heuristically very unlikely.
+  I spent the time on proofs instead.
+- I formalised the semiprime case rather than prime powers. It needed only a(p) and
+  multiplicativity, both of which also help future cases. Prime powers need the a(p^k) recursion
+  in Lean, which is a bigger job.
+
+## Search log
+
+- search.c [0, 4*10^9): checked 3,999,999,998 values n ≥ 2, 0 mismatches (run_4e9.txt).
