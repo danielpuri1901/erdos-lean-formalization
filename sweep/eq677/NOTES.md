@@ -14,7 +14,9 @@ claim: (Lean) Affine models never separate 677 from 255 when the coefficients co
   and hence satisfies 255. Combining that eigenvalue argument (mod p) with a Frattini argument and
   the Lean theorem `finite_endAffine_eq677_imp_eq255` (paper reduction, see "Affine models on finite
   abelian groups" below): every affine 677 magma on a finite abelian group whose order is not
-  divisible by 11 satisfies 255. The open problem itself is not resolved.
+  divisible by 11 satisfies 255; a further paper argument (Fitting decomposition at the eigenvalue
+  6 mod 11) removes the condition on 11, so on paper NO affine magma on a finite abelian group is a
+  counterexample. The open problem itself is not resolved.
 lean: Solution.lean — Eq677Sweep.affine_eq677_imp_eq255, Eq677Sweep.moduleAffine_eq677_imp_eq255,
   Eq677Sweep.star_relation, Eq677Sweep.star_star_relation, Eq677Sweep.linear_eq255_of_q_unit,
   Eq677Sweep.endAffine_eq677_imp_eq255, Eq677Sweep.finite_endAffine_eq677_imp_eq255
@@ -34,9 +36,9 @@ computed: (all: no counterexample; every 677 model found satisfies 255)
   - rows drawn from AGL(1,p) (p = 5,7,11,13) and PGL(2,p) on p+1 points (p = 5, 7):
     models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none;
     PGL(2,11) (order 12) hit the 400 s cap (not exhaustive).
-next idea: The only affine case left open is the 11-part of V when it is not elementary abelian
-  (e.g. Z_121^k), B̄ has eigenvalue 6 mod 11, and A, B do not commute; a lifting argument from
-  V/11V (where A, B commute) should close it, giving "no affine counterexample at all". For the real problem, every model found (including
+next idea: Formalize the paper part (eigenvalue / Fitting / Sylvester argument) to get a Lean
+  proof that no affine magma on a finite abelian group separates 677 from 255; it needs only the
+  three Lean relations already proved plus standard linear algebra. For the real problem, every model found (including
   non-affine extensions) is right-cancellative; checking and then trying to prove "finite 677 ⇒
   quasigroup" looks like the most promising structural step towards a proof, while for a
   counterexample the natural next family is extensions whose fiber coefficients depend on the
@@ -257,3 +259,26 @@ invertible on W, q(B) on V_p, and 255 follows.
 Remaining gap: the 11-part of V when B̄ has eigenvalue 6 (the common root of q and o mod 11).
 On W itself A and B commute there (paper theorem), so the gap only concerns non-elementary
 11-groups such as Z_121^k with non-commuting lifts.
+
+### Closing the 11-part (paper, medium confidence)
+
+Let V be a finite 11-group with A, B ∈ End(V), g1, g2, B invertible. Fitting decomposition of B − 6:
+V = V_6 ⊕ V', V_6 = ker(B−6)^N, V' = im(B−6)^N, both B-invariant; B − 6 is nilpotent on V_6 and
+bijective on V'. All congruences below are mod 11, and "invertible + commuting nilpotent is invertible"
+is used with the fact that 11 acts nilpotently.
+- B' − 9 is bijective on V' (9 = −1/6 is not a root of q·o mod 11: q(9) = 4, o(9) = 7; use (★★) on
+  V'/11V' and the Frattini argument). B_6⁻¹ − 2 is nilpotent on V_6 (2 = 1/6).
+- Off-diagonal blocks of A satisfy the homogeneous Sylvester equations X B_6 + B'⁻¹ X = 0 and
+  X B' + B_6⁻¹ X = 0 (from AB + B⁻¹A = B⁻², whose right side is block diagonal). The operators are
+  (6 + L_{B'⁻¹}) + nilpotent = L_{B'⁻¹}(6B' + 1) + nilpotent = (unit) + nilpotent, and
+  (R_{B'} + 2) + nilpotent = R_{B' − 9} + nilpotent, so both are bijective and the blocks vanish:
+  V_6 and V' are A-invariant.
+- On V_6, X ↦ X B_6 + B_6⁻¹ X is 8 + nilpotent, hence bijective; (B_6³ + B_6)⁻¹ (B_6³+B_6 ≡ 2 +
+  nilpotent) solves it, so A = (B_6³+B_6)⁻¹ on V_6 and commutes with B there.
+- On V', the eigenvalues of B̄' on V'/11V' avoid 6, and the other q-roots (in F_121) are excluded by
+  case (b) (o(λ) ≠ 0, q(μ), o(μ) ≠ 0 there), so q(B̄') is invertible, hence q(B') is (Frattini), and
+  (★) gives A = (B'³+B')⁻¹ on V'.
+So AB = BA on the 11-part as well. Together with the p ≠ 11 reduction: on every finite abelian
+group, every affine 677 magma has AB = BA and therefore satisfies 255 by
+`moduleAffine_eq677_imp_eq255`. Status: paper only, written in one pass at the end of the session;
+treat as medium confidence until a second reading.
