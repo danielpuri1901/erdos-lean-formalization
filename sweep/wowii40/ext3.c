@@ -12,6 +12,8 @@ int main(int argc, char **argv) {
   static u32 forests[1 << 12]; static u32 fcomp[1 << 12][12]; static int fnc[1 << 12];
   while (fgets(line, sizeof line, fi)) {
     if (idx++ % np != part) continue;
+    if ((idx / np) % 500 == 0) { fprintf(stderr, "progress part %d parents_seen=%ld tested=%ld out=%ld\n", part, idx, ntest, nout); fflush(stderr); }
+    fflush(stdout);
     unsigned long long code; int f, b, p; sscanf(line, "%llx %d %d %d", &code, &f, &b, &p);
     int ps = 2 * f - b - p;
     u32 a[MAXN]; decode(code, n, a);
