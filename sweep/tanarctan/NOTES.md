@@ -147,3 +147,15 @@ Lean file `Solution/TanArctanCheck.lean`, namespace `TanArctanSweep`:
 
 Kernel cost: 2000 → 5 s, 4000 → 30 s, 10000 → 300 s, so it scales like N^2.5.
 The overhead is in the kernel, not in GMP. A range of 10^5 by this method is out of reach.
+
+### Chunked kernel runs (found at minute 24)
+
+- Finding: chunks of 2500 indices near n = 10^4 take about 22 s each, while one run of 9996 indices takes 300 s and 7.6 GB.
+  The cost is in long kernel runs, not in big-number arithmetic.
+- Decision: split into chunks of 1250 indices with `runFrom`, which also returns Z_{n+fuel}.
+- `gen_chunks.py TOP STEP` writes three kinds of file:
+  - `Solution/TanArctanData/Z<b>.lean`: the exact Z_b at every boundary b, as `def`s. These come from Python and are untrusted.
+  - `Solution/TanArctanChunk/K<j>.lean`: `runFrom fuel s z_s = (true, z_e)` by `decide +kernel`.
+  - `Solution.lean`: chains `runFrom_sound` through the chunks. The first chunk starts from zrec 5 = (190, -90), proved by `decide`.
+- Each boundary value is therefore proved equal to zrec b by the kernel run of the chunk before it, and a wrong Python value would make the build fail.
+- Test: 2 chunks of 2500 to 5000 built in 34 s.
