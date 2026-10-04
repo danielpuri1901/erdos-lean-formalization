@@ -54,3 +54,5 @@ adjacency as bitmasks, branch subsets as `List.sublists`), bridged to `Finset (F
 `fortB_sound`, `sb`, `card_eq`.
 A first try with `Finset (Fin 24)` literals and `powerset` inside `decide +kernel` hit
 "(kernel) deep recursion" and took 388 s; it was dropped.
+
+Checker verdict on commit 054976a (`submit(txgraffiti2):`): `comparator/txgraffiti2` success, "Your solution is okay!".
