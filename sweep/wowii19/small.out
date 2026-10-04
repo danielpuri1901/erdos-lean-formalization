@@ -1,0 +1,8 @@
+2 all 2 connected 1 fail 0 tight 1
+3 all 4 connected 2 fail 0 tight 2
+4 all 11 connected 6 fail 0 tight 6
+5 all 34 connected 21 fail 0 tight 18
+6 all 156 connected 112 fail 0 tight 82
+7 all 1044 connected 853 fail 0 tight 490
+8 all 12346 connected 11117 fail 0 tight 4240
+total connected 12112 fail 0 tight 4839
