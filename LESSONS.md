@@ -107,3 +107,7 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- (txgraffiti2) `decide +kernel` on `Finset (Fin 24)` literals (`{6, 7}`, `B.powerset`, `∀ F ∈ L, IsFort H F`) hit "(kernel) deep recursion" and the file took 388 s; the same checks as `Bool` functions on `List Nat` (`List.all`/`any`/`contains`, `List.sublists`, adjacency bitmasks with `Nat.testBit`) ran in seconds. Bridge with `Finset.univ.filter (fun y : Fin 24 => y.val ∈ l)` and a `Bool` membership `sb S n`.
+- (txgraffiti2) A zero forcing lower bound needs no forcing simulation: the fort lemma (a zero forcing set meets every fort) plus a hitting-set count over chosen forts was enough for Z ≥ 11 on 24 vertices.
+- (txgraffiti2) `List.getD_eq_default l d hn` takes `l` and `d` explicitly; `maxDegree_le_of_forall_degree_le G k h` takes `G` explicitly; `simp` turns `l.getD i 0` into `l[i]?.getD 0`.
+- (txgraffiti2) `apply le_csInf ⟨_, ...⟩` fails ("expected type could not be determined"); use `refine le_csInf ?_ ?_`.
