@@ -11,7 +11,10 @@ claim: (Lean) Affine models never separate 677 from 255 when the coefficients co
   whenever q(B) = B³ − B − 1 is invertible (B itself is forced invertible by 677).
   (Paper only, not Lean) every affine 677 model x◇y = Ax+By+c on a
   finite-dimensional vector space over any field, with A, B not assumed to commute, has AB = BA
-  and hence satisfies 255. The open problem itself is not resolved.
+  and hence satisfies 255. Combining that eigenvalue argument (mod p) with a Frattini argument and
+  the Lean theorem `finite_endAffine_eq677_imp_eq255` (paper reduction, see "Affine models on finite
+  abelian groups" below): every affine 677 magma on a finite abelian group whose order is not
+  divisible by 11 satisfies 255. The open problem itself is not resolved.
 lean: Solution.lean — Eq677Sweep.affine_eq677_imp_eq255, Eq677Sweep.moduleAffine_eq677_imp_eq255,
   Eq677Sweep.star_relation, Eq677Sweep.star_star_relation, Eq677Sweep.linear_eq255_of_q_unit,
   Eq677Sweep.endAffine_eq677_imp_eq255, Eq677Sweep.finite_endAffine_eq677_imp_eq255
@@ -232,3 +235,19 @@ solution of g1; for k ≤ 4 none satisfies g2 (as the proof predicts).
   (677 forces B surjective, hence bijective).
 Not formalized: the eigenspace argument showing q(B) "behaves" over fields (the paper theorem),
 which would remove the q(B) hypothesis for vector spaces.
+
+## Affine models on finite abelian groups (paper reduction to the Lean theorem)
+
+Let V be a finite abelian group, x◇y = Ax + By + c satisfying 677. By `finite_endAffine_eq677_imp_eq255`
+it suffices that q(B) is bijective. V = ⊕_p V_p (Sylow parts), each invariant under A and B, so it
+suffices that q(B) is bijective on each V_p. For an endomorphism f of a finite p-group V_p:
+f(V_p) + pV_p = V_p implies f(V_p) = V_p (pV_p is the Frattini subgroup), so f is bijective iff it is
+bijective on the F_p-space W = V_p/pV_p. On W the induced Ā, B̄ satisfy g1, g2 (they are identities
+in End(V_p), preserved by the quotient), and B̄ is invertible. The eigenvalue argument (steps
+(2)(a)-(c) of the paper theorem) shows that for p ≠ 11 no eigenvalue of B̄ is a root of q
+(char 5: case (a) impossible; char 19: case (c) impossible; other p: case (b) forces o(λ) = q(λ) = 0,
+impossible since N(o(λ)) = 11; char 23, the double root λ = 10 has o(10) = 5 ≠ 0). Hence q(B̄) is
+invertible on W, q(B) on V_p, and 255 follows.
+Remaining gap: the 11-part of V when B̄ has eigenvalue 6 (the common root of q and o mod 11).
+On W itself A and B commute there (paper theorem), so the gap only concerns non-elementary
+11-groups such as Z_121^k with non-commuting lifts.
