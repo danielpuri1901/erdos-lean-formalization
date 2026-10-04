@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
   mode = atoi(argv[1]); R = atoi(argv[2]);
   int size = atoi(argv[3]); long iters = atol(argv[4]); rng_s = 88172645463325252ULL ^ (u64)atol(argv[5]) * 2654435761ULL;
   if (mode == 0 || mode == 2) M = size; else N = size;
+  long revert_after = argc > 6 ? atol(argv[6]) : 1000000000000L;
   init();
   int cur = objective(), best = cur;
   static int BA[4096], BB[4096]; long lastimp = 0;
@@ -76,7 +77,7 @@ int main(int argc, char **argv) {
   fprintf(stderr, "init obj %d n=%d\n", cur, N);
   int first = (mode == 0 || mode == 2) ? M : 0; /* in mode 0 the matching edges are fixed */
   for (long it = 0; it < iters; it++) {
-    if (it - lastimp > 20000) { memcpy(EA, BA, sizeof EA); memcpy(EB, BB, sizeof EB); build_adj(); cur = best; lastimp = it; }
+    if (it - lastimp > revert_after) { memcpy(EA, BA, sizeof EA); memcpy(EB, BB, sizeof EB); build_adj(); cur = best; lastimp = it; }
     int p = first + rnd() % (NE - first), q = first + rnd() % (NE - first);
     if (p == q) continue;
     int a = EA[p], b = EB[p], c0 = EA[q], d0 = EB[q];
@@ -99,5 +100,8 @@ int main(int argc, char **argv) {
     }
   }
   printf("done best=%d final=%d n=%d\n", best, cur, N);
+  printf("BEST %d %d", N, NE);
+  for (int k = 0; k < NE; k++) printf(" %d %d", BA[k], BB[k]);
+  printf("\n");
   return 0;
 }
