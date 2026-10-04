@@ -1,5 +1,32 @@
 # wowii19 sweep notes
 
+```
+result: solved
+claim: For every finite type α with DecidableEq, Nontrivial α, and connected G : SimpleGraph α,
+  ⌊(Σ_v (G.eccent v).toNat)/|α| + sSup (range (indepNeighbors G))⌋ ≤ b G
+  (exactly the statement of WrittenOnTheWallII.GraphConjecture19.conjecture19).
+  Stronger by-products, also proved in Lean (Wowii19Sweep.key): for all vertices v, x, y,
+  b ≥ l(v) + d(v,y) + max(0, d(v,x) - (d(v,x)+d(v,y)-d(x,y)) - 1); hence
+  b ≥ l(v) + d(v,y) and b ≥ l(v) + diam - 1 for every v.
+lean: Solution.lean — Wowii19Sweep.exists_mid, card_le_bN, layer_card_le_bN, key, ecc_facts,
+  wowii19_holds, and WrittenOnTheWallII.GraphConjecture19.conjecture19_check (exact copy of the
+  conjecture19 statement; an `example` checks by `rfl` that its type equals the imported
+  `conjecture19` type). `lake build Solution` passes with no sorry; #print axioms gives only
+  propext, Classical.choice, Quot.sound.
+computed: all 12,112 connected graphs on 2..8 vertices (own generator, small.py): 0 failures,
+  4,839 tight (matches the problem file). Lemmas (A) and (B) of the proof checked on 3,510
+  random connected graphs with n ≤ 12 (lemmas.py), no violation. Not needed for the proof.
+next idea: none needed for this statement. Reviewers: check that the proof's Lean statement is the
+  intended one (it is the pinned formal-conjectures statement verbatim). The same layer argument
+  (colour by distance parity from v, one independent set per BFS layer) likely settles nearby
+  WOWII conjectures of the form b ≥ f(eccentricities) + l.
+dead ends: none; no counterexample search beyond Phase A reproduction was needed.
+confidence: high because the whole argument is checked by Lean with no sorry and only the
+  standard axioms, and the statement is checked against the imported one by `rfl`.
+```
+
+Elapsed: start 1791105190, Lean proof done 1791105875 (about 11.5 minutes).
+
 start: 1791105190 (date -u +%s)
 
 ## Phase A: statement
@@ -87,3 +114,14 @@ Theorem. Let v* maximise l, and let x, y with d(x,y) = D.
 If e(v*) = D: Σ e ≤ nD so ⌊avg + l(v*)⌋ ≤ D + l(v*) ≤ b by (A) with y far from v*.
 If e(v*) < D: Σ e ≤ nD - 1 < nD so avg < D, ⌊avg + l⌋ ≤ D - 1 + l ≤ b by (B). ∎
 All lemmas: proved on paper. Formalizing.
+
+## Phase C: Lean
+
+The Lean proof follows the paper proof line by line:
+- `exists_mid` = Lemma 1 (vertex `i` of a shortest walk, via `Walk.take`/`Walk.drop`).
+- `card_le_bN` + `layer_card_le_bN` = Lemma 2 (colour by `dist v w % 2`; `Adj.diff_dist_adj`).
+- `key` = Lemma 3, with S = insert v (I ∪ (Y ∪ X)), Y = image yv (Icc 2 c),
+  X = image xv (Icc (t+2) a); `hcross` is the "x_i ≠ y_i and x_i ≁ y_i" step.
+- `ecc_facts`: (eccent v).toNat = d(v,w) for some w, and bounds every d(v,u).
+- `wowii19_holds` = the theorem: case e(v*) = D uses `key` with x = v*; case e(v*) < D uses
+  `key` with a diametral pair and Σ e < nD.
