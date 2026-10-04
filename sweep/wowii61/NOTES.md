@@ -34,3 +34,19 @@ Edge cases:
 statement check: matches (the Lean statement says what the docstring says).
 No trivial truth/falsity: residue <= alpha <= f is classical (Favaron-Mahéo-Saclé 1991,
 from memory, unverified), so the content is the extra ceil(diam/3).
+
+## Phase A: reproduction (own C code `g61.c`, labeled exhaustive, no isomorphism reduction)
+
+`./g61 exh 7`: every labeled graph on n = 2..7, connected ones checked
+(labeled connected counts 1, 4, 38, 728, 26704, 1866256 match OEIS A001187).
+- conjecture 61: 0 failures for n <= 7 (labeled).
+- residue <= alpha held in every case (sanity check of my residue code).
+- The problem file reports 0 failures for all unlabeled connected graphs n <= 9; I only re-checked
+  n <= 7 exhaustively (time budget), consistent.
+
+Finding: the stronger statement f >= alpha + ceil(diam/3) is FALSE (9240 labeled failures at n=7,
+180 at n=6). Smallest example: C4 = 0-2-1-3-0 with a pendant 5 on 0 and a pendant 4 on 1
+(edges 0-2 0-3 0-5 1-2 1-3 1-4). diam = 4 (5..4), alpha = 4 ({2,3,4,5}), f = 5,
+residue = 3 (degrees 3,3,2,2,1,1 -> 2,1,1,1,1 -> 0,0,1,1 -> sorted 1,1,0,0 -> 0,0,0 -> 3).
+So 4 + 2 = 6 > 5 but 3 + 2 = 5 <= 5 (tight for conjecture 61).
+Consequence: any proof must use the residue itself, not just residue <= alpha.
