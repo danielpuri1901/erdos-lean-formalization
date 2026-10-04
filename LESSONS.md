@@ -107,3 +107,5 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- (danilov) `Real.sqrt_eq_rpow` states `√x = x ^ (1 / 2)`, so `rw [← Real.sqrt_eq_rpow]` misses `X ^ 2⁻¹`; prove `X ^ (2⁻¹ : ℝ) = √X := by rw [Real.sqrt_eq_rpow]; norm_num` and rewrite with that.
+- (danilov) `Filter.eventually_atTop.mp ((tendsto_rpow_atTop hδ).eventually (Filter.eventually_ge_atTop K))` gives `∃ M, ∀ t ≥ M, K ≤ t ^ δ` in one line.

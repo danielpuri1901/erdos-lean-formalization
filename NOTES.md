@@ -34,3 +34,8 @@ then pick a Pell solution with z ≥ max(M, 1); x ≥ z ≥ M, so C |x|^(1/2+δ)
 ## Decisions
 
 - Use the scaled family (x = 5(...)) rather than a congruence condition: simpler, same O(√x) bound.
+
+## Status
+
+`Solution.lean` proves `hall_danilov` with no `sorry`; `#print axioms` shows only propext, Classical.choice, Quot.sound.
+Submitted as `submit(danilov): ...`.
