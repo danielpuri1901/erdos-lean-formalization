@@ -22,23 +22,77 @@ noncomputable def pt (z : ℤ × ℤ) : EuclideanSpace ℝ (Fin 2) := !₂[(z.1 
 /-- The lattice points of the closed disc of radius `r`. -/
 def P (r : ℝ) : Set (ℤ × ℤ) := {z | pt z ∈ closedBall (0 : EuclideanSpace ℝ (Fin 2)) r}
 
+lemma norm_pt_sq (z : ℤ × ℤ) : ‖pt z‖ ^ 2 = (z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2 := by
+  simp [EuclideanSpace.real_norm_sq_eq, pt, Fin.sum_univ_two]
+
+lemma mem_P (r : ℝ) (z : ℤ × ℤ) : z ∈ P r ↔ ‖pt z‖ ≤ r := by
+  simp [P]
+
 lemma N_eq (r : ℝ) : GaussCircleProblem.N r = (P r).ncard := by
-  sorry
+  rfl
 
 lemma dist_rnd_le (x : EuclideanSpace ℝ (Fin 2)) : ‖x - pt (rnd x)‖ ≤ √2 / 2 := by
-  sorry
+  have h0 := Int.floor_le (x 0 + 1 / 2)
+  have h0' := Int.lt_floor_add_one (x 0 + 1 / 2)
+  have h1 := Int.floor_le (x 1 + 1 / 2)
+  have h1' := Int.lt_floor_add_one (x 1 + 1 / 2)
+  have hs : √2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  rw [EuclideanSpace.norm_eq, Real.sqrt_le_iff]
+  refine ⟨by positivity, ?_⟩
+  simp only [Fin.sum_univ_two, Real.norm_eq_abs, sq_abs, rnd, pt, PiLp.sub_apply,
+    Matrix.cons_val_zero, Matrix.cons_val_one]
+  nlinarith
 
 lemma measurableSet_fibre (z : ℤ × ℤ) : MeasurableSet (rnd ⁻¹' {z}) := by
-  sorry
+  have hm : Measurable rnd := by
+    unfold rnd
+    fun_prop
+  exact hm (measurableSet_singleton z)
 
 lemma volume_fibre (z : ℤ × ℤ) : volume (rnd ⁻¹' {z}) = 1 := by
-  sorry
+  have hset : rnd ⁻¹' {z} = WithLp.ofLp ⁻¹'
+      Set.pi Set.univ (fun i => Set.Ico (![(z.1 : ℝ), z.2] i - 1 / 2)
+        (![(z.1 : ℝ), z.2] i + 1 / 2)) := by
+    ext x
+    simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_univ_pi, Set.mem_Ico,
+      Fin.forall_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, rnd, Prod.ext_iff,
+      Int.floor_eq_iff]
+    constructor
+    · rintro ⟨⟨a, b⟩, ⟨c, d⟩⟩
+      refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩⟩ <;> simp <;> linarith
+    · rintro ⟨⟨a, b⟩, ⟨c, d⟩⟩
+      refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩⟩ <;> simp at * <;> linarith
+  rw [hset, (PiLp.volume_preserving_ofLp (Fin 2)).measure_preimage
+    (MeasurableSet.univ_pi (fun _ => measurableSet_Ico)).nullMeasurableSet, Real.volume_pi_Ico]
+  norm_num
 
 lemma P_finite (r : ℝ) : (P r).Finite := by
-  sorry
+  apply ((Set.finite_Icc (-⌈r⌉) ⌈r⌉).prod (Set.finite_Icc (-⌈r⌉) ⌈r⌉)).subset
+  rintro ⟨m, n⟩ hz
+  have h1 : ‖pt (m, n)‖ ≤ r := (mem_P r _).mp hz
+  have h2 := norm_pt_sq (m, n)
+  have h3 := norm_nonneg (pt (m, n))
+  have hc := Int.le_ceil r
+  have hm : |(m : ℝ)| ≤ ‖pt (m, n)‖ := abs_le_of_sq_le_sq' (by simp at h2; nlinarith) h3 |> abs_le.mpr
+  have hn : |(n : ℝ)| ≤ ‖pt (m, n)‖ := abs_le_of_sq_le_sq' (by simp at h2; nlinarith) h3 |> abs_le.mpr
+  rw [abs_le] at hm hn
+  simp only [Set.mem_prod, Set.mem_Icc]
+  refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩⟩
+  · have : ((-⌈r⌉ : ℤ) : ℝ) ≤ m := by push_cast; linarith
+    exact_mod_cast this
+  · have : (m : ℝ) ≤ ((⌈r⌉ : ℤ) : ℝ) := by linarith
+    exact_mod_cast this
+  · have : ((-⌈r⌉ : ℤ) : ℝ) ≤ n := by push_cast; linarith
+    exact_mod_cast this
+  · have : (n : ℝ) ≤ ((⌈r⌉ : ℤ) : ℝ) := by linarith
+    exact_mod_cast this
 
 lemma volume_preimage_P (r : ℝ) : volume (rnd ⁻¹' P r) = (P r).ncard := by
-  sorry
+  have hf := P_finite r
+  obtain ⟨F, hF⟩ := hf.exists_finset_coe
+  rw [← hF, Set.ncard_coe_finset,
+    ← sum_measure_preimage_singleton _ (fun z _ => measurableSet_fibre z)]
+  simp [volume_fibre]
 
 lemma ball_subset (r : ℝ) : ball (0 : EuclideanSpace ℝ (Fin 2)) (r - √2 / 2) ⊆ rnd ⁻¹' P r := by
   sorry
