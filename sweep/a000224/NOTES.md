@@ -11,7 +11,9 @@ lean: Solution.lean, namespace A224Sweep, all build with no sorry (axioms: prope
   Classical.choice, Quot.sound only):
   conjecture_of_even, conjecture_semiprime, modEq_of_odd_prime, not_modEq_of_even,
   a_prime (a p = (p+1)/2), a_mul (a multiplicative on coprime args, via CRT), a_eq_card_zmod,
-  semi_core (for 2 ≤ u < v: uv(uv-1) ∤ ((2u-1)(2v-1))^2 - 1; uses decide +kernel on 32*121 cases).
+  semi_core (for 2 ≤ u < v: uv(uv-1) ∤ ((2u-1)(2v-1))^2 - 1; uses decide +kernel on 32*121 cases),
+  dvd_of_modEq_mul_prime (necessary condition P2(ii): q odd prime ∤ m, congruence at m*q
+  ⇒ (q+1)/2 ∣ m^2 - 1).
 computed: exhaustive n in [2, 4*10^9): 0 mismatches (search.c, a(n) cross-checked with the
   direct definition for n ≤ 3000; direct.py agrees for n ≤ 4000).
   All n = m*q, m odd in [3, 10^6], q prime ∤ m of any size: 0 counterexamples (family.py, exact).
@@ -131,6 +133,7 @@ Notation: odd n ≥ 3, M = a(a-1). The congruence is M | n^2 - 1 (M ≥ 2).
   `a_mul` (multiplicativity via `ZMod.chineseRemainder`).
 - `semiChk`, `semiChk_all` (decide +kernel, u < 32, d < 121), `semi_core`: P4 Steps 1-6.
 - `conjecture_semiprime`: P4 with a(pq) = a(p)a(q) = uv.
+- `dvd_of_modEq_mul_prime`: P2(ii).
 
 Decisions (made without asking):
 - I stopped the exhaustive search at 4*10^9, since a hit beyond that is heuristically very unlikely.

@@ -311,3 +311,37 @@ theorem conjecture_semiprime {p q : Nat} (hp : p.Prime) (hq : q.Prime) (hp2 : p 
     exact (semi_core u v (by omega) (by omega) hd).elim
 
 end A224Sweep
+
+
+namespace A224Sweep
+open OeisA224
+
+/-- Necessary condition (P2)(ii): if the congruence holds for `n = m * q` with `q` an odd prime
+not dividing `m`, then `(q+1)/2 ∣ m^2 - 1`. In particular `q ≤ 2 m^2 - 3` when `m ≥ 2`. -/
+theorem dvd_of_modEq_mul_prime {m q : Nat} (hm : m ≠ 0) (hq : q.Prime) (hq2 : q ≠ 2)
+    (hqm : ¬ q ∣ m) (h : (m * q) ^ 2 ≡ 1 [MOD a (m * q) * (a (m * q) - 1)]) :
+    (q + 1) / 2 ∣ m ^ 2 - 1 := by
+  have hcop : Nat.Coprime m q := (Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hq).mpr hqm))
+  rw [a_mul hm hq.ne_zero hcop, a_prime hq hq2] at h
+  have hqo : q % 2 = 1 := by
+    rcases Nat.even_or_odd q with he | ho
+    · exact absurd (hq.even_iff.mp he) hq2
+    · exact Nat.odd_iff.mp ho
+  set w := (q + 1) / 2 with hw
+  have hqw : q = 2 * w - 1 := by omega
+  have hw1 : 1 ≤ w := by have := hq.two_le; omega
+  have h1 : 1 ≤ (m * q) ^ 2 := Nat.one_le_iff_ne_zero.mpr
+    (pow_ne_zero _ (Nat.mul_ne_zero hm hq.ne_zero))
+  have hd := (Nat.modEq_iff_dvd' h1).mp h.symm
+  have hwd : w ∣ (m * q) ^ 2 - 1 :=
+    Dvd.dvd.trans (Dvd.intro_left _ rfl) (Dvd.dvd.trans (Dvd.intro _ rfl) hd)
+  have hm1 : 1 ≤ m ^ 2 := Nat.one_le_iff_ne_zero.mpr (pow_ne_zero _ hm)
+  have hsplit : (m * q) ^ 2 - 1 = w * (4 * m ^ 2 * (w - 1)) + (m ^ 2 - 1) := by
+    rw [hqw]
+    zify [hm1, hw1, h1, show 1 ≤ 2 * w by omega,
+      show 1 ≤ (m * (2 * w - 1)) ^ 2 by rw [← hqw]; exact h1]
+    ring
+  rw [hsplit] at hwd
+  exact (Nat.dvd_add_right (Dvd.intro _ rfl)).mp hwd
+
+end A224Sweep
