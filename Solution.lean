@@ -1,3 +1,5 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.OEIS.«76495»
+
+/-! Sweep work for a076495: σ(x) mod x = 5. -/
 
 theorem solution_placeholder : True := trivial
