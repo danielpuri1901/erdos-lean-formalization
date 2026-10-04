@@ -113,3 +113,106 @@ theorem modEq_of_odd_prime {p : Nat} (hp : p.Prime) (h2 : p ≠ 2) :
   rw [Nat.add_mul_mod_self_left]
 
 end A224Sweep
+
+
+namespace A224Sweep
+
+/-- Finite check: `true` unless `u, d` give a solution with `v = 4u(u-1)/d`. -/
+def semiChk (u d : Nat) : Bool :=
+  (((2*u-1)*(2*(4*u*(u-1)/d)-1))^2 - 1) % (u*(4*u*(u-1)/d)*(u*(4*u*(u-1)/d)-1)) != 0
+    || u < 2 || d = 0 || 4*u*(u-1)/d ≤ u
+
+theorem semiChk_all : ∀ u, u < 32 → ∀ d, d < 121 → semiChk u d = true := by
+  decide +kernel
+
+/-- Diophantine core of the semiprime case: for `2 ≤ u < v`,
+`uv(uv-1)` does not divide `((2u-1)(2v-1))^2 - 1`. -/
+theorem semi_core (u v : Nat) (hu : 2 ≤ u) (huv : u < v) :
+    ¬ u * v * (u * v - 1) ∣ ((2 * u - 1) * (2 * v - 1)) ^ 2 - 1 := by
+  rintro ⟨k, hk⟩
+  have h1 : 1 ≤ 2 * u := by omega
+  have h2 : 1 ≤ 2 * v := by omega
+  have h3 : 1 ≤ u * v := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+  have h4 : 1 ≤ ((2 * u - 1) * (2 * v - 1)) ^ 2 :=
+    Nat.one_le_iff_ne_zero.mpr (by apply pow_ne_zero; apply mul_ne_zero <;> omega)
+  zify [h1, h2, h3, h4] at hk
+  set U : Int := (u : Int) with hU
+  set V : Int := (v : Int) with hV
+  set K : Int := (k : Int) with hK
+  have hU2 : 2 ≤ U := by omega
+  have hUV : U < V := by omega
+  have hK0 : 0 ≤ K := by omega
+  -- Step 1: k ≤ 15.
+  have hPs : U + V ≤ U * V := by nlinarith
+  have key : 0 < (U + V) * (4 * (U * V) - (U + V) + 1) - 6 * (U * V) := by nlinarith
+  have hPP : 0 < U * V * (U * V - 1) := by
+    have : 1 < U * V := by nlinarith
+    have : 0 < U * V - 1 := by omega
+    positivity
+  have iden : 16 * (U * V * (U * V - 1)) - (((2 * U - 1) * (2 * V - 1)) ^ 2 - 1)
+      = 4 * ((U + V) * (4 * (U * V) - (U + V) + 1) - 6 * (U * V)) := by ring
+  have hK15 : K ≤ 15 := by
+    by_contra hc
+    have : 16 ≤ K := by omega
+    have := mul_le_mul_of_nonneg_left this hPP.le
+    nlinarith
+  -- Step 2: the quadratic in v.
+  have hq : ((16 - K) * U ^ 2 - 16 * U + 4) * V ^ 2 + 4 * U * (U - 1)
+      = (16 * U ^ 2 - (16 + K) * U + 4) * V := by linear_combination hk
+  -- Step 3: α v < 16 u^2.
+  have hV0 : 0 < V := by omega
+  have hαV : ((16 - K) * U ^ 2 - 16 * U + 4) * V < 16 * U ^ 2 := by
+    have hpos : 0 < 4 * U * (U - 1) := by
+      have : 0 < U - 1 := by omega
+      positivity
+    have hle : (16 * U ^ 2 - (16 + K) * U + 4) * V ≤ 16 * U ^ 2 * V := by
+      have : 16 * U ^ 2 - (16 + K) * U + 4 ≤ 16 * U ^ 2 := by nlinarith
+      exact mul_le_mul_of_nonneg_right this hV0.le
+    have : ((16 - K) * U ^ 2 - 16 * U + 4) * V * V < 16 * U ^ 2 * V := by nlinarith
+    exact lt_of_mul_lt_mul_right this hV0.le
+  -- Step 4: u ≤ 31.
+  have hU31 : U ≤ 31 := by
+    by_contra hc
+    have hU32 : 32 ≤ U := by omega
+    have hα : U ^ 2 - 16 * U + 4 ≤ (16 - K) * U ^ 2 - 16 * U + 4 := by nlinarith
+    have hαpos : 0 < U ^ 2 - 16 * U + 4 := by nlinarith
+    have hstep : (U ^ 2 - 16 * U + 4) * (U + 1) ≤ ((16 - K) * U ^ 2 - 16 * U + 4) * V :=
+      mul_le_mul hα (by omega) (by omega) (by linarith)
+    nlinarith
+  -- Step 5: v ∣ 4u(u-1), with cofactor d < 121.
+  have hdvdZ : V ∣ 4 * U * (U - 1) :=
+    ⟨16 * U ^ 2 - (16 + K) * U + 4 - ((16 - K) * U ^ 2 - 16 * U + 4) * V, by linear_combination hq⟩
+  have hu1 : 1 ≤ u := by omega
+  have hdvd : v ∣ 4 * u * (u - 1) := by
+    have : ((v : Int)) ∣ ((4 * u * (u - 1) : Nat) : Int) := by
+      push_cast [Nat.cast_sub hu1]; exact hdvdZ
+    exact Int.natCast_dvd_natCast.mp this
+  obtain ⟨d, hd⟩ := hdvd
+  have hu31 : u ≤ 31 := by omega
+  have hdpos : 0 < d := by
+    rcases Nat.eq_zero_or_pos d with h | h
+    · rw [h, Nat.mul_zero] at hd
+      have : 0 < 4 * u * (u - 1) := by
+        have : 0 < u - 1 := by omega
+        positivity
+      omega
+    · exact h
+  have hd121 : d < 121 := by
+    by_contra hc
+    have hc' : 4 * (u - 1) ≤ d := by omega
+    have : v * (4 * (u - 1)) ≤ v * d := Nat.mul_le_mul_left v hc'
+    have : u * (4 * (u - 1)) < v * (4 * (u - 1)) :=
+      Nat.mul_lt_mul_of_pos_right huv (by omega)
+    have : 4 * u * (u - 1) = u * (4 * (u - 1)) := by ring
+    omega
+  have hvd : 4 * u * (u - 1) / d = v := Nat.div_eq_of_eq_mul_left hdpos hd
+  -- Step 6: finite check.
+  have hc := semiChk_all u (by omega) d hd121
+  simp only [semiChk, hvd] at hc
+  have hk' : ((2 * u - 1) * (2 * v - 1)) ^ 2 - 1 = u * v * (u * v - 1) * k := by
+    zify [h1, h2, h3, h4]; exact hk
+  rw [hk', Nat.mul_mod_right] at hc
+  simp at hc
+  omega
+
+end A224Sweep
