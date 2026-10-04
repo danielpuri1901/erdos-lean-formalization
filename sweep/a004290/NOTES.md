@@ -100,12 +100,14 @@ If V ≤ 8 then len ≤ 8r and the margin grows linearly in r.
 - d ≤ 30000, all periods: 5102 d have V = 9; smallest margins:
   d=53 (p=13) G=12 margin 3, with c=4 effective margin 1 (n = 754716981132, len 107 vs 108);
   d=103 (p=34) G=18 margin 0; d=139 (p=46) G=18 margin 0; d=1003 margin 3.
-- d in [30000, 10^6): no d with margin ≤ 3.  (d in [10^6,10^7): see below.)
+- d in [30000, 10^7) (`v9fast.c`, T = 3, 4 parallel ranges): no d with margin ≤ 3.
+  So over all d < 10^7 the smallest margin is 0 (d = 103, 139) and the smallest effective
+  margin (with c = 2^a5^b) is 0; nothing negative.
 - `family.py` (all V, r ≤ 200, p ≤ 16, d ≤ 2·10^6): min margin 2 (n = 76923), none ≤ 1
   except as above.
 
 FINDING: infinite family where a(n) has exactly as many digits as a(10^k - 1):
-n = (10^(34m) - 1)/103, k = 34m - 2, len(a(n)) = 9k = 288m - 18... (m=1: 288 digits);
+n = (10^(34m) - 1)/103, k = 34m - 2, len(a(n)) = 9k = 306m - 18 (m=1: 288 digits, m=2: 594);
 also n = (10^(46m)-1)/139, k = 46m - 2. Witnesses checked by independent Python
 (m=1,2 for d=103; m=1 for d=139). There a(n) has 153 (resp. 207) ones, so a(n) < R_{9k}
 and the conjecture still holds; but the digit-count version is tight, so any proof must
@@ -114,3 +116,41 @@ Heuristic: a random orbit word of length p has longest non-9 run ≈ log(p/10)/l
 V = 9 with G ≤ 9j needs all ≈ d/p orbits to have 9s at least every 9j digits:
 probability ≈ (1 - 0.9^(9j))^(d/p), which collapses for j ≥ 3. So small d is where to look,
 and small d is now searched exhaustively.
+
+## Phase C: proof attempt
+
+### Plain argument for what is proved
+
+(1) Lower bound (general k ≥ 1). ds = decimal digit sum.
+  - ds(a+b) ≤ ds(a) + ds(b) (strong induction on a+b, split off the units digit, carry 0/1).
+  - ds(10^k H + L) = ds(H) + ds(L) for L < 10^k.
+  - ds(10^k - 1) = 9k.
+  - Every N > 0 with (10^k-1) | N has ds(N) ≥ 9k: if N < 10^k then N = 10^k - 1;
+    else N = 10^k H + L with H ≥ 1, and H + L is a smaller positive multiple
+    (N - (H+L) = (10^k-1)H), so 9k ≤ ds(H+L) ≤ ds H + ds L = ds N.
+  - A 0/1 number m has ds(m) ≤ #digits, so #digits ≥ 9k and m ≥ 10^(9k-1).
+  - The repunit R_{9k} lies in S(10^k - 1) (R_{ki+k} = R_{ki} 10^k + R_k ≡ R_{ki} + R_k,
+    so R_{9k} ≡ 9 R_k = 10^k - 1 ≡ 0), hence a(10^k-1) ≥ 10^(9k-1).
+(2) Reduction: if every 0 < n < 10^k - 1 has a 0/1 multiple w < 10^(9k-1), then
+    a n ≤ w < 10^(9k-1) ≤ a(10^k-1); n = 0 has a 0 = 0.
+(3) k = 1: m ∈ S 9 ⇒ 9 | ds m, 0 < ds m ≤ #digits ⇒ m ≥ 10^8; witnesses a(1..8) ≤ 1110.
+(4) k = 2: m ∈ S 99 ⇒ ds m ∈ 9ℕ, nonzero. If ds m = 9: alternating digit sum A has
+    |A| ≤ 9, A ≡ ds m (mod 2) (0/1 digits) and 11 | A, so A = 0, contradiction with parity.
+    So ds m ≥ 18, m ≥ 10^17. Witnesses a(1..98) (exact values from BFS) are < 10^17.
+Lemma status: all proved on paper and in Lean.
+
+The full conjecture needs a uniform bound len(a(n)) ≤ 9k - 1 (or = 9k with a(n) ≠ R_{9k})
+for all n < 10^k - 1, i.e. an O(log n) bound on the length of 0/1 multiples with constant
+about 9/log2(10)·... This is beyond reach: pigeonhole gives n digits, zero-sum (Olson)
+bounds give O(sqrt p) for primes. Not attempted further.
+
+### Lean (`Solution.lean`, namespace `SweepA4290`, builds with no sorry; axioms
+propext, Classical.choice, Quot.sound only)
+
+- `conjecture_le_one (k) (hk : k ≤ 1)`: the conjecture for k ≤ 1.
+- `conjecture_le_two (k) (hk : k ≤ 2)`: the conjecture for k ≤ 2.
+- `ds_of_dvd`: every positive multiple of 10^k - 1 (k ≥ 1) has digit sum ≥ 9k.
+- `ge_of_mem_rep`, `rep_mem`, `a_rep_ge`: a(10^k - 1) ≥ 10^(9k-1) for all k ≥ 1
+  (the lower half of the docstring's "known" value a(10^k-1) = R_{9k}).
+- `conjecture_of_witnesses'`: for k ≥ 1, the conjecture at k follows from: every
+  0 < n < 10^k - 1 has a 0/1 multiple below 10^(9k-1).  (Proved reduction.)
