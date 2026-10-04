@@ -11,6 +11,7 @@ import Solution.A224.P2Q
 import Solution.A224.Summary2
 import Solution.A224.P3QCheck
 import Solution.A224.P3QAlg
+import Solution.A224.P3Q
 
 /-! a000224 deep attempt. Stage 1 results are in `Solution.A224.Sweep` (namespace `A224Sweep`);
 stage 2 results are in `Solution/A224/*.lean` (namespace `A224Deep`). See `deep/a000224/NOTEBOOK.md`. -/

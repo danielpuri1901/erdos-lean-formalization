@@ -96,6 +96,12 @@ Stage 2 route B (general reduction, then more families):
   pair of simultaneous Pell-type conditions in s = v+w, x = vw. (u = 32 and u = 128 give p = 63, 255, not
   prime.) Computationally the corner is covered: famq (m ≤ 10⁷) includes pq = 127·q for q ≤ 65025.
   Verdict: pqr is out of reach for this run; the p = 127 corner is the obstruction to record.
+- Q3' family p³q (decision 1791111600, done): same route as Q2 with 2A = p³ − p² + p + 1 (R4a, j = 1), X = p³:
+  k ≤ 24 [`q3_k_le_24`]; k ≥ 17 ⇒ p ≤ 32 [`q3_p_le_32`] and w ≤ B/δ ≤ 336, finite check [`q3ChkLarge_all`, `q3_large`];
+  k = 16 ⇒ (2δw − B)² = Disc(p) of degree 12 with (g−1)² < Disc < g² for g = 4p⁶ − 4p⁵ + 4p⁴ − 4p³, p ≥ 12,
+  and a table for p ≤ 11 [`q3_k16`]; k ≤ 15 ⇒ w ≤ 15 [`q3_w_le_15`] and, since A ≡ (p+1)/2 (mod p),
+  p ∣ k·w·(w−2) + 4 ≤ 2929 [`q3_dvd`], finite check with no solution at all [`q3ChkSmall_all`, `q3_small`].
+  Result: `A224Deep.conjecture_cube_mul_prime` (Solution/A224/P3Q.lean). [proved in Lean]
 - Q4 (idea, not attempted; decision 1791111600) uniform family p^e q, X = p^e, 2(p+1)A = pX + c with
   c = p+2 (e even) or 2p+1 (e odd) (R4). From n² − 1 = k·a(a−1): kA²w² − kAw + 1 = X²(2w−1)²; multiplying by
   4(p+1)² and reducing mod X gives X ∣ F := k c² w² − 2k(p+1)c w + 4(p+1)² = k(cw − p − 1)² + (4−k)(p+1)²,
@@ -178,6 +184,17 @@ Stage 2 route B (general reduction, then more families):
    36 s kernel, `q3ChkLarge_all` 1 s; unpacked `q3_small`, `q3_large`). Manager check: imported, build passes,
    no sorry/admit/axiom/native_decide, `#print axioms`: propext, Quot.sound (no ofReduceBool). Minutes: 3 + 3.
    Wall clock so far: 50 min. K (p³q algebra) running; L (p³q assembly, with stubs for K's two lemmas) launched now.
+8. Items p³q algebra (worker K: `q3_dvd`, `q3_k16` with helpers `q3_disc_large`, `q3_disc_small`,
+   Solution/A224/P3QAlg.lean) and p³q assembly (worker L: `two_mul_a_cube`, `q3_k_le_24`, `q3_p_le_32`,
+   `q3_w_le_15`, `not_modEq_cube_mul_prime`, `conjecture_cube_mul_prime`, Solution/A224/P3Q.lean). Both
+   proved-in-lean. K note: one monolithic proof of q3_k16 hit the heartbeat limit (nlinarith on degree-12
+   bounds); splitting the large-p and small-p discriminant cases into helper lemmas with explicit `ring`
+   identities fixed it. Manager merge: deleted the two stubs in P3Q.lean, added `import Solution.A224.P3QAlg`;
+   the cut also removed L's helper `q3_two_mul_half`, which I re-proved (7 lines). `lake build Solution` passes,
+   no sorry/admit/axiom/native_decide anywhere in Solution/A224, `#print axioms conjecture_cube_mul_prime`:
+   propext, Classical.choice, Quot.sound. Minutes: 4 + 4 (workers), 6 (manager). Wall clock so far: 56 min.
+   The family p³q is done. Attempt 9 (running): N = summary theorem with the p³q clause; M = Lean building
+   blocks of the uniform route Q4 (`q4_dvd_F`, `q4_F_ne_zero`, `q4_X_le`), for the next run.
 
 ## 5. Dead ends
 
