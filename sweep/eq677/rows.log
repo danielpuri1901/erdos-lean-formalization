@@ -1,2 +1,3 @@
 agl 13: n=13 |G|=156 nodes=2788379 models=13 fail255=0
-pgl 11: 
+pgl 11: timeout
+agl 17: 

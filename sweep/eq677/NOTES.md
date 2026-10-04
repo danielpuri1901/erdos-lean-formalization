@@ -6,12 +6,16 @@ claim: (Lean) Affine models never separate 677 from 255 when the coefficients co
   every affine model on every Z_n). (Lean) In any ring, if B is a unit, BA + B²AB = 1 and
   A + B²A² + B³ = 0, then q(B)(B³A + BA − 1) = 0 and q(B)·o(B) = 0 with q = t³−t−1,
   o = t⁸+2t⁶+t⁴+t²+t+1; if moreover q(B) is a unit then A = −B−B³+B⁴−2B⁵+B⁶−B⁷ and
-  A³ + A²B + AB + B = 1. (Paper only, not Lean) every affine 677 model x◇y = Ax+By+c on a
+  A³ + A²B + AB + B = 1. (Lean) Consequently, on any FINITE abelian group V, an affine magma
+  x◇y = Ax + By + c with arbitrary (possibly non-commuting) A, B ∈ End(V) satisfies 677 → 255
+  whenever q(B) = B³ − B − 1 is invertible (B itself is forced invertible by 677).
+  (Paper only, not Lean) every affine 677 model x◇y = Ax+By+c on a
   finite-dimensional vector space over any field, with A, B not assumed to commute, has AB = BA
   and hence satisfies 255. The open problem itself is not resolved.
 lean: Solution.lean — Eq677Sweep.affine_eq677_imp_eq255, Eq677Sweep.moduleAffine_eq677_imp_eq255,
-  Eq677Sweep.star_relation, Eq677Sweep.star_star_relation, Eq677Sweep.linear_eq255_of_q_unit
-  (all build with no sorry; #print axioms: propext, Quot.sound only).
+  Eq677Sweep.star_relation, Eq677Sweep.star_star_relation, Eq677Sweep.linear_eq255_of_q_unit,
+  Eq677Sweep.endAffine_eq677_imp_eq255, Eq677Sweep.finite_endAffine_eq677_imp_eq255
+  (all build with no sorry; #print axioms: propext, Quot.sound, and Classical.choice for the last).
 computed: (all: no counterexample; every 677 model found satisfies 255)
   - exhaustive tables, orders 1–6 (order 5: one iso class; order 6: no 677 model at all);
   - translation-invariant x◇y = x·f(x⁻¹y), all permutations f, groups C5–C13, C2², C2³, C3²,
@@ -25,7 +29,8 @@ computed: (all: no counterexample; every 677 model found satisfies 255)
     over non-trivial extensions of order 35–65; new non-medial (so non-affine) 677 models of
     orders 35, 49, 65, ... appear, all satisfy 255, all are right-cancellative;
   - rows drawn from AGL(1,p) (p = 5,7,11,13) and PGL(2,p) on p+1 points (p = 5, 7):
-    models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none.
+    models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none;
+    PGL(2,11) (order 12) hit the 400 s cap (not exhaustive).
 next idea: The only affine case left open is non-elementary abelian groups (e.g. Z_{p²}^k) with
   non-commuting A, B; the (★)/(★★) machinery plus a p-adic filtration argument should close it,
   giving "no affine counterexample at all". For the real problem, every model found (including
@@ -221,5 +226,9 @@ solution of g1; for k ≤ 4 none satisfies g2 (as the proof predicts).
 - `linear_eq255_of_q_unit`: if q(B) is also a unit, A = u(B) with u from the Bezout identity
   u·(t³+t) + (1 − t + t²)·o = 1 (bezout.py), and A³ + A²B + AB + B = 1
   (T(u(t), t) − 1 = w(t)·o(t), w of degree 13).
-The magma-level version for non-commuting A, B (needs End(V) bookkeeping and the eigenspace
-argument of the paper theorem) is not formalized.
+- `endAffine_eq677_imp_eq255`: magma x◇y = A x + B y + c on an abelian group, A, B ∈ Module.End ℤ V
+  arbitrary, B and q(B) units: 677 → 255.
+- `finite_endAffine_eq677_imp_eq255`: same for finite V without the hypothesis on B
+  (677 forces B surjective, hence bijective).
+Not formalized: the eigenspace argument showing q(B) "behaves" over fields (the paper theorem),
+which would remove the q(B) hypothesis for vector spaces.
