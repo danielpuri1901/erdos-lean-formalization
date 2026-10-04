@@ -1,5 +1,41 @@
 # txgraffiti2 sweep notes
 
+```
+result: partial
+claim: (1) For every connected finite graph G (no degree bound) with n >= 2,
+  Z(G) <= n - 1; hence Z(G) <= α(G) + 1 whenever n <= α(G) + 2.
+  (2) The K4 exclusion is necessary: K4 is connected, maxDegree K4 <= 3 and α(K4)+1 = 2 < 3 = Z(K4).
+  (3) The bound is attained by a cubic graph other than K4: the triangular prism K3□K2
+  meets every hypothesis and has Z = 3 = α + 1.
+lean: Solution.lean (builds, no sorry; axioms only propext, Classical.choice, Quot.sound):
+  Txg2.zf_le_card, Txg2.bound_of_certificate, Txg2.step_mono, Txg2.closure_mono,
+  Txg2.erase_forcing, Txg2.zf_le_card_sub_one, Txg2.bound_of_card_le_indepNum_add_two,
+  Txg2.K4_violates, Txg2.prism_tight (+ helper lemmas K4_*, prism_*).
+computed: Z(G) <= α(G)+1 holds (K4 the only exception) for EVERY connected subcubic graph
+  on n <= 17 vertices (exhaustive generator bfsgen.c, validated against known class counts
+  for n <= 8) and every connected cubic graph on n <= 18; random cubic graphs n = 12..30
+  (2e6 each), random subcubic n = 9..28, 575 structured graphs (generalized Petersen m <= 32,
+  Möbius ladders, cages, snarks J3..J15, truncations), hill-climbing n = 12..20.
+  Best Z − α found anywhere is 1 (tight); never 2.
+next idea: Minimal-counterexample reduction. Data say no tight graph (Z = α+1) has a
+  vertex of degree <= 2 lying in every maximum independent set (labelled n <= 8 exhaustive,
+  random to n = 18); conversely such a vertex would give a counterexample by bridging two
+  copies (needs the edge-spread lemma |Z(G) − Z(G−e)| <= 1). Proving "a minimal
+  counterexample is cubic and 3-connected" via deletion of a degree-<=2 vertex plus this
+  essential-vertex dichotomy looks like the most promising structural route; then attack
+  cubic graphs with α near n/3 (they contain many triangles/diamonds) separately.
+dead ends: Brooks (α >= n/3) + any bound of the form Z <= n/3 + c fails (K3,3, Petersen, and
+  a cubic n=16 graph with Z = 8). Random sampling at n >= 22 finds no tight graphs, so
+  random search for counterexamples at large n is hopeless; high-Z tight graphs come only
+  from hill-climbing and all have α = Z − 1. Lean: kernel `decide` over zero forcing
+  closures on Fin 10 (Petersen) runs out of memory (> 13 GB) even split into 84/126-set
+  chunks; Fin 6 is fine. Exhaustive cubic n = 20 (est. 1.5e9 labellings) did not finish in 25 min.
+confidence: high because every Lean claim builds with no sorry and only standard axioms,
+  and the exhaustive generator reproduces the known class counts 1,1,2,5(+K4),10,29,64,194;
+  the full conjecture is NOT claimed.
+```
+
+
 start: 1791105004 (date -u +%s)
 
 ## Phase A: understanding
@@ -123,3 +159,20 @@ Ideas considered for the full statement (status):
   I do not remember that proof.
 - Gadget reduction (Phase B): a tight graph with an essential vertex of degree <= 2
   would give a counterexample via a bridge. Plausible, depends on edge spread lemma.
+
+Final Phase B additions:
+- Exhaustive all connected subcubic n=17, split in 3 parts by a counter at depth 5
+  (split checked at n=13: 989021+891228+1084506 = 2964755 = unsplit count):
+  parts 842,430,025 + 624,264,296 + 783,589,574 = 2,250,283,895 labellings, 0 failures.
+- Exhaustive cubic n=20 started with a 25-minute limit; not expected to finish
+  (estimate ~1.5e9 labellings). Not claimed.
+
+Lean decisions:
+- Petersen tightness was attempted first; the kernel `decide` over its zero forcing
+  closures ran out of memory (killed at 13.5 GB), even after reducing to four-element
+  sets via `closure_mono` and splitting into 84 + 126 sets. Replaced by the 6-vertex prism,
+  which proves the same qualitative fact (bound attained by a cubic graph ≠ K4).
+- `#print axioms` on bound_of_card_le_indepNum_add_two, K4_violates, prism_tight:
+  [propext, Classical.choice, Quot.sound] only.
+
+end: 1791106916 (about 32 minutes after start)
