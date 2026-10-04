@@ -57,7 +57,7 @@ Route (lemma list, status in brackets):
    which are computed-only and do not close. [reduced to T2, T4 (computed only)]
 5. L5 (P) "≥ draw" halves (mover has a good pick). No fixed rule works. [open, key]
 6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [BLOCKED after attempt 2: no small family exists; see D5]
-7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [certificates generated and checked in Python, attempt 5; Lean integration = attempt 7].
+7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [proved in Lean, attempt 7: `catchup_draw_15`, `catchup_draw_16`].
 8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [proved in Lean, attempt 6]
 9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [proved in Lean, attempt 8]
 10. L10 the "≥ draw" halves GE: ∀ A, PairStarts A → (Even card → gv (pairUnion A) 0 ≠ loss) ∧ (Odd card → gv (pairUnion A) 1 ≠ loss). [open; computed inside {1..24}; attempt 9: no simple pick rule exists]
@@ -206,7 +206,17 @@ Worker (opus), `deep/catchup/gerule/` (solver `gr.c`, sanity table 0 mismatches 
 Manager check: `deep/catchup/gecheck.py` (independent): G([7,10,12]) = {13}, G([6,8,10]) = {9,10,11}, G([7,9,12]) = {10,13},
 G([5,7,9,14]) = {7,8,9,10}, G([8,10,12,14]) = {11..15}, G([1,5,8]) = {2}: all agree.
 Conclusion: GE (L10) has no simple strategy; its exception structure is arithmetic. Recorded as a dead end for fixed rules.
-### Attempt 7 — integrate the N = 15, 16 certificates into `Solution/Cert15*.lean`, `Solution/Cert16*.lean` — running (deadline 1791112000)
+### Attempt 7 — integrate the N = 15, 16 certificates in Lean — result: proved-in-lean (23 min)
+Worker (opus): one module per root child (`Solution/Cert15/{Ge2..Ge15,Le1..Le15}.lean`, `Solution/Cert16/{Ge2..Ge16,Le1..Le16}.lean`),
+each with the staged `def` and `theorem cert{N}{ge|le}_k_ok : chkGe <position> <gap> cert… = true := by decide +kernel`;
+`Solution/CertRoot.lean` (helpers `chkGe_pick_of`, `chkLe_all_of`, `chkLeList_cons_ge`, `chkLeList_nil_of`) assembles the roots
+without re-running children; `Solution/Cert15.lean`, `Solution/Cert16.lean` give `catchup_draw_15`, `catchup_draw_16`.
+Timings: N=15 438 s wall under contention (Le1, 39 K nodes: 195 s); N=16 children in about 13 min wall as 3–4 serial queues
+(Le1, 104 K nodes: 300 s; 56 K: 225 s; 40 K: 185 s); about 3 GB private memory per big module; 4–5 parallel big jobs thrashed the 15 GB machine.
+Big N=16 defs are `noncomputable def` to skip the C compilation of huge terms (kernel checking is unchanged).
+Manager check: `lake build Solution` exit 0 (9007 jobs); no banned words in any `Solution/Cert*` file; axioms of both theorems
+propext/Classical.choice/Quot.sound; roots read: `cert16ge = .pick 1 (.all (keys 2..16))`, `cert16le = .all (keys 1..16)`, theorems
+`value (Finset.Icc 1 15) = .draw`, `value (Finset.Icc 1 16) = .draw`. Files: as listed; staged copies removed (manifests kept).
 ### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
 Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
 `check.py` (independent Python implementation of the checkers with a parser; mutation-tested). Emitted and verified
