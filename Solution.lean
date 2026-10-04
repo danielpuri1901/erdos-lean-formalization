@@ -232,4 +232,52 @@ theorem linear_eq255_of_q_unit {R : Type} [Ring R] (A : R) (B : Rˣ)
   rw [ho, mul_zero, sub_eq_zero] at key
   rw [hA]; exact key
 
+/-- The affine magma `x ◇ y = A x + B y + c` on an abelian group, with `A`, `B` arbitrary
+(possibly non-commuting) additive endomorphisms. -/
+@[reducible] def endAffineMagma (V : Type) [AddCommGroup V] (A B : Module.End ℤ V) (c : V) :
+    Magma V :=
+  ⟨fun x y => A x + B y + c⟩
+
+/-- Affine models with non-commuting coefficients: if `B` and `q(B) = B³ - B - 1` are invertible,
+then `677 → 255`. (On a finite group `B` is automatically invertible under 677.) -/
+theorem endAffine_eq677_imp_eq255 (V : Type) [AddCommGroup V] (A B : Module.End ℤ V) (c : V)
+    (hB : IsUnit B) (hq : IsUnit (B ^ 3 - B - 1)) :
+    @Equation677 V (endAffineMagma V A B c) → @Equation255 V (endAffineMagma V A B c) := by
+  intro h
+  have expand : ∀ u v : V, @Magma.op V (endAffineMagma V A B c) v
+      (@Magma.op V (endAffineMagma V A B c) u
+        (@Magma.op V (endAffineMagma V A B c) (@Magma.op V (endAffineMagma V A B c) v u) v)) =
+      (B * A + B * B * A * B) u + (A + B * B * A * A + B * B * B) v
+        + (B * B * A + B * B + B + 1) c := by
+    intro u v
+    dsimp only [endAffineMagma, Magma.op]
+    simp only [LinearMap.add_apply, Module.End.mul_apply, Module.End.one_apply, map_add]
+    abel
+  have hK : (B * B * A + B * B + B + 1) c = 0 := by
+    have := h 0 0; rw [expand] at this; simpa using this.symm
+  have hg1 : B * A + B * B * A * B = 1 := by
+    ext v; have := h v 0; rw [expand, hK] at this; simpa using this.symm
+  have hg2 : A + B * B * A * A + B * B * B = 0 := by
+    ext v; have := h 0 v; rw [expand, hK] at this; simpa using this.symm
+  obtain ⟨B', rfl⟩ := hB
+  obtain ⟨hA, hT⟩ := linear_eq255_of_q_unit A B' hg1 hg2 hq
+  have ho := hq.mul_right_eq_zero.mp (star_star_relation A B' hg1 hg2)
+  have h255 : ∀ x : V, @Magma.op V (endAffineMagma V A B' c)
+      (@Magma.op V (endAffineMagma V A B' c) (@Magma.op V (endAffineMagma V A B' c) x x) x) x
+      = (A ^ 3 + A ^ 2 * B' + A * B' + B') x + (A ^ 2 + A + (1 : Module.End ℤ V)) c := by
+    intro x
+    dsimp only [endAffineMagma, Magma.op]
+    simp only [LinearMap.add_apply, Module.End.mul_apply, Module.End.one_apply, map_add, pow_succ,
+      pow_zero, one_mul]
+    abel
+  -- `H = C0 K + C1 g1` with `A = u(B)` and `g1 = -v·o`: an identity of polynomials in `B`.
+  have hH : (A ^ 2 + A + 1 : Module.End ℤ V)
+      = (-A + A * B' + A ^ 2 + A ^ 2 * B' ^ 2) * (B' * B' * A + B' * B' + B' + 1)
+        - (-1 - 2 * A - A * B' - A ^ 2 * B') * (1 - B' + B' ^ 2)
+          * (B' ^ 8 + 2 * B' ^ 6 + B' ^ 4 + B' ^ 2 + B' + 1) := by
+    rw [hA]; noncomm_ring
+  intro x
+  rw [h255, hT, hH, ho, mul_zero, sub_zero, Module.End.mul_apply, hK, map_zero, add_zero,
+    Module.End.one_apply]
+
 end Eq677Sweep
