@@ -85,4 +85,183 @@ theorem conjecture_le_one (k : Nat) (hk : k ≤ 1) : ∀ n < 10 ^ k - 1, a n < a
     · have := a_small n hpos (by omega)
       omega
 
+/- ## k = 2 -/
+
+/-- For a 0/1 list, the alternating sum is bounded by the sum and has the same parity. -/
+lemma alt_props (L : List Nat) (h : ∀ d ∈ L, d = 0 ∨ d = 1) :
+    |(L.map (fun n : Nat => (n : Int))).alternatingSum| ≤ (L.sum : Int) ∧
+    2 ∣ (L.sum : Int) - (L.map (fun n : Nat => (n : Int))).alternatingSum := by
+  induction L with
+  | nil => simp
+  | cons x t ih =>
+    obtain ⟨ih1, ih2⟩ := ih (fun d hd => h d (by simp [hd]))
+    have hx : x = 0 ∨ x = 1 := h x (by simp)
+    simp only [List.map_cons, List.alternatingSum_cons, List.sum_cons, Nat.cast_add]
+    set A := (t.map (fun n : Nat => (n : Int))).alternatingSum
+    obtain ⟨c, hc⟩ := ih2
+    refine ⟨?_, ⟨c + A, by linarith⟩⟩
+    rw [abs_le] at ih1 ⊢
+    rcases hx with rfl | rfl
+    · simp only [Nat.cast_zero]; constructor <;> linarith [ih1.1, ih1.2]
+    · simp only [Nat.cast_one]; constructor <;> linarith [ih1.1, ih1.2]
+
+/-- A positive multiple of 99 with 0/1 digits is at least 10^17. -/
+lemma ge_of_99_dvd {m : Nat} (hm : m ∈ S 99) : 10 ^ 17 ≤ m := by
+  obtain ⟨hpos, h99, hdig⟩ := hm
+  have h9 : 9 ∣ m := Nat.dvd_trans (by norm_num) h99
+  have h11 : 11 ∣ m := Nat.dvd_trans (by norm_num) h99
+  have hs9 : 9 ∣ (Nat.digits 10 m).sum := (Nat.nine_dvd_iff m).mp h9
+  have hA11 := (Nat.eleven_dvd_iff).mp h11
+  have hsl : (Nat.digits 10 m).sum ≤ (Nat.digits 10 m).length := sum_le_length _ hdig
+  have hs0 : (Nat.digits 10 m).sum ≠ 0 := by
+    intro hz
+    have hall : ∀ d ∈ Nat.digits 10 m, d = 0 := fun d hd => List.sum_eq_zero_iff.mp hz d hd
+    have := Nat.ofDigits_digits 10 m
+    rw [ofDigits_eq_zero _ hall] at this
+    omega
+  obtain ⟨hab, hpar⟩ := alt_props _ hdig
+  set A := ((Nat.digits 10 m).map (fun n : Nat => (n : Int))).alternatingSum
+  set s := (Nat.digits 10 m).sum
+  -- s = 9 is impossible: then |A| ≤ 9 and 11 ∣ A force A = 0, but s - A is even
+  have hne9 : s ≠ 9 := by
+    intro h9'
+    rw [h9'] at hab hpar
+    rw [abs_le] at hab
+    obtain ⟨e, he⟩ := hA11
+    obtain ⟨f, hf⟩ := hpar
+    push_cast at hab hf
+    omega
+  have hlen : 18 ≤ (Nat.digits 10 m).length := by
+    obtain ⟨c, hc⟩ := hs9
+    rcases c with _ | _ | c
+    · omega
+    · omega
+    · omega
+  have hb := Nat.base_pow_length_digits_le 10 m (by norm_num) (by omega)
+  have : 10 ^ 18 ≤ 10 ^ (Nat.digits 10 m).length := Nat.pow_le_pow_right (by norm_num) hlen
+  omega
+
+lemma R18_mem : 111111111111111111 ∈ S 99 := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  norm_num
+
+lemma a_99_ge : 10 ^ 17 ≤ a 99 := by
+  show 10 ^ 17 ≤ sInf (S 99)
+  exact le_csInf ⟨_, R18_mem⟩ (fun m hm => ge_of_99_dvd hm)
+
+/-- Witnesses (exact values of a n, from BFS): a n < 10^17 for 1 ≤ n ≤ 98. -/
+lemma a_small_99 (n : Nat) (h1 : 1 ≤ n) (h98 : n ≤ 98) : a n ≤ 10 ^ 17 - 1 := by
+  interval_cases n
+  · exact (a_le_of_mem (w := 1) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111111111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 110101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1101111111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1101101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11111111100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 110010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 101010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1101101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1101010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1100001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11011111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1001000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11011010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11011111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111011111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1000000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1101011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10000101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111111111000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1100100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 101010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10010011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111111101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 101011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1010100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 111010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11011010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11010111) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11010101) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1111111110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 1001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11010100) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 10000011) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 100110) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 110010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11100000) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11100001) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+  · exact (a_le_of_mem (w := 11000010) ⟨by norm_num, by norm_num, by norm_num⟩).trans (by norm_num)
+
+/-- `OeisA4290.conjecture` for k ≤ 2. -/
+theorem conjecture_le_two (k : Nat) (hk : k ≤ 2) : ∀ n < 10 ^ k - 1, a n < a (10 ^ k - 1) := by
+  intro n hn
+  rcases Nat.lt_or_ge k 2 with hk2 | hk2
+  · exact conjecture_le_one k (by omega) n hn
+  · obtain rfl : k = 2 := by omega
+    have h99 := a_99_ge
+    norm_num at hn ⊢
+    rcases Nat.eq_zero_or_pos n with rfl | hpos
+    · rw [a_0]; omega
+    · have := a_small_99 n hpos (by omega)
+      omega
+
 end SweepA4290
