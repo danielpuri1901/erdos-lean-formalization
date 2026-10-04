@@ -36,3 +36,16 @@ Checked first in Python.
 
 All proved, no `sorry`; `#print axioms ramsey_3_5` gives `propext, Classical.choice, Quot.sound`.
 Build: `Solution.Lower` 33 s (kernel check), `Solution.Upper` 7 s, `Solution` 6 s.
+
+## State at stop (2026-10-04)
+
+- Submitted commit `1a4f0ed5d650f17d37ea6e5b1f4306959538dccc` (`submit(ramsey35): ...`).
+  The checker is paused today, so `comparator/ramsey35` has no status yet (last read: `pending`, no statuses).
+  Polling stopped on instruction. No verdict, neither success nor failure.
+- Proved, locally checked: `ramsey_3_5 : classicalRamsey 3 5 = 14`, no `sorry`, axioms
+  `propext, Classical.choice, Quot.sound`; type equal by `rfl` to `type_of% @RamseyNumbers.ramsey_number_three_five`.
+- Missing: only the external verdict. Next session: read the status of `1a4f0ed`; if it is
+  absent, resubmit the same tree with a new `submit(ramsey35):` commit.
+- Risk to watch: `Solution.Lower` peaks at about 7.4 GB VmHWM alone, against 6.9 GB for a module
+  with no kernel check (mostly mmapped oleans). If the checker fails on memory, split `c13_ind`
+  by the first vertex `a` (or fix `a = 0` by translation symmetry) into smaller `decide +kernel` checks.
