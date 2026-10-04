@@ -6,7 +6,8 @@ claim: For n > 1, the biconditional (n prime ∧ n ≠ 2) ↔ n^2 ≡ 1 [MOD a(n
   (1) for every even n, and (2) for every n = p*q with p < q odd primes;
   and (3) the direction "odd prime ⇒ congruence" holds for all n.
   On paper only (not in Lean): it also holds for every odd prime power p^k, k ≥ 2 (see P3).
-  The open part is odd composite n with at least two distinct prime factors and Ω(n) ≥ 3.
+  With P3, what remains open is odd composite n with at least two distinct prime factors
+  and Ω(n) ≥ 3 (for example p^2 q or pqr).
 lean: Solution.lean, namespace A224Sweep, all build with no sorry (axioms: propext,
   Classical.choice, Quot.sound only):
   conjecture_of_even, conjecture_semiprime, modEq_of_odd_prime, not_modEq_of_even,
