@@ -15,6 +15,9 @@ The conjecture says `rad + l(G) ^ cC4 ≤ path(G)`. Proved here (no `sorry`):
 * `radius_toNat_add_two_le_path`: in a `C4`-free graph with a vertex having two non-adjacent
   neighbours, `path ≥ rad + 2`.
 * `conjecture133_of_l_le_two`: it holds for every connected graph with `l(G) ≤ 2`.
+* `add_two_le_path_of_minl`: `C4`-free and `l(v) ≥ k ≥ 2` for all `v` gives `path ≥ k + 2`;
+  hence `conjecture133_of_minl` and `conjecture133_of_const_l` (radius `≤ 2`, constant `l`,
+  e.g. every Moore graph of diameter 2).
 
 The full conjecture is NOT proved here; the open part is `C4`-free graphs with `l(G) > 2`.
 -/
@@ -459,5 +462,235 @@ theorem conjecture133_of_l_le_two [Nontrivial α] (G : SimpleGraph α) [Decidabl
     have hpR : ((rad + 2 : ℕ) : ℝ) ≤ (path G : ℝ) := by exact_mod_cast hp
     push_cast at hpR
     linarith
+
+-- Greedy induced paths from a pointwise lower bound on `l`.
+
+/-- `C4`-free in the "two common neighbours" form. -/
+def C4free' (G : SimpleGraph α) : Prop :=
+  ∀ a b c d : α, a ≠ b → c ≠ d → G.Adj a c → G.Adj c b → G.Adj a d → G.Adj d b → False
+
+omit [Fintype α] [DecidableEq α] in
+/-- Key counting step of the greedy: the neighbourhood of the head `x` of an induced path
+`x :: y :: y₂ :: L₂` that cannot be extended has `l(x) ≤ |L₂| + 1`. -/
+lemma indepNeighborsCard_le_of_cover {G : SimpleGraph α} (hC4 : C4free' G)
+    (x y y₂ : α) (L₂ : List α) (hnd : (x :: y :: y₂ :: L₂).Nodup) (hxy : G.Adj x y)
+    (hyy₂ : G.Adj y y₂) (hxy₂ : ¬ G.Adj x y₂) (hfar : ∀ z ∈ L₂, ¬ G.Adj x z)
+    (hcover : ∀ w, G.Adj x w → w = y ∨ G.Adj w y ∨ w = y₂ ∨ G.Adj w y₂ ∨
+      ∃ z ∈ L₂, w = z ∨ G.Adj w z) :
+    indepNeighborsCard G x ≤ L₂.length + 1 := by
+  classical
+  unfold indepNeighborsCard
+  obtain ⟨s, hs⟩ := (G.induce (G.neighborSet x)).exists_isNIndepSet_indepNum
+  rw [← hs.card_eq]
+  have hxne : ∀ z ∈ L₂, x ≠ z := by
+    intro z hz hxz; subst hxz; simp at hnd; tauto
+  have hy₂x : x ≠ y₂ := by intro h; subst h; simp at hnd
+  -- every neighbour outside the `y`-branch is covered by `L₂`
+  have hbranch : ∀ w, G.Adj x w → ¬ (w = y ∨ G.Adj w y) → ∃ z ∈ L₂, w = z ∨ G.Adj w z := by
+    intro w hxw hny
+    rcases hcover w hxw with h | h | h | h | h
+    · exact absurd (Or.inl h) hny
+    · exact absurd (Or.inr h) hny
+    · exact absurd (h ▸ hxw) hxy₂
+    · exfalso
+      exact hC4 x y₂ w y (hy₂x) (fun hwy => hny (Or.inl hwy)) hxw h hxy hyy₂
+    · exact h
+  let f : ↥(G.neighborSet x) → α := fun w =>
+    if (w.1 = y ∨ G.Adj w.1 y) then y else
+      if h : ∃ z ∈ L₂, w.1 = z ∨ G.Adj w.1 z then h.choose else y
+  have hmaps : ∀ w ∈ s, f w ∈ insert y L₂.toFinset := by
+    intro w _
+    simp only [f]
+    split_ifs with h1 h2
+    · simp
+    · exact Finset.mem_insert_of_mem (List.mem_toFinset.mpr h2.choose_spec.1)
+    · simp
+  have hinj : Set.InjOn f s := by
+    intro a ha b hb hab
+    by_contra hne
+    have hind : ¬ G.Adj a.1 b.1 := hs.isIndepSet ha hb hne
+    have hne' : a.1 ≠ b.1 := fun h => hne (Subtype.ext h)
+    have hxa : G.Adj x a.1 := a.2
+    have hxb : G.Adj x b.1 := b.2
+    simp only [f] at hab
+    by_cases ha1 : (a.1 = y ∨ G.Adj a.1 y) <;> by_cases hb1 : (b.1 = y ∨ G.Adj b.1 y)
+    · rcases ha1 with ha1 | ha1 <;> rcases hb1 with hb1 | hb1
+      · exact hne' (ha1.trans hb1.symm)
+      · exact hind (ha1 ▸ hb1.symm)
+      · exact hind (hb1 ▸ ha1)
+      · exact hC4 x y a.1 b.1 (G.ne_of_adj hxy) hne' hxa ha1 hxb hb1
+    · obtain ⟨z, hz, hbz⟩ := hbranch b.1 hxb hb1
+      have hex : ∃ z ∈ L₂, b.1 = z ∨ G.Adj b.1 z := ⟨z, hz, hbz⟩
+      rw [if_pos ha1, if_neg hb1, dif_pos hex] at hab
+      have := hex.choose_spec.1
+      rw [← hab] at this
+      simp at hnd; tauto
+    · obtain ⟨z, hz, haz⟩ := hbranch a.1 hxa ha1
+      have hex : ∃ z ∈ L₂, a.1 = z ∨ G.Adj a.1 z := ⟨z, hz, haz⟩
+      rw [if_neg ha1, if_pos hb1, dif_pos hex] at hab
+      have := hex.choose_spec.1
+      rw [hab] at this
+      simp at hnd; tauto
+    · have hexa : ∃ z ∈ L₂, a.1 = z ∨ G.Adj a.1 z := hbranch a.1 hxa ha1
+      have hexb : ∃ z ∈ L₂, b.1 = z ∨ G.Adj b.1 z := hbranch b.1 hxb hb1
+      rw [if_neg ha1, if_neg hb1, dif_pos hexa, dif_pos hexb] at hab
+      obtain ⟨hza, hza'⟩ := hexa.choose_spec
+      obtain ⟨hzb, hzb'⟩ := hexb.choose_spec
+      rw [hab] at hza hza'
+      set z := hexb.choose
+      have haz : G.Adj a.1 z := by
+        rcases hza' with h | h
+        · exact absurd (h ▸ hxa) (hfar z hzb)
+        · exact h
+      have hbz : G.Adj b.1 z := by
+        rcases hzb' with h | h
+        · exact absurd (h ▸ hxb) (hfar z hzb)
+        · exact h
+      exact hC4 x z a.1 b.1 (hxne z hzb) hne' hxa haz hxb hbz
+  calc s.card ≤ (insert y L₂.toFinset).card := Finset.card_le_card_of_injOn f hmaps hinj
+    _ ≤ L₂.toFinset.card + 1 := Finset.card_insert_le _ _
+    _ ≤ L₂.length + 1 := by have := List.toFinset_card_le L₂; omega
+
+/-- Greedy induced path: in a `C4`-free graph with `l(v) ≥ k ≥ 2` for every `v`,
+`path ≥ k + 2`. Prepend a neighbour of the head while possible; when stuck, the counting lemma
+gives `l(head) ≤ length - 2`. -/
+theorem add_two_le_path_of_minl [Nonempty α] (G : SimpleGraph α) (hC4 : C4free' G) (k : ℕ)
+    (hk : 2 ≤ k) (hl : ∀ v, k ≤ indepNeighborsCard G v) : k + 2 ≤ path G := by
+  classical
+  suffices H : ∀ m, 1 ≤ m → m ≤ k + 2 → ∃ L : List α, G.isInducedPath L ∧ L.length = m by
+    obtain ⟨L, hL, hlen⟩ := H (k + 2) (by omega) le_rfl
+    have := length_le_path_of_isInducedPath G L hL
+    omega
+  intro m hm1
+  induction m, hm1 using Nat.le_induction with
+  | base =>
+    intro _
+    obtain ⟨v⟩ := ‹Nonempty α›
+    refine ⟨[v], ⟨List.nodup_singleton v, fun i j => ?_⟩, rfl⟩
+    fin_cases i; fin_cases j; simp
+  | succ m hm ih =>
+    intro hmk
+    obtain ⟨L, hL, hlen⟩ := ih (by omega)
+    match L, hL, hlen with
+    | [], _, hlen => simp at hlen; omega
+    | [x], hL, hlen =>
+      have : ∃ y, G.Adj x y := by
+        by_contra hcon
+        push Not at hcon
+        have := indepNeighborsCard_le_one (G := G) x (fun a b hxa _ _ => absurd hxa (hcon a))
+        have := hl x
+        omega
+      obtain ⟨y, hxy⟩ := this
+      refine ⟨[y, x], ?_, by simp at hlen ⊢; omega⟩
+      exact isInducedPath_cons (L := []) hL (by simp; exact (G.ne_of_adj hxy).symm) hxy.symm
+        (by simp)
+    | x :: y :: rest, hL, hlen =>
+      have hxy : G.Adj x y := by
+        have := hL.2 ⟨0, by simp⟩ ⟨1, by simp⟩; simpa using this
+      obtain ⟨w, hw, hwx, hwz⟩ : ∃ w, w ∉ x :: y :: rest ∧ G.Adj w x ∧
+          ∀ z ∈ y :: rest, ¬ G.Adj w z := by
+        by_contra hcon
+        push Not at hcon
+        have hxw_ne : ∀ w, G.Adj x w → w ≠ x := fun w h => (G.ne_of_adj h).symm
+        match rest, hL, hlen, hcon with
+        | [], hL, hlen, hcon =>
+          have : indepNeighborsCard G x ≤ 1 := by
+            apply indepNeighborsCard_le_one
+            have hny : ∀ w, G.Adj x w → w = y ∨ G.Adj w y := by
+              intro w hxw
+              by_cases hmem : w ∈ [x, y]
+              · simp at hmem
+                rcases hmem with h | h
+                · exact absurd h (hxw_ne w hxw)
+                · exact Or.inl h
+              · obtain ⟨z, hz, hwz⟩ := hcon w hmem hxw.symm
+                simp at hz; subst hz; exact Or.inr hwz
+            intro a b hxa hxb hab
+            rcases hny a hxa with ha | ha <;> rcases hny b hxb with hb | hb
+            · exact absurd (ha.trans hb.symm) hab
+            · exact ha ▸ hb.symm
+            · exact hb ▸ ha
+            · exact (hC4 x y a b (G.ne_of_adj hxy) hab hxa ha hxb hb).elim
+          have := hl x
+          omega
+        | y₂ :: L₂, hL, hlen, hcon =>
+          have hyy₂ : G.Adj y y₂ := by
+            have := hL.2 ⟨1, by simp⟩ ⟨2, by simp⟩; simpa using this
+          have hxy₂ : ¬ G.Adj x y₂ := by
+            have := hL.2 ⟨0, by simp⟩ ⟨2, by simp⟩; simpa using this
+          have hfar : ∀ z ∈ L₂, ¬ G.Adj x z := by
+            intro z hz
+            obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp hz
+            have := hL.2 ⟨0, by simp⟩ ⟨j + 3, by simp; omega⟩
+            simpa using this
+          have hcov : ∀ w, G.Adj x w → w = y ∨ G.Adj w y ∨ w = y₂ ∨ G.Adj w y₂ ∨
+              ∃ z ∈ L₂, w = z ∨ G.Adj w z := by
+            intro w hxw
+            by_cases hmem : w ∈ x :: y :: y₂ :: L₂
+            · simp at hmem
+              rcases hmem with h | h | h | h
+              · exact absurd h (hxw_ne w hxw)
+              · exact Or.inl h
+              · exact Or.inr (Or.inr (Or.inl h))
+              · exact Or.inr (Or.inr (Or.inr (Or.inr ⟨w, h, Or.inl rfl⟩)))
+            · obtain ⟨z, hz, hwz⟩ := hcon w hmem hxw.symm
+              simp at hz
+              rcases hz with h | h | h
+              · subst h; exact Or.inr (Or.inl hwz)
+              · subst h; exact Or.inr (Or.inr (Or.inr (Or.inl hwz)))
+              · exact Or.inr (Or.inr (Or.inr (Or.inr ⟨z, h, Or.inr hwz⟩)))
+          have := indepNeighborsCard_le_of_cover hC4 x y y₂ L₂ hL.1 hxy hyy₂ hxy₂ hfar hcov
+          have := hl x
+          simp at hlen
+          omega
+      refine ⟨w :: x :: y :: rest, isInducedPath_cons hL hw hwx hwz, ?_⟩
+      simp at hlen ⊢; omega
+
+
+/-- Step 19. Conjecture 133 holds for a connected graph in which every vertex has `l(v) ≥ k ≥ 2`
+and `rad + l(G) ≤ k + 2`. -/
+theorem conjecture133_of_minl [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (k : ℕ) (hk : 2 ≤ k) (hl : ∀ v, k ≤ indepNeighborsCard G v)
+    (hle : (G.radius.toNat : ℝ) + l G ≤ k + 2) :
+    let rad := G.radius.toNat
+    let hasC4 := ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a
+    let cC4 : ℕ := if hasC4 then 0 else 1
+    (rad : ℝ) + l G ^ cC4 ≤ (path G : ℝ) := by
+  intro rad hasC4 cC4
+  by_cases hC4 : hasC4
+  · exact conjecture133_of_hasC4 G h hC4
+  have hcC4 : cC4 = 1 := if_neg hC4
+  rw [hcC4, pow_one]
+  have hfree : C4free' G := by
+    intro a b c d hab hcd hac hcb had hdb
+    exact hC4 ⟨a, c, b, d, G.ne_of_adj hac, hab, G.ne_of_adj had, G.ne_of_adj hcb, hcd,
+      (G.ne_of_adj hdb).symm, hac, hcb, hdb.symm, had.symm⟩
+  have hp : ((k + 2 : ℕ) : ℝ) ≤ (path G : ℝ) := by
+    exact_mod_cast add_two_le_path_of_minl G hfree k hk hl
+  push_cast at hp
+  linarith
+
+/-- Step 20. Conjecture 133 holds for every connected graph of radius at most 2 in which every
+neighbourhood has the same independence number `k ≥ 2`. This covers every Moore graph of
+diameter 2 (`C5`, Petersen, Hoffman–Singleton, and a 57-regular one if it exists), where
+`l(v) = deg v = k` because the girth is 5. -/
+theorem conjecture133_of_const_l [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (k : ℕ) (hk : 2 ≤ k) (hl : ∀ v, indepNeighborsCard G v = k)
+    (hrad : G.radius.toNat ≤ 2) :
+    let rad := G.radius.toNat
+    let hasC4 := ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a
+    let cC4 : ℕ := if hasC4 then 0 else 1
+    (rad : ℝ) + l G ^ cC4 ≤ (path G : ℝ) := by
+  have hn : (0 : ℝ) < Fintype.card α := by exact_mod_cast Fintype.card_pos
+  have hlG : l G = k := by
+    show (∑ v ∈ Finset.univ, indepNeighbors G v) / (Fintype.card α : ℝ) = k
+    simp only [indepNeighbors, hl, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    field_simp
+  apply conjecture133_of_minl G h k hk (fun v => (hl v).ge)
+  rw [hlG]
+  have : (G.radius.toNat : ℝ) ≤ 2 := by exact_mod_cast hrad
+  linarith
 
 end Wowii133Sweep
