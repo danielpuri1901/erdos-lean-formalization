@@ -58,3 +58,39 @@ That is out of reach in 60 minutes.
 Plan:
 - B: an exact modular filter in C (A_n ≡ ±c_n mod several primes q ≡ 3 mod 4) far beyond 20000.
 - C: a Lean proof by `decide +kernel` of the conjecture on a finite range [5, N0], through a computable bridge.
+
+## Phase B: search for a counterexample
+
+Method (`search.c`), exact necessary condition:
+- n is an integer value ⇒ A_n ≡ ±c_n (mod q) for every prime q.
+- I use q ∈ {2^61 - 1, 4611686018427387847, 4611686017427387867}. All are primes ≡ 3 (mod 4), so q never divides c_n.
+- Any n that fails one congruence is rigorously excluded, assuming the code is correct.
+- A survivor would need an exact check.
+- A_n mod q comes from the recursion (a, b) ↦ (a - n b, b + n a).
+- c_n mod q comes from the content formula (Phase A):
+  - Sieve 1 + k^2 by the primes p ≡ 1 (mod 4) up to N + 2, with both roots ±r of r^2 ≡ -1 (mod p).
+  - Track the exponents V^+_p and V^-_p, and multiply c by p^(increase of the min).
+  - The 2-part is 2^floor(o_n/2).
+  - A leftover cofactor of 1 + n^2 is a prime P > N + 2 with exponent 1.
+    It enters c_n exactly when its partner P - n lies in [1, n - 1].
+
+Validation of the C code against independent exact Python big integers:
+- `check_dump.py`: A_n mod q0 and gcd(A_n, B_n) mod q0 agree for every n ≤ 3000 (S = 2^20, 2^24, and 2^25 builds).
+- `check_dump_sampled.py`: A_n mod q0 agrees for every n ≤ 20000, and gcd mod q0 agrees at every n divisible by 499 and at n = 20000 (41 points).
+
+Results:
+- n ≤ 10^9 (`run_1e9.log`, segment size 2^24): the only survivors are n = 1, 2, 3, 4. So for 5 ≤ n ≤ 10^9, A_n ∤ B_n.
+  This is computed, not proved: it relies on the correctness of `search.c`.
+- n ≤ 4·10^9 (`run_4e9.log`, segment size 2^25): running; the result goes in the report.
+  4·10^9 is about the limit where 1 + k^2 fits in a uint64.
+
+A local obstruction was looked for and not found (on paper):
+- 2-adic: Z_n/2^floor(o/2) ≡ i^(t + o/2) (mod 2) when o is even, where t = #{k ≤ n : k ≡ 3 mod 4}.
+  An integer value needs this to be ≡ 1 (mod 2).
+  But t + o/2 is always even for n ≡ 3, 0 (mod 4), and o is odd for n ≡ 1, 2 (mod 4).
+  So the 2-adic condition never fails.
+- p-adic for p ≡ 1 (mod 4) only says "Re(Z_n / p^e) is a p-adic unit" when the two sides are unbalanced. It gives no class of n.
+- Mod q ≡ 3 (mod 4): Z_n mod q is periodic in n, but c_n mod q is not, so there is no congruence-class obstruction.
+
+Conclusion: the problem is archimedean.
+An integer value needs |cos θ_n| = c_n / sqrt(ω_n) exactly, with θ_n = Σ arctan k.

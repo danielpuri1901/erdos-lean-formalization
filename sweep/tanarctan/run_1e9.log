@@ -1,0 +1,6 @@
+SURVIVOR n=1
+SURVIVOR n=2
+SURVIVOR n=3
+SURVIVOR n=4
+done N=1000000000 survivors=4
+exit 0
