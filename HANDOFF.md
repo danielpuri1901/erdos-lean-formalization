@@ -64,13 +64,10 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 Done: checker token, cloud environment `erdos-lean` (setup script now pasted by the executor through Chrome), smoke sessions, usage-credit check (usage credits on, 0 EUR balance, 43 EUR monthly cap, auto-reload off; cloud credit 247 of 250 USD at launch, expires 2026-11-05).
 
-Next decision (Daniel): the target for a harder second round, a known result with a conceptual proof so the harness has work to do.
-Finding on 2026-10-03: every solved Erdős problem that formal-conjectures states now has a public Lean proof (plby/lean-proofs, or a `formal_proof` link), so a cloud agent could copy one.
-Shortlist with no public Lean proof found (GitHub code search, plby tree, formal-conjectures pull requests), all present at the pin:
-1. `vizing_conjecture.variants.clark_suen` (Wikipedia/VizingConjecture.lean): γ(G)γ(H) ≤ 2γ(G□H) for all finite graphs, Clark and Suen 2000, a one-page double-counting proof. Recommended. The only other Lean file that names it states it as an axiom.
-2. `GaussCircleProblem.error_le`: |N(r) - πr²| ≤ 2√2πr for large r, a one-page unit-square argument.
-3. `Hall.danilov`: Danilov 1982, an explicit infinite family through a Pell equation; the mod-125 step is unverified.
-4. `PowerfulNumbersDensity.asymptotic_erdos_szekeres`: needs ζ-function sums; higher risk.
+Second round so far (2026-10-03, details in `docs/clarksuen-pilot.md`): bare pilots proved Clark-Suen (22 minutes, about 2 USD) and Suen-Tarr (about 31 minutes, about 3 USD), each on the first submission.
+Both are short combinatorics proofs, too easy to show whether the harness helps.
+Daniel chose to look for a target about 10 times harder (a long published proof, or one that needs theory Mathlib lacks); the search is running.
+New run caps for that target need Daniel's approval before any run.
 
 Still Daniel's, whenever he wants:
 
