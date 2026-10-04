@@ -35,7 +35,8 @@ computed: (all: no counterexample; every 677 model found satisfies 255)
     orders 35, 49, 65, ... appear, all satisfy 255, all are right-cancellative;
   - rows drawn from AGL(1,p) (p = 5,7,11,13) and PGL(2,p) on p+1 points (p = 5, 7):
     models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none;
-    PGL(2,11) (order 12) hit the 400 s cap (not exhaustive).
+    PGL(2,11) (order 12) and AGL(1,17) hit the 400 s cap (not exhaustive); PGL(2,13) was
+    stopped unfinished at the end of the session (no result).
 next idea: Formalize the paper part (eigenvalue / Fitting / Sylvester argument) to get a Lean
   proof that no affine magma on a finite abelian group separates 677 from 255; it needs only the
   three Lean relations already proved plus standard linear algebra. For the real problem, every model found (including
