@@ -79,6 +79,6 @@ Budget: about 50 USD per problem; the credit meter stood at 135 USD at the start
 
 | id | lead from stage 1 | session | start (UTC) | result |
 |----|-------------------|---------|-------------|--------|
-| catchup | a "pairs" statement that would imply the conjecture, checked on 75,024 cases | session_01BgcwTHbspsRCH9oTH5owpW | 2026-10-04 about 10:20 | running |
-| a000224 | proved for even n and for products of two odd primes; odd n with three or more prime factors remains | session_014KabgfrVeJMmKfShp1xwzq | 2026-10-04 about 10:23 | running |
+| catchup | a "pairs" statement that would imply the conjecture, checked on 75,024 cases | session_01BgcwTHbspsRCH9oTH5owpW | 2026-10-04 about 10:05 | running |
+| a000224 | proved for even n and for products of two odd primes; odd n with three or more prime factors remains | session_014KabgfrVeJMmKfShp1xwzq | 2026-10-04 about 10:08 | running |
 
