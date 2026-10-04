@@ -102,7 +102,11 @@ Stage 2 route B (general reduction, then more families):
   and F ≠ 0 for k ≠ 4 (else k(k−4) would be a square), F > 0 for k = 4. So p^e ≤ F: once w is bounded, e is
   bounded. k ≤ 15 ⇒ w ≤ 15 uniformly; k ≥ 17 ⇒ p ≤ 32 and (for e ≥ 3) w ≲ 400; k = 16 ⇒ F = 4(2cw−p−1)² so
   p^⌈e/2⌉ ≤ 2cw ≈ 2p², i.e. e ≤ 4 (e ≤ 7 for p ≤ 11): only the discriminant squeeze for e ∈ {3, 4} remains
-  as genuinely new algebra. Estimated 5–6 worker slots; deferred behind p³q.
+  as genuinely new algebra. Estimated 5–6 worker slots (3 attempts), which the 10-attempt budget does not
+  allow in this run. Numerics (`deep/a000224/q4_analysis.py`): the identity 4(p+1)²(kA²w² − kAw + 1) ≡ F
+  (mod X) holds (3000 random cases); F = k(cw−p−1)² + (4−k)(p+1)² exactly; k(k−4) is a square only for k = 4;
+  for e ≥ 4: k ≤ 28, k ≥ 17 ⇒ p ≤ 31 with max B/δ = 3027, k = 16 ⇒ w ≤ (p+3)/2 and e ≤ 8 (e ≤ 4 for p ≥ 29),
+  k ≤ 15 ⇒ F ≤ 1.4·10¹¹ so e ≤ 23; direct search for p ≤ 31, e ∈ 4..12, all k, w ≤ B/δ: no solution of (E).
 - Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
   primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [proved in Lean:
   `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean]
