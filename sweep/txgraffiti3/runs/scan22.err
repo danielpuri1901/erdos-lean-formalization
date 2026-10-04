@@ -1,0 +1,6 @@
+start i=12 mu=12 score=-1
+round 0 best neighbour score -1 (current -1)
+round 1 best neighbour score -1 (current -1)
+round 2 best neighbour score -1 (current -1)
+round 3 best neighbour score -1 (current -1)
+round 4 best neighbour score -1 (current -1)
