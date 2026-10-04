@@ -144,4 +144,57 @@ theorem star_relation {R : Type} [Ring R] (A : R) (B : Rˣ)
   rw [← key4]
   noncomm_ring
 
+/-- Relation (★★): under the hypotheses of `star_relation`, `q(B) o(B) = 0` with
+`o(t) = t⁸ + 2t⁶ + t⁴ + t² + t + 1`. So `B` is annihilated by `q · o`. -/
+theorem star_star_relation {R : Type} [Ring R] (A : R) (B : Rˣ)
+    (g1 : (B : R) * A + (B : R) * B * A * B = 1)
+    (g2 : A + (B : R) * B * A * A + (B : R) * B * B = 0) :
+    ((B : R) ^ 3 - B - 1) * ((B : R) ^ 8 + 2 * (B : R) ^ 6 + (B : R) ^ 4 + (B : R) ^ 2 + B + 1)
+      = 0 := by
+  have S0 := star_relation A B g1 g2
+  set b : R := (B : R) with hbdef
+  set c : R := ((B⁻¹ : Rˣ) : R) with hcdef
+  have hbc : b * c = 1 := B.mul_inv
+  have hcb : c * b = 1 := B.inv_mul
+  have ecb : ∀ x : R, c * (b * x) = x := fun x => by rw [← mul_assoc, hcb, one_mul]
+  have ebc : ∀ x : R, b * (c * x) = x := fun x => by rw [← mul_assoc, hbc, one_mul]
+  -- A² = -b⁻²A - b (as in `star_relation`)
+  have r3 : A * A = -(c * (c * A)) - b := by
+    have h : b * (b * (A * A)) = -A - b * b * b := by
+      rw [← sub_eq_zero, ← g2]; noncomm_ring
+    have : c * (c * (b * (b * (A * A)))) = c * (c * (-A - b * b * b)) := by rw [h]
+    rw [ecb, ecb] at this
+    rw [this, show b * b * b = b * (b * b) by noncomm_ring, mul_sub, mul_sub, ecb, ecb]
+    noncomm_ring
+  set q : R := b ^ 3 - b - 1 with hqdef
+  -- q (b³ + b) A = q
+  have hq : q * ((b ^ 3 + b) * A) = q := by
+    have : q * ((b ^ 3 + b) * A) - q = 0 := by rw [← S0]; noncomm_ring
+    exact sub_eq_zero.mp this
+  -- Right-multiply (★) by A and reduce A².
+  have S1 : q * (-(b * A) - c * A - A - b ^ 4 - b ^ 2) = 0 := by
+    have e : (b ^ 3 * A + b * A - 1) * A = -(b * A) - c * A - A - b ^ 4 - b ^ 2 := by
+      rw [show (b ^ 3 * A + b * A - 1) * A = b * (b * (b * (A * A))) + b * (A * A) - A by
+        noncomm_ring, r3]
+      rw [show b * (b * (b * (-(c * (c * A)) - b))) = -(b * (b * (b * (c * (c * A))))) - b ^ 4 by
+        noncomm_ring, ebc, ebc]
+      rw [show b * (-(c * (c * A)) - b) = -(b * (c * (c * A))) - b ^ 2 by noncomm_ring, ebc]
+      noncomm_ring
+    rw [← e, ← mul_assoc, S0, zero_mul]
+  -- Left-multiply by b.
+  have S2 : q * (-((b ^ 2 + b + 1) * A) - b ^ 5 - b ^ 3) = 0 := by
+    have h : b * (q * (-(b * A) - c * A - A - b ^ 4 - b ^ 2)) = 0 := by rw [S1, mul_zero]
+    rw [show b * (q * (-(b * A) - c * A - A - b ^ 4 - b ^ 2))
+        = q * (-(b * (b * A)) - b * (c * A) - b * A - b ^ 5 - b ^ 3) by
+      rw [hqdef]; noncomm_ring, ebc] at h
+    rw [← h]; noncomm_ring
+  -- Left-multiply by b³ + b and use hq.
+  have h : (b ^ 3 + b) * (q * (-((b ^ 2 + b + 1) * A) - b ^ 5 - b ^ 3)) = 0 := by
+    rw [S2, mul_zero]
+  rw [show (b ^ 3 + b) * (q * (-((b ^ 2 + b + 1) * A) - b ^ 5 - b ^ 3))
+      = -((b ^ 2 + b + 1) * (q * ((b ^ 3 + b) * A))) - (b ^ 3 + b) * q * (b ^ 5 + b ^ 3) by
+    rw [hqdef]; noncomm_ring, hq] at h
+  rw [← neg_eq_zero, ← h, hqdef]
+  noncomm_ring
+
 end Eq677Sweep
