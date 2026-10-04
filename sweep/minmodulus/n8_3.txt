@@ -18,3 +18,9 @@ n=8 N=195 exists=0 nodes=5882471
 n=8 N=199 exists=0 nodes=6429967
 n=8 N=203 exists=0 nodes=7336441
 n=8 N=207 exists=0 nodes=8642423
+n=8 N=211 exists=0 nodes=9449837
+n=8 N=215 exists=0 nodes=10740859
+n=8 N=219 exists=0 nodes=12408963
+n=8 N=223 exists=0 nodes=13500297
+n=8 N=227 exists=0 nodes=15123079
+n=8 N=231 exists=0 nodes=17398485

@@ -17,3 +17,10 @@ n=8 N=190 exists=0 nodes=5278225
 n=8 N=194 exists=0 nodes=5999931
 n=8 N=198 exists=0 nodes=7142387
 n=8 N=202 exists=0 nodes=7808455
+n=8 N=206 exists=0 nodes=8864757
+n=8 N=210 exists=0 nodes=10695169
+n=8 N=214 exists=0 nodes=11326535
+n=8 N=218 exists=0 nodes=12754781
+n=8 N=222 exists=0 nodes=14855065
+n=8 N=226 exists=0 nodes=16063319
+n=8 N=230 exists=0 nodes=18103687
