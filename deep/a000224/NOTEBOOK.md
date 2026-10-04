@@ -115,13 +115,19 @@ Stage 2 route B (general reduction, then more families):
   k ≤ 15 ⇒ F ≤ 1.4·10¹¹ so e ≤ 23; direct search for p ≤ 31, e ∈ 4..12, all k, w ≤ B/δ: no solution of (E).
 - Summary theorem S: every counterexample n is odd, not a prime power, not a product of two
   primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [proved in Lean:
-  `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean]
+  `A224Deep.counterexample_structure`, and its contrapositive `conjecture_of_structure`, Solution/A224/Summary.lean;
+  extended with the p²q clause in `counterexample_structure'` (Summary2.lean) and with the p³q clause in
+  `counterexample_structure''` / `conjecture_of_structure''` (Summary3.lean)]
 
 ## 3. Facts
 
 - Exhaustive n ∈ [2, 4·10⁹): 0 mismatches (`sweep/a000224/search.c`, `run_4e9.txt`, 5m20s).
 - Exhaustive n ∈ [4·10⁹, 10¹⁰): 0 mismatches (same `search.c`, copied to `deep/a000224/search.c`;
   `run_4e9_7e9.txt`, `run_7e9_1e10.txt`, two background processes, about 15 min each). So every n < 10¹⁰ is checked.
+- Exhaustive n ∈ [10¹⁰, 1.6·10¹⁰): 0 mismatches (`run_1e10_13e9.txt`, `run_13e9_16e9.txt`). Every n < 1.6·10¹⁰ is checked.
+- Uniform-route record (`q4_search.py`, exact): (E) for n = p^e q has no solution with k ≥ 17, p ≤ 31 odd, e ≤ 40,
+  w ≤ B/δ (87,459 cases); with k ≤ 15, w ≤ 15, p prime ∣ N(k,w), e ≤ 23 the only solution is (p,e,k,w) = (3,2,13,2),
+  i.e. q = p = 3 (6,028 cases); with k = 16, p ≤ 2000 odd, e ≤ 8, w ≤ (p+5)/2: none (3.5·10⁶ cases).
 - n = m·q, m odd in [3, 10⁶], q prime ∤ m of any size: 0 hits (`sweep/a000224/family.py`).
 - Relaxed semiprime system 2 ≤ u < v ≤ 20000 (no primality): 0 solutions (`relaxed.c`).
 - a(p^k) recursion checked against the direct definition in stage 1 for n ≤ 3000 (`search.c`, `direct.py`).
@@ -195,6 +201,14 @@ Stage 2 route B (general reduction, then more families):
    propext, Classical.choice, Quot.sound. Minutes: 4 + 4 (workers), 6 (manager). Wall clock so far: 56 min.
    The family p³q is done. Attempt 9 (running): N = summary theorem with the p³q clause; M = Lean building
    blocks of the uniform route Q4 (`q4_dvd_F`, `q4_F_ne_zero`, `q4_X_le`), for the next run.
+9. Items Q4 blocks (worker M: `q4_dvd_F`, `q4_F_ne_zero`, `q4_X_le`, Solution/A224/Uniform.lean) and S''
+   (worker N: `counterexample_structure''`, `conjecture_of_structure''` with the p²q and p³q clauses,
+   Solution/A224/Summary3.lean). Both proved-in-lean, first build. Manager check: imported, `lake build Solution`
+   passes, no sorry/admit/axiom/native_decide, `#print axioms`: propext, Classical.choice, Quot.sound for all five.
+   M note: `hA1 : 1 ≤ A` in q4_dvd_F is unused (kA ≤ kA² holds for A = 0 too). Minutes: 2 + 2 (workers), 4 (manager).
+   Wall clock so far: 60 min. Decision for the last allowed attempt (10): two reusable Q4 pieces, O = the e ≥ 4
+   bounds (k ≤ 28, k ≥ 17 ⇒ p ≤ 32, k ≤ 15 ⇒ w ≤ 15, k = 16 ⇒ 2w ≤ p + 5) and P = the k = 16, e = 4 discriminant
+   squeeze (the only infinite-family algebra left in Q4). Then stop: the 10-attempt budget is the binding limit.
 
 ## 5. Dead ends
 
