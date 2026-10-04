@@ -170,6 +170,10 @@ Stage 2 route B (general reduction, then more families):
    passes, no sorry/admit/axiom/native_decide, `#print axioms`: propext, Classical.choice, Quot.sound.
    Worker note: `Nat.odd_pow.mp` does not exist here; use `Nat.odd_mul` after `pow_two`. Minutes: 2 + 3.
    Wall clock so far: 47 min. Worker J (p³q finite checks) still running; K (p³q algebra) launched now.
+7. Item p³q finite checks (worker J): proved-in-lean. File: Solution/A224/P3QCheck.lean (`q3ChkSmall_all`
+   36 s kernel, `q3ChkLarge_all` 1 s; unpacked `q3_small`, `q3_large`). Manager check: imported, build passes,
+   no sorry/admit/axiom/native_decide, `#print axioms`: propext, Quot.sound (no ofReduceBool). Minutes: 3 + 3.
+   Wall clock so far: 50 min. K (p³q algebra) running; L (p³q assembly, with stubs for K's two lemmas) launched now.
 
 ## 5. Dead ends
 
