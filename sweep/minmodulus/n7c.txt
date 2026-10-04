@@ -1,0 +1,2 @@
+n=7 N=116 exists=0 nodes=190273
+n=7 N=117 exists=0 nodes=167599

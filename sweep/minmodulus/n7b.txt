@@ -1,0 +1,7 @@
+n=7 N=101 exists=0 nodes=64261
+n=7 N=102 exists=0 nodes=90711
+n=7 N=103 exists=0 nodes=71549
+n=7 N=104 exists=0 nodes=97389
+n=7 N=105 exists=0 nodes=87319
+n=7 N=106 exists=0 nodes=104421
+n=7 N=107 exists=0 nodes=88605
