@@ -44,3 +44,17 @@ Cap for stage 1: about 80 USD.
 | wowii133 | Graffiti.pc 133 | session_01JcW3GVzAM4MCTeZZaBpJAt | 2026-10-04 about 09:14 | running | |
 | tanarctan | tan-arctan sum never an integer | session_01RrupiiSSGNbR4s8QuhCM3Y | 2026-10-04 about 09:15 | running | |
 | a000224 | squares mod n and odd primes | session_01MPhFhb8LMKhPazoZhNS3nB | 2026-10-04 about 09:16 | running | |
+
+## Findings so far (2026-10-04)
+
+Two sessions proved their statements in Lean in about 11 minutes each, and the checker accepted both:
+
+- `wowii19` (Written on the Wall II conjecture 19): commit `825dd65`, checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37192840938, verdict "Your solution is okay!".
+- `wowii100` (Written on the Wall II conjecture 100): commit `feee002`, checker run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37192842670, verdict "Your solution is okay!".
+
+Neither is new.
+Conjecture 19 has a Lean-verified proof by Chen, Wang and Feng dated 2026-07-02, and conjecture 100 has a proof by Kias Henry dated 2026-08-13 (Zenodo 10.5281/zenodo.21914031) that the list's maintainer confirmed.
+Conjecture 198a also has a claimed proof (Ben Cohen, July 2026, Lean-verified September 2026).
+formal-conjectures still tags all three as open, so the tag alone does not show that a problem is open.
+The candidate scan checked the tag and missed this; a prior-work check on all 20 candidates now runs before stage 2 picks anything.
+
