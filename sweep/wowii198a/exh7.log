@@ -1,0 +1,8 @@
+SC_NO_CLIQUE_ROOT n=7 edges: 0-1 0-2 0-3 0-5 0-6 1-2 1-3 1-4 1-6 2-3 2-4 2-5 3-4 3-5
+SC_NO_CLIQUE_ROOT n=7 edges: 0-1 0-2 0-3 0-4 0-6 1-2 1-3 1-5 1-6 2-3 2-4 2-5 3-4 3-5
+SC_NO_CLIQUE_ROOT n=7 edges: 0-1 0-2 0-3 0-5 0-6 1-2 1-3 1-4 1-5 2-3 2-4 2-6 3-4 3-5
+SC_NO_CLIQUE_ROOT n=7 edges: 0-1 0-2 0-3 0-5 0-6 1-2 1-3 1-4 1-6 2-3 2-4 2-6 3-4 3-5
+SC_NO_CLIQUE_ROOT n=7 edges: 0-1 0-2 0-3 0-4 0-5 1-2 1-3 1-5 1-6 2-3 2-4 2-6 3-4 3-5
+n=7 sat=142881 selfcentered=83038 sc_without_clique_root=52797 claimA_violations=0 counterexamples=0
+Dhist(sat): D1:1 D2:83450 D3:21210 D4:28140 D5:10080
+Dhist(sat,sc): D1:1 D2:83037
