@@ -35,3 +35,9 @@ The cases m = 0 (trivial) and m = 1 (`maximalLength_one`) are separate.
 - `#print axioms increasing_triples_square`: `[propext, Classical.choice, Quot.sound]`.
 - `example : type_of% @increasing_triples_square = type_of% @Arxiv.«1609.08688».maximalLength_ge_of_isSquare := rfl` checks.
 - No `decide`, so no large kernel checks; memory is not a concern.
+- Submitted: commit `b3b3a7b6db898492cbcfe343bbee287f2a110866` (`submit(sqtuples): ...`), pushed to `run/sqtuples`.
+- Verdict: not polled. The checker was paused on 2026-10-04, so per the user's instruction this session did not poll
+  `comparator/sqtuples`. The status on that commit is unknown; the next session should read it with
+  `gh api repos/danielpuri1901/erdos-lean-formalization/commits/b3b3a7b6db898492cbcfe343bbee287f2a110866/status`
+  and, on failure, read the description, fix and resubmit.
+- Nothing is missing on the Lean side: there is no `sorry` and the build is clean.
