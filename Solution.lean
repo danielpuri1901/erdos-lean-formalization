@@ -1,3 +1,10 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.Other.EquationalTheories_677_255
+
+/-! Sweep work for eq677: Equation 677 → Equation 255 in finite magmas. -/
+
+namespace Eq677Sweep
+open EquationalTheories_677_255
 
 theorem solution_placeholder : True := trivial
+
+end Eq677Sweep
