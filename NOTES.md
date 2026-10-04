@@ -26,4 +26,8 @@ Library (`Solution/GiugaIff.lean`, copied from `origin/run/giuga`, accepted ther
 
 ## Status
 
-(in progress)
+`Solution.lean` proves `strong_giuga_nine_primes` with no `sorry`; `lake build Solution` passes with no warnings
+(about 11 s for `Solution`, 10 s for `Solution.GiugaIff`).
+`#print axioms strong_giuga_nine_primes` gives `propext`, `Classical.choice`, `Quot.sound`, and
+`example : type_of% @AgohGiuga.agoh_giuga.variants.le_primeFactors_card_of_isStrongGiuga := strong_giuga_nine_primes` checks.
+No kernel `decide` is used; the only finite check is `interval_cases p` for p < 29.
