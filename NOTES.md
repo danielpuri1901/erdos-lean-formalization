@@ -28,6 +28,8 @@ Work inside one graph `G : SimpleGraph V` with finsets. `Good G k l s := (∃ t 
 - Paley checks live in `Solution/Paley.lean` so edits to the main file do not rerun them.
 
 ## Status
+- Checker verdict on 4f8fbae: `comparator/ramsey44` success ("Your solution is okay!").
+
 - Complete: `Solution.lean` (upper bound, sInf argument) and `Solution/Paley.lean` (lower bound) build with no `sorry`;
   `#print axioms ramsey_4_4` gives `propext`, `Classical.choice`, `Quot.sound`.
 - Paley checks: Bool checkers `noK4`, `noI4` over `List.range 17` with Nat adjacency `padj` (bitmask 107286),
