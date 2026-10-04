@@ -23,3 +23,17 @@ dir 2 must intersect. Not used in Lean.)
 ## Plan
 - `Solution/Check.lean`: model + kernel check.
 - `Solution.lean`: bridge and main theorem.
+
+## State (2026-10-04, 19:24 UTC)
+
+- Submitted as commit `9701f6678bfa92589cec0b8df57677f29a0dac62` (`submit(claudecycles2): ...`).
+  The checker is paused today, so I did not poll for a verdict. No verdict yet.
+- `lake build Solution` passes locally with no `sorry` and no warnings.
+  `#print axioms cube_no_decomposition_m2` gives `[propext, Classical.choice, Quot.sound]`.
+  `example : type_of% @ClaudesCycles.cube_hamiltonian_arc_decomposition_impossible_m2 := cube_no_decomposition_m2` checks.
+- Cost: `Solution/Check.lean` builds in about 64 s; peak about 2.3 GB anon memory, plus about 6.6 GB of shared, file-backed `.olean` mappings that every module importing Mathlib has.
+  `Solution.lean` builds in about 9 s.
+- What changed from the plan: `Ham` became the Bool `hamB` (the orbit of 0 visits all 8 vertices).
+  This counts Hamiltonian paths from 0, so 54 tables pass, not 12; the triple check still holds.
+  `check1` is split into 27 theorems `check1_abc` by the first three table entries, to keep each kernel check small.
+- If the checker fails on memory: split `Solution/Check.lean` into several modules (by `a0`), or switch the model to Nat codes with `Nat.xor`.
