@@ -13,3 +13,9 @@
 
 1. `floor_sq` (sorry), main theorem from it plus the rpow facts (sorry), build.
 2. Fill `floor_sq`, then the rpow facts, then the main theorem.
+
+## Status
+
+- Proof complete, no `sorry`; builds in about 9 s. Decision: C = 5, threshold X ≥ 1.
+- `#print axioms green66_trivial_bound`: propext, Classical.choice, Quot.sound.
+- `type_of% @green66_trivial_bound = type_of% @Green66.green_66.variants.trivial_bound := rfl` checks.

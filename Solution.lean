@@ -21,12 +21,22 @@ lemma floor_sq (r : ℝ) (hr : 0 ≤ r) :
 /-- Facts about `t = X ^ (1/4)` for `X ≥ 1`. -/
 lemma quarter_facts (X : ℝ) (hX : 1 ≤ X) :
     1 ≤ X ^ (1 / 4 : ℝ) ∧ Real.sqrt X ≤ (X ^ (1 / 4 : ℝ)) ^ 2 := by
-  sorry
+  have h4 : (X ^ (1 / 4 : ℝ)) ^ 4 = X := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by linarith)]
+    norm_num
+  refine ⟨Real.one_le_rpow hX (by norm_num), Real.sqrt_le_iff.mpr ⟨by positivity, ?_⟩⟩
+  rw [show ((X ^ (1 / 4 : ℝ)) ^ 2) ^ 2 = (X ^ (1 / 4 : ℝ)) ^ 4 by ring, h4]
 
 lemma main_bound (X : ℝ) (hX : 1 ≤ X) :
     ∃ n : ℕ, Green66.IsSumOfTwoSquares n ∧
       (n : ℝ) ∈ Set.Icc (X - 5 * X ^ (1 / 4 : ℝ)) X := by
-  sorry
+  obtain ⟨u, hu1, hu2⟩ := floor_sq X (by linarith)
+  obtain ⟨v, hv1, hv2⟩ := floor_sq (X - (u : ℝ) ^ 2) (by linarith)
+  obtain ⟨ht1, ht2⟩ := quarter_facts X hX
+  have hr : X - (u : ℝ) ^ 2 ≤ 3 * (X ^ (1 / 4 : ℝ)) ^ 2 := by nlinarith
+  have hsr : Real.sqrt (X - (u : ℝ) ^ 2) ≤ 2 * X ^ (1 / 4 : ℝ) :=
+    (Real.sqrt_le_left (by linarith)).mpr (by nlinarith)
+  refine ⟨u ^ 2 + v ^ 2, ⟨u, v, rfl⟩, Set.mem_Icc.mpr ⟨?_, ?_⟩⟩ <;> push_cast <;> linarith
 
 end Green66Sol
 
