@@ -35,3 +35,6 @@ Lowest-index pick would need 874K nodes, so the picks come from the certificate,
 - Axioms of `txgraffiti3_false`: propext, Classical.choice, Quot.sound.
 - Decision: `Nat.sInf_mem` needs the set nonempty, so `D16 = {0,2,...,28,34}` (an independent dominating set)
   is checked by `decide +kernel`.
+
+## Verdict
+- `comparator/txgraffiti3` on commit 3298e2c: success ("Your solution is okay!").
