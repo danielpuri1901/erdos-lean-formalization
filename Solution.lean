@@ -104,4 +104,38 @@ theorem conjecture133_of_C4free_case [Nontrivial α] (G : SimpleGraph α) [Decid
     rw [hc, pow_one]
     exact hfree hC4
 
+/-- Step 6. In a connected graph on at least two vertices, `diam + 1 ≤ path`
+(a diametral shortest walk is an induced path). -/
+theorem diam_add_one_le_path [Nontrivial α] (G : SimpleGraph α) (h : G.Connected) :
+    G.diam + 1 ≤ path G := by
+  obtain ⟨u, v, huv⟩ := G.exists_dist_eq_diam
+  obtain ⟨p, hp⟩ := h.exists_walk_length_eq_dist u v
+  have h4 := length_le_path_of_isInducedPath G p.support
+    (isInducedPath_support_of_length_eq_dist p hp)
+  rw [Walk.length_support] at h4
+  omega
+
+omit [DecidableEq α] in
+/-- Step 7. `rad ≤ diam` for a connected graph. -/
+theorem radius_toNat_le_diam [Nontrivial α] (G : SimpleGraph α) (h : G.Connected) :
+    G.radius.toNat ≤ G.diam :=
+  ENat.toNat_le_toNat G.radius_le_ediam (G.connected_iff_ediam_ne_top.mp h)
+
+/-- Step 8. Sufficient condition: Conjecture 133 holds whenever
+`l(G) ^ cC4 ≤ diam + 1 - rad`. This contains the `C4` case (left side `1`, right side `≥ 1`)
+and, on paper, all trees (`l < 2`, `diam ≥ 2 rad - 1`). -/
+theorem conjecture133_of_le_diam [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) :
+    let rad := G.radius.toNat
+    let hasC4 := ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a
+    let cC4 : ℕ := if hasC4 then 0 else 1
+    l G ^ cC4 ≤ (G.diam : ℝ) + 1 - (rad : ℝ) →
+    (rad : ℝ) + l G ^ cC4 ≤ (path G : ℝ) := by
+  intro rad hasC4 cC4 hle
+  have hd : ((G.diam + 1 : ℕ) : ℝ) ≤ (path G : ℝ) := by
+    exact_mod_cast diam_add_one_le_path G h
+  push_cast at hd
+  linarith
+
 end Wowii133Sweep

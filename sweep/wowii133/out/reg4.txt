@@ -1,0 +1,8 @@
+done n=19 k=4 girth5-samples=0 best=-1000
+done n=20 k=4 girth5-samples=0 best=-1000
+done n=22 k=4 girth5-samples=0 best=-1000
+done n=24 k=4 girth5-samples=1273 best=-1
+done n=26 k=4 girth5-samples=3840 best=-1
+done n=28 k=4 girth5-samples=5824 best=-1
+done n=30 k=4 girth5-samples=8343 best=-1
+done n=32 k=4 girth5-samples=11297 best=-1

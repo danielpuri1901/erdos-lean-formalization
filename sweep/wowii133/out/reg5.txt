@@ -1,0 +1,5 @@
+done n=30 k=5 girth5-samples=0 best=-1000
+done n=32 k=5 girth5-samples=0 best=-1000
+done n=34 k=5 girth5-samples=0 best=-1000
+done n=36 k=5 girth5-samples=0 best=-1000
+done n=40 k=5 girth5-samples=0 best=-1000
