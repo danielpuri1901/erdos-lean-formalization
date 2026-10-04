@@ -34,9 +34,9 @@ computed: (all: no counterexample; every 677 model found satisfies 255)
   - rows drawn from AGL(1,p) (p = 5,7,11,13) and PGL(2,p) on p+1 points (p = 5, 7):
     models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none;
     PGL(2,11) (order 12) hit the 400 s cap (not exhaustive).
-next idea: The only affine case left open is non-elementary abelian groups (e.g. Z_{p²}^k) with
-  non-commuting A, B; the (★)/(★★) machinery plus a p-adic filtration argument should close it,
-  giving "no affine counterexample at all". For the real problem, every model found (including
+next idea: The only affine case left open is the 11-part of V when it is not elementary abelian
+  (e.g. Z_121^k), B̄ has eigenvalue 6 mod 11, and A, B do not commute; a lifting argument from
+  V/11V (where A, B commute) should close it, giving "no affine counterexample at all". For the real problem, every model found (including
   non-affine extensions) is right-cancellative; checking and then trying to prove "finite 677 ⇒
   quasigroup" looks like the most promising structural step towards a proof, while for a
   counterexample the natural next family is extensions whose fiber coefficients depend on the
@@ -54,6 +54,12 @@ confidence: high for the Lean theorems (machine-checked); medium-high for the pa
 # eq677 sweep notes
 
 start: 1791105215 (date -u +%s), 2026-10-04 09:13 UTC
+
+## Memory note
+
+From memory, unverified: the Equational Theories Project lists finite 677 ⇒ 255 among its few
+unresolved finite implications and has run large automated model searches; I recall no specific
+range or result and used none of it here.
 
 ## Phase A: statement
 
