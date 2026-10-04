@@ -165,6 +165,11 @@ Stage 2 route B (general reduction, then more families):
    with g = 4p⁶ − 4p⁵ + 4p⁴ − 4p³, isqrt(Disc) = g − 1 for large p). Workers I (summary + p²q clause) and
    J (p³q finite checks) run now; then K (p³q algebra) and L (assembly). Longer-term idea recorded in section 2:
    a uniform treatment of p^e q via X ∣ F (see Q4).
+6. Item S' (worker I): proved-in-lean. File: Solution/A224/Summary2.lean (`counterexample_structure'`,
+   `conjecture_of_structure'`, now also excluding n = p²q). Manager check: imported into Solution.lean, build
+   passes, no sorry/admit/axiom/native_decide, `#print axioms`: propext, Classical.choice, Quot.sound.
+   Worker note: `Nat.odd_pow.mp` does not exist here; use `Nat.odd_mul` after `pow_two`. Minutes: 2 + 3.
+   Wall clock so far: 47 min. Worker J (p³q finite checks) still running; K (p³q algebra) launched now.
 
 ## 5. Dead ends
 
