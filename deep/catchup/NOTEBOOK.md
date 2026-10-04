@@ -58,7 +58,8 @@ Route (lemma list, status in brackets):
 5. L5 (P) "≥ draw" halves (mover has a good pick). No fixed rule works. [open, key]
 6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [BLOCKED after attempt 2: no small family exists; see D5]
 7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [certificates generated and checked in Python, attempt 5; Lean integration = attempt 7].
-8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [attempt 6]
+8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [proved in Lean, attempt 6]
+9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [attempt 8]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
 (it tells soonest whether this route can work). In parallel one worker does L1 in Lean (needed by
@@ -171,8 +172,16 @@ Manager check: `lake build Solution` exit 0 (8942 jobs); no banned words; `#prin
 Classical.choice, Quot.sound; the root statements are checked at `List.range' 1 N`, gap 0, and chained through
 `value_Icc_eq_gvL` and `gvL_eq_draw_of_certs`. Files: `Solution/Cert.lean`, `Solution/Cert11.lean`, `Solution/Cert12.lean`,
 `deep/catchup/cert/gen.py`.
-### Attempt 6 — partner-reply lemmas in Lean (`Solution/Pairs.lean`): L3 and the easy half of L4, and
-`pairsConj_le_halves` (the "≤ draw" halves of (P) follow from the "≥ draw" half at odd k, gap 1, plus the hard-case claim) — running (deadline 1791111803)
+### Attempt 6 — partner-reply lemmas in Lean (`Solution/Pairs.lean`) — result: proved-in-lean (3 min)
+Worker (opus): `mem_pairUnion`, `pairUnion_erase_erase` (removing a whole pair), `pairStarts_erase`, `zero_notMem_pairUnion`,
+`gv_ne_loss_of_move` (one good move gives ≠ loss), `pairs_le_draw_of_gap_one` (L3: partner reply at gap 0),
+`pairs_le_draw_of_gap_zero` (easy half of L4 + hard case as hypothesis), and
+`pairsConj_le_halves : (∀ A odd, gv (pairUnion A) 1 ≠ loss) → (hard-case claim) → ∀ A, (Even → gv … 0 ≠ win) ∧ (Odd → gv … 1 ≠ win)`
+by `Finset.strongInduction`. Tried: the paper proofs line by line. Blocked: nothing.
+Manager check: `lake build Solution.Pairs` exit 0, no banned words, axioms propext/Classical.choice/Quot.sound, statements as specified.
+Files: `Solution/Pairs.lean`; `Solution.lean` gets `import Solution.Pairs`.
+### Attempt 8 — Lean: the hard-case claim follows from T2 and T4 (`hard_of_T2_T4`), closing the formal reduction
+"GE(odd,1) ∧ T2 ∧ T4 ⇒ both ≤-draw halves of (P)" — running (deadline 1791112200)
 ### Attempt 7 — integrate the N = 15, 16 certificates into `Solution/Cert15*.lean`, `Solution/Cert16*.lean` — running (deadline 1791112000)
 ### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
 Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
