@@ -114,7 +114,7 @@ Daniel approved two more runs and a reserve of about 20 USD; no more credit goes
 | run | branch | session | goal | result |
 |-----|--------|---------|------|--------|
 | a000224 continuation | `deep/a000224` | session_018XUdyycEGiv3Vico6jo1YS (Fable 5.1 manager) | Q4: the conjecture for n = p^e q with every e ≥ 4; at most 5 attempts and 90 minutes | goal reached in one attempt and about 20 minutes (commit `b5af17c`) |
-| TxGraffiti 3 disproof | `run/txg3-disproof` | session_013nzAAwLLQXTdW4fCA9Dn92 (Opus 5.5) | a Lean proof that conjecture 3 is false, from the public 48-vertex cubic graph, judged by the checker target `txgraffiti3` | running |
+| TxGraffiti 3 disproof | `run/txg3-disproof` | session_013nzAAwLLQXTdW4fCA9Dn92 (Opus 5.5) | a Lean proof that conjecture 3 is false, from the public 48-vertex cubic graph, judged by the checker target `txgraffiti3` | accepted by the checker on the first submission (commit `3298e2c`) |
 
 The TxGraffiti 3 run is a known result, not an open problem: the graph comes from https://github.com/ipitchford/txgraffiti-order48-successor, whose authors call it an unrefereed, certificate-backed candidate.
 formal-conjectures issue 6737 asks for exactly this fix and had no pull request on 2026-10-04; no Lean proof was found.
@@ -126,4 +126,11 @@ So a counterexample to the conjecture has at least three distinct prime factors,
 The conjecture itself is still open.
 An independent build of commit `b5af17c` was started in GitHub Actions.
 The credit meter read 51 USD after this run, with the TxGraffiti 3 run still going.
+
+Result of the TxGraffiti 3 run: the session submitted after about 20 minutes, and the checker accepted the proof: run https://github.com/danielpuri1901/erdos-lean-checker/actions/runs/37220457904, verdict "Your solution is okay!".
+The statement check in that run confirmed that the frozen statement is the negation of the formal-conjectures statement.
+The proof shows that the graph is 3-regular, that the 15 edges {2i, 2i+1} are a maximal matching, and that no independent dominating set has 15 or fewer vertices; the last part is a search certificate of 124,512 nodes, written by the session's own program and checked by the Lean kernel in 36 chunks.
+The counterexample graph was found by the authors of the source repository; this run adds the machine-checked proof.
+No Lean proof of this disproof was found before the run, and formal-conjectures still tags the statement as open.
+The credit meter read 50 USD after both runs.
 
