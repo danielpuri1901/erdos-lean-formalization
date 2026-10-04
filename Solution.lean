@@ -397,4 +397,66 @@ theorem conjecture_of_witnesses (k : Nat) (hk : 1 ≤ k) (hne : (S (10 ^ k - 1))
   · obtain ⟨w, hwS, hwlt⟩ := hw n hpos hn
     exact lt_of_le_of_lt (a_le_of_mem hwS) (lt_of_lt_of_le hwlt hlow)
 
+/- ## The repunit R_{9k} lies in S (10^k - 1), so a (10^k - 1) ≥ 10^(9k-1) unconditionally -/
+
+/-- Repunit with j ones. -/
+def rep : Nat → Nat
+  | 0 => 0
+  | j + 1 => 10 * rep j + 1
+
+lemma rep_digits (j : Nat) : ∀ d ∈ Nat.digits 10 (rep j), d = 0 ∨ d = 1 := by
+  induction j with
+  | zero => simp [rep]
+  | succ j ih =>
+    intro d hd
+    rw [rep, Nat.digits_def' (by norm_num) (by omega)] at hd
+    have h1 : (10 * rep j + 1) % 10 = 1 := by omega
+    have h2 : (10 * rep j + 1) / 10 = rep j := by omega
+    rw [h1, h2] at hd
+    rcases List.mem_cons.mp hd with h | h
+    · exact Or.inr h
+    · exact ih d h
+
+lemma nine_rep (j : Nat) : 9 * rep j + 1 = 10 ^ j := by
+  induction j with
+  | zero => simp [rep]
+  | succ j ih => rw [rep, pow_succ]; omega
+
+lemma rep_add (a b : Nat) : rep (a + b) = rep a * 10 ^ b + rep b := by
+  induction b with
+  | zero => simp [rep]
+  | succ b ih => rw [← Nat.add_assoc, rep, rep, ih, pow_succ]; ring
+
+lemma rep_mul_modEq (k i : Nat) : rep (k * i) ≡ i * rep k [MOD 10 ^ k - 1] := by
+  have h10 : 10 ^ k ≡ 1 [MOD 10 ^ k - 1] := by
+    have hX : 1 ≤ 10 ^ k := Nat.one_le_pow _ _ (by norm_num)
+    exact (Nat.modEq_iff_dvd' hX).mpr dvd_rfl |>.symm
+  induction i with
+  | zero => simp [rep]; rfl
+  | succ i ih =>
+    rw [Nat.mul_succ, rep_add]
+    calc rep (k * i) * 10 ^ k + rep k ≡ i * rep k * 1 + rep k [MOD 10 ^ k - 1] :=
+          Nat.ModEq.add_right _ (Nat.ModEq.mul ih h10)
+      _ = (i + 1) * rep k := by ring
+
+lemma rep_mem (k : Nat) (hk : 1 ≤ k) : rep (k * 9) ∈ S (10 ^ k - 1) := by
+  refine ⟨?_, ?_, rep_digits _⟩
+  · have := nine_rep (k * 9)
+    have : 1 < 10 ^ (k * 9) := Nat.one_lt_pow (by omega) (by norm_num)
+    omega
+  · have h1 := rep_mul_modEq k 9
+    have h2 : 9 * rep k = 10 ^ k - 1 := by have := nine_rep k; omega
+    rw [h2] at h1
+    exact (Nat.modEq_zero_iff_dvd).mp (h1.trans ((Nat.modEq_zero_iff_dvd).mpr dvd_rfl))
+
+lemma a_rep_ge (k : Nat) (hk : 1 ≤ k) : 10 ^ (9 * k - 1) ≤ a (10 ^ k - 1) :=
+  le_csInf ⟨_, rep_mem k hk⟩ (fun _ hm => ge_of_mem_rep k hk hm)
+
+/-- Proved reduction (unconditional form): the conjecture at k ≥ 1 follows from upper bounds
+alone: every `0 < n < 10^k - 1` has a 0/1 multiple below `10^(9k-1)`. -/
+theorem conjecture_of_witnesses' (k : Nat) (hk : 1 ≤ k)
+    (hw : ∀ n, 0 < n → n < 10 ^ k - 1 → ∃ w ∈ S n, w < 10 ^ (9 * k - 1)) :
+    ∀ n < 10 ^ k - 1, a n < a (10 ^ k - 1) :=
+  conjecture_of_witnesses k hk ⟨_, rep_mem k hk⟩ hw
+
 end SweepA4290
