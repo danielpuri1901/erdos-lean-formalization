@@ -107,3 +107,4 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+- a112970: unfolding lemmas for a well-founded `def` like `a (2*k+1) = a k` go through with `rw [a]` and then `simp only [h1, h2, h3, h4, ite_true, ite_false]`, where each `hi` is stated as `(P) = False`, `(P) = True` or `n / 2 = k`; handle `k = 0` separately. For `n^2/4` arithmetic, split with `Nat.even_or_odd'`, rewrite `(2*j)^2 = 4*(j*j)` by `ring`, then `omega`.

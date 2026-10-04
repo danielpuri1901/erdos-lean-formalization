@@ -26,3 +26,4 @@ All in `Solution.lean`, no kernel computation needed beyond tiny base cases.
 
 All lemmas proved in `Solution.lean`; `#print axioms a112970_power_of_two` gave
 `[propext, Classical.choice, Quot.sound]`. Submitted.
+Verdict: `comparator/a112970` = success ("Your solution is okay!") on commit 94455e7, first submission.
