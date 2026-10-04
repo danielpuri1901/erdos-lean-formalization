@@ -1,3 +1,5 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.WrittenOnTheWallII.GraphConjecture100
+
+/-! Sweep work for wowii100. -/
 
 theorem solution_placeholder : True := trivial
