@@ -286,7 +286,7 @@ lemma isInducedPath_cons {G : SimpleGraph α} {L : List α} {x y : α}
   · simpa using hxy
   · simpa using key j (by omega)
   · simpa using hxy.symm
-  · have := hL.2 ⟨0, by simp⟩ ⟨0, by simp⟩; simpa using this
+  · simp
   · have := hL.2 ⟨0, by simp⟩ ⟨j + 1, by simp; omega⟩; simpa using this
   · simpa [G.adj_comm] using key i (by omega)
   · have := hL.2 ⟨i + 1, by simp; omega⟩ ⟨0, by simp⟩; simpa using this
@@ -692,5 +692,30 @@ theorem conjecture133_of_const_l [Nontrivial α] (G : SimpleGraph α) [Decidable
   rw [hlG]
   have : (G.radius.toNat : ℝ) ≤ 2 := by exact_mod_cast hrad
   linarith
+
+
+-- Fidelity checks: the statements above are literally the statement of the imported
+-- `conjecture133` (its type is used via `type_of%`; its proof is not used).
+
+theorem fidelity_hasC4 [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj] (h : G.Connected)
+    (hC4 : ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a) :
+    type_of% (WrittenOnTheWallII.GraphConjecture133.conjecture133 G h) :=
+  conjecture133_of_hasC4 G h hC4
+
+theorem fidelity_l_le_two [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (hl : l G ≤ 2) :
+    type_of% (WrittenOnTheWallII.GraphConjecture133.conjecture133 G h) :=
+  conjecture133_of_l_le_two G h hl
+
+/-- The full conjecture follows from its `C4`-free case. -/
+theorem fidelity_reduction [Nontrivial α]
+    (hfree : ∀ (G : SimpleGraph α) [DecidableRel G.Adj], G.Connected →
+      ¬ (∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+        G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a) →
+        (G.radius.toNat : ℝ) + l G ≤ (path G : ℝ))
+    (G : SimpleGraph α) [DecidableRel G.Adj] (h : G.Connected) :
+    type_of% (WrittenOnTheWallII.GraphConjecture133.conjecture133 G h) :=
+  conjecture133_of_C4free_case G h (hfree G h)
 
 end Wowii133Sweep
