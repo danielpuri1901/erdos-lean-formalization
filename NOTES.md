@@ -23,3 +23,4 @@ Decision: no skeleton phase beyond a single build, since every lemma is copied v
 
 `Solution.lean` proves `strong_giuga_is_carmichael` with no `sorry`; `#print axioms` gave `propext`, `Classical.choice`, `Quot.sound`.
 Built in about 12 s. Submitted with a `submit(giugacarmichael):` commit.
+Verdict: `comparator/giugacarmichael` = success ("Your solution is okay!") on commit f60772e, first submission.
