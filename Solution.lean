@@ -257,4 +257,137 @@ theorem conjecture133_of_dominating [Nontrivial α] (G : SimpleGraph α) [Decida
     have hp : (3 : ℝ) ≤ (path G : ℝ) := by exact_mod_cast hpath3
     linarith
 
+-- The case `l(G) ≤ 2`: a geodesic of length `ecc v ≥ rad` ending at a vertex `v` with two
+-- non-adjacent neighbours extends by one vertex in a `C4`-free graph, so `path ≥ rad + 2`.
+
+omit [Fintype α] [DecidableEq α] in
+/-- Step 12. Prepending a vertex to an induced path. -/
+lemma isInducedPath_cons {G : SimpleGraph α} {L : List α} {x y : α}
+    (hL : G.isInducedPath (y :: L)) (hx : x ∉ y :: L) (hxy : G.Adj x y)
+    (hxL : ∀ z ∈ L, ¬ G.Adj x z) : G.isInducedPath (x :: y :: L) := by
+  refine ⟨List.nodup_cons.mpr ⟨hx, hL.1⟩, ?_⟩
+  rintro ⟨i, hi⟩ ⟨j, hj⟩
+  simp only [List.length_cons] at hi hj
+  have key : ∀ k (hk : k < L.length), ¬ G.Adj x L[k] := fun k hk => hxL _ (List.getElem_mem hk)
+  rcases i with _ | _ | i <;> rcases j with _ | _ | j
+  · simp
+  · simpa using hxy
+  · simpa using key j (by omega)
+  · simpa using hxy.symm
+  · have := hL.2 ⟨0, by simp⟩ ⟨0, by simp⟩; simpa using this
+  · have := hL.2 ⟨0, by simp⟩ ⟨j + 1, by simp; omega⟩; simpa using this
+  · simpa [G.adj_comm] using key i (by omega)
+  · have := hL.2 ⟨i + 1, by simp; omega⟩ ⟨0, by simp⟩; simpa using this
+  · have := hL.2 ⟨i + 1, by simp; omega⟩ ⟨j + 1, by simp; omega⟩; simpa using this
+
+omit [Fintype α] [DecidableEq α] in
+/-- Step 13. In a shortest walk, any walk between vertex `i` and vertex `j ≥ i` has length
+at least `j - i` (else splice it in and get a shorter walk). -/
+lemma geodesic_shortcut {G : SimpleGraph α} {u v : α} (p : G.Walk u v)
+    (hp : p.length = G.dist u v) {i j : ℕ} (hj : j ≤ p.length)
+    (q : G.Walk (p.getVert i) (p.getVert j)) : j - i ≤ q.length := by
+  let r : G.Walk u v := (p.take i).append (q.append (p.drop j))
+  have hr : r.length = min i p.length + q.length + (p.length - j) := by
+    simp only [r, Walk.length_append, Walk.take_length, Walk.drop_length]; omega
+  have := G.dist_le r
+  omega
+
+/-- Step 14. `C4`-free graph, `v` with two distinct non-adjacent neighbours `a`, `b`:
+then `path ≥ rad + 2`. Take a geodesic `v = p_0, p_1, …, p_e = u` with `e = ecc v ≥ rad`,
+pick `x ∈ {a, b}` with `x ≠ p_1`, `x ≁ p_1` (both adjacent to `p_1` would give a `C4`),
+and prepend `x`. `x ≁ p_2` (else `v x p_2 p_1` is a `C4`), `x ≁ p_k` for `k ≥ 3` (shortcut). -/
+theorem radius_toNat_add_two_le_path [Nontrivial α] (G : SimpleGraph α) (h : G.Connected)
+    (hC4 : ¬ ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a)
+    (v a b : α) (hva : G.Adj v a) (hvb : G.Adj v b) (hab : a ≠ b) (hnab : ¬ G.Adj a b) :
+    G.radius.toNat + 2 ≤ path G := by
+  obtain ⟨u, hu⟩ := G.exists_edist_eq_eccent_of_finite v
+  obtain ⟨p, hp⟩ := h.exists_walk_length_eq_dist v u
+  have h1 : G.radius ≤ G.edist v u := hu ▸ G.radius_le_eccent
+  have h2 : G.edist v u = (G.dist v u : ℕ∞) := (h.preconnected v u).coe_dist_eq_edist.symm
+  have h3 : G.radius.toNat ≤ p.length := by
+    rw [h2] at h1
+    rw [hp]
+    exact (ENat.toNat_le_toNat h1 (ENat.natCast_ne_top _)).trans (by simp)
+  have hlen : 1 ≤ p.length := by
+    by_contra hcon
+    have h0 : p.length = 0 := by omega
+    have hvu : v = u := p.eq_of_length_eq_zero h0
+    have : G.eccent v = 0 := by rw [← hu, hvu, SimpleGraph.edist_self]
+    exact G.eccent_ne_zero v this
+  -- walks starting at `p.getVert 0` are walks starting at `v`
+  have hv0 : p.getVert 0 = v := p.getVert_zero
+  set p1 := p.getVert 1 with hp1
+  have hvp1 : G.Adj v p1 := by
+    have := p.adj_getVert_succ (i := 0) (by omega)
+    rwa [hv0] at this
+  -- choose `x`
+  obtain ⟨x, hvx, hxp1, hnxp1⟩ : ∃ x, G.Adj v x ∧ x ≠ p1 ∧ ¬ G.Adj x p1 := by
+    by_contra hcon
+    push Not at hcon
+    by_cases ha1 : a = p1
+    · have := hcon b hvb (fun hb => hab (ha1.trans hb.symm))
+      rw [← ha1] at this
+      exact hnab this.symm
+    by_cases hb1 : b = p1
+    · have := hcon a hva ha1
+      rw [← hb1] at this
+      exact hnab this
+    exact hC4 ⟨v, a, p1, b, G.ne_of_adj hva, G.ne_of_adj hvp1, G.ne_of_adj hvb, ha1, hab,
+      Ne.symm hb1, hva, hcon a hva ha1, (hcon b hvb hb1).symm, hvb.symm⟩
+  -- a walk `v → x → w` seen as a walk from `p.getVert 0`
+  have hfar : ∀ n, n ≤ p.length → G.Adj x (p.getVert n) → n ≤ 2 := by
+    intro n hn hxz
+    have := geodesic_shortcut p hp hn
+      ((Walk.cons hvx (Walk.cons hxz Walk.nil)).copy hv0.symm rfl)
+    simpa using this
+  have hsupp := p.cons_tail_support.symm
+  have hnodup := (p.isPath_of_length_eq_dist hp).support_nodup
+  have hind := isInducedPath_support_of_length_eq_dist p hp
+  rw [hsupp] at hnodup hind
+  have hx : x ∉ v :: p.support.tail := by
+    rw [← hsupp]
+    intro hmem
+    obtain ⟨n, hn, hnl⟩ := Walk.mem_support_iff_exists_getVert.mp hmem
+    rcases n with _ | _ | n
+    · rw [hv0] at hn; exact G.ne_of_adj hvx hn
+    · exact hxp1 hn.symm
+    · have := geodesic_not_adj p hp (i := 0) (j := n + 2) (by omega) hnl
+      rw [hv0, hn] at this
+      exact this hvx
+  have hxL : ∀ z ∈ p.support.tail, ¬ G.Adj x z := by
+    intro z hz hxz
+    have hz' : z ∈ p.support := by rw [hsupp]; exact List.mem_cons_of_mem _ hz
+    obtain ⟨n, hn, hnl⟩ := Walk.mem_support_iff_exists_getVert.mp hz'
+    rcases n with _ | _ | _ | n
+    · rw [hv0] at hn
+      exact (List.nodup_cons.mp hnodup).1 (hn ▸ hz)
+    · have hn' : p.getVert 1 = z := hn
+      rw [← hn'] at hxz
+      exact hnxp1 hxz
+    · -- `v x p_2 p_1` is a 4-cycle
+      have hp12 : G.Adj p1 (p.getVert 2) := p.adj_getVert_succ (i := 1) (by omega)
+      have hvp2 : v ≠ p.getVert 2 := by
+        intro hcon
+        have := geodesic_shortcut p hp (i := 0) (j := 2) hnl (Walk.nil.copy rfl (hv0.trans hcon))
+        simp at this
+      have hxp2 : x ≠ p.getVert 2 := by
+        intro hcon
+        have := geodesic_not_adj p hp (i := 0) (j := 2) (by omega) hnl
+        rw [hv0, ← hcon] at this
+        exact this hvx
+      rw [← hn] at hxz
+      exact hC4 ⟨v, x, p.getVert 2, p1, G.ne_of_adj hvx, hvp2, G.ne_of_adj hvp1, hxp2, hxp1,
+        (G.ne_of_adj hp12).symm, hvx, hxz, hp12.symm, hvp1.symm⟩
+    · have := hfar (n + 3) hnl (hn ▸ hxz)
+      omega
+  have hpath := isInducedPath_cons hind hx hvx.symm hxL
+  have h4 := length_le_path_of_isInducedPath G _ hpath
+  have hl : (p.support.tail).length = p.length := by
+    have := p.length_support
+    rw [hsupp] at this
+    simpa using this
+  simp only [List.length_cons, hl] at h4
+  omega
+
 end Wowii133Sweep
