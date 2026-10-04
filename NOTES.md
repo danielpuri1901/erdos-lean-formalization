@@ -27,3 +27,11 @@ Main: `Filter.frequently_atTop`: for each A take m = n^(A+1) ≥ A.
 1. `S`, `bdd`, `exists_max` (list of length F n for n ≥ 2).
 2. `comb`, `P`, `length_P`, `range_P`, `pairwise_P`.
 3. `prod_le`, `pow_le`, main theorem.
+
+## State
+
+- Proof complete in `Solution.lean`; `lake build Solution` passes with no warnings (about 11 s).
+- `#print axioms increasing_triples_power`: `[propext, Classical.choice, Quot.sound]` (checked, then removed from the file).
+- The file ends with `example : type_of% @increasing_triples_power = type_of% @Arxiv.«1609.08688».maximalLength_pow := rfl`.
+- No `decide`, so no kernel-heavy checks; memory is not a concern.
+- Decision: `bdd` is copied from `origin/run/sqtuples` rather than imported, so the solution is one file.
