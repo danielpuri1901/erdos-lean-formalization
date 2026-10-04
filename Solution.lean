@@ -1,4 +1,5 @@
 import Solution.Gap
+import Solution.Reduction
 import FormalConjectures.Paper.CatchUpConjecture
 
 /-!
