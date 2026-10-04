@@ -47,13 +47,14 @@ Stage 2 route A (prime powers):
 - R3 (recursion) `2 * a (p^(k+2)) = p^(k+2) - p^(k+1) + 2 * a (p^k)` from R1+R2 and the disjoint
   split of range (p^(k+2)) by p ∣ x. [proved in Lean: `A224Deep.two_mul_a_prime_pow_succ_succ`]
 - R4 (closed forms) by induction on j from R3 and `a_prime`, a 1 = 1:
-  `2*(p+1) * a (p^(2j+1)) = p^(2j+2) + 2p + 1`, `2*(p+1) * a (p^(2j)) = p^(2j+1) + p + 2`. [proved on paper]
+  `2*(p+1) * a (p^(2j+1)) = p^(2j+2) + 2p + 1`, `2*(p+1) * a (p^(2j)) = p^(2j+1) + p + 2`.
+  [proved in Lean: `A224Deep.a_prime_pow_odd`, `a_prime_pow_even`, Solution/A224/PrimePow.lean]
 - R5 (P3) for k ≥ 2: ¬ (p^k)² ≡ 1 [MOD a(p^k)(a(p^k)−1)].
   k even: a ≡ 1 mod p so p ∣ a−1 ∣ n²−1, but p ∣ n. k odd: D = a−1 has 2(p+1)D = p^(k+1) − 1;
   D ∣ p^(2k) − 1 and D ∣ p^(k+1) − 1 give D ∣ p^(k−1) − 1 (subtract p^(k−1)·(p^(k+1)−1)),
   then D ∣ p² − 1 (subtract p²·(p^(k−1)−1)); but 2(p+1)D ≥ p⁴ − 1 = (p²−1)(p²+1) > 2(p+1)(p²−1)
-  so D > p² − 1 ≥ 1, contradiction. [proved on paper, stage 1 P3]
-- R6 conjecture for n = p^k, k ≥ 2 (both sides false). [open, needs R5]
+  so D > p² − 1 ≥ 1, contradiction. [proved in Lean: `A224Deep.not_modEq_prime_pow`]
+- R6 conjecture for n = p^k, k ≥ 2 (both sides false). [proved in Lean: `A224Deep.conjecture_prime_pow`]
 
 Stage 2 route B (general reduction, then more families):
 - Q1 for n = m·q, q odd prime ∤ m, A = a(m) ≥ 2, w = (q+1)/2 ≥ 2, n² − 1 = k·Aw(Aw−1):
@@ -61,7 +62,9 @@ Stage 2 route B (general reduction, then more families):
   (iv) (4m² − kA²)·w² + (m² − 1) = (4m² − kA)·w, (v) (4m² − kA²)·w < 4m² − kA.
   Paper: (iv) is the identity n² − 1 = 4m²w² − 4m²w + m² − 1 rearranged; (ii): if kA ≥ 4m² then
   kA² − 4m² ≥ kA(A−1) + (kA − 4m²) and (iv) fails by size; (i): if kA² ≥ 4m² and kA < 4m² then (iv)
-  forces (4m²−kA)w < m² and (kA²−4m²)w² < m², so kA > 3.5m² and kA² < 4.25m², i.e. A < 2. [proved on paper]
+  forces (4m²−kA)w < m² and (kA²−4m²)w² < m², so kA > 3.5m² and kA² < 4.25m², i.e. A < 2.
+  [proved in Lean: `A224Deep.reduction_core` (pure Diophantine) and `A224Deep.reduction` (with a m,
+  (q+1)/2 and the ModEq hypothesis), Solution/A224/Reduction.lean]
 - Q2 family p²q (needs R4 for a(p²) = (p²−p+2)/2): k ≤ 20; k ≤ 15 ⇒ w < 16; k = 16 ⇒ w < p/2 and
   a degree-4 polynomial inequality excludes it; k ∈ 17..20 ⇒ p ≤ 31, finite discriminant check. [open]
 - Q3 family pqr: k ≤ 63, bounded by the same method; large finite check (~10⁵ (u,v) pairs). [open, maybe out of reach]
@@ -89,6 +92,13 @@ Stage 2 route B (general reduction, then more families):
    no sorry/admit/axiom/native_decide, `#print axioms` on all three: propext, Classical.choice, Quot.sound.
    Also moved the stage 1 content of Solution.lean unchanged into Solution/A224/Sweep.lean so that
    submodules can import it. Minutes used: about 4 (workers) + 6 (manager). Wall clock so far: 10 min.
+2. Items R4+R5+R6 (worker C) and Q1 (worker D), in parallel. Both: proved-in-lean, first build passed.
+   Files: Solution/A224/PrimePow.lean, Solution/A224/Reduction.lean. Manager check: imported into
+   Solution.lean, `lake build Solution` passes, grep finds no sorry/admit/axiom/native_decide/
+   implemented_by/unsafe in Solution/A224, `#print axioms` on all six theorems: propext,
+   Classical.choice, Quot.sound. Worker C notes for LESSONS: `Nat.dvd_sub'` is gone, use `Nat.dvd_sub`;
+   `Nat.Coprime.dvd_of_dvd_mul_left` takes `p ∣ 2 * (A - 1)` directly. Minutes: 4 + 3 (workers), 5 (manager).
+   Wall clock so far: 20 min. Prime powers (stage 1's P3) are now in Lean.
 
 ## 5. Dead ends
 
