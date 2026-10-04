@@ -1,0 +1,87 @@
+# a000224 deep attempt notebook
+
+start: 1791109086 (date -u +%s); hard stop at 1791123486 (start + 4 h).
+
+## 1. Target
+
+Lean (`FormalConjectures/OEIS/224.lean`, `OeisA224.conjecture`):
+```lean
+theorem conjecture (n : ℕ) (hn : 1 < n) :
+    (n.Prime ∧ n ≠ 2) ↔ n ^ 2 ≡ 1 [MOD a n * (a n - 1)]
+```
+with `a n = if n = 0 then 1 else ((Finset.range n).image (fun k => k ^ 2 % n)).card`
+(the number of distinct squares mod n). Final theorem must be stated as
+`theorem a000224_deep.{u} : type_of% @OeisA224.conjecture.{u} := ...` (no universes here, so plain
+`type_of% @OeisA224.conjecture`).
+
+Working reformulation (n ≥ 2, M = a(n)(a(n)-1) ≥ 2): n is an odd prime ⟺ M ∣ n² − 1.
+Forward direction and even n are proved (stage 1). The open content: no odd composite n has
+M ∣ n² − 1. This is an OEIS conjecture (Ordowski 2017); a full proof would settle an open problem,
+so the realistic goal of this run is to enlarge the Lean-verified families and leave a clean record.
+
+Manager's decision (no questions asked): the route below first formalises the prime-power case
+(proved on paper in stage 1), then a general reduction lemma for n = m·q, then (if time allows) the
+family p²q or pqr. Searches run in the background in parallel.
+
+## 2. Route
+
+Notation: p odd prime. φ = Nat.totient. Everything new lives in namespace `A224Deep`,
+files `Solution/A224/*.lean`, imported by `Solution.lean`.
+
+Stage 1 (namespace `A224Sweep` in `Solution.lean`, all proved in Lean, no sorry):
+- L0 even n: `conjecture_of_even`. [proved in Lean]
+- L1 odd prime ⇒ congruence: `modEq_of_odd_prime`; `a_prime : a p = (p+1)/2`. [proved in Lean]
+- L2 multiplicativity `a_mul` (coprime), bridge `a_eq_card_zmod`. [proved in Lean]
+- L3 semiprimes p<q: `conjecture_semiprime` (via `semi_core`, decide +kernel 32×121). [proved in Lean]
+- L4 necessary condition `dvd_of_modEq_mul_prime`: q odd prime ∤ m, congruence at m·q ⇒ (q+1)/2 ∣ m²−1. [proved in Lean]
+
+Stage 2 route A (prime powers):
+- R1 (unit squares) for odd prime p, j ≥ 1:
+  `2 * (((range (p^j)).filter (¬ p ∣ ·)).image (· ^2 % p^j)).card = p^j - p^(j-1)`.
+  Proof: squaring is exactly 2-to-1 on residues coprime to p (fibres {x, p^j − x}), because
+  y² ≡ x² ⇒ (y−x)(y+x) ≡ 0 and p cannot divide both factors (else p ∣ 2x). [proved on paper]
+- R2 (non-unit squares) for p prime, k ≥ 0:
+  `(((range (p^(k+2))).filter (p ∣ ·)).image (· ^2 % p^(k+2))).card = a (p^k)`.
+  Proof: multiplication by p² is a bijection from squares mod p^k onto squares of multiples of p
+  mod p^(k+2) (Nat.mul_mod_mul_left). [proved on paper]
+- R3 (recursion) `2 * a (p^(k+2)) = p^(k+2) - p^(k+1) + 2 * a (p^k)` from R1+R2 and the disjoint
+  split of range (p^(k+2)) by p ∣ x. [proved on paper]
+- R4 (closed forms) by induction on j from R3 and `a_prime`, a 1 = 1:
+  `2*(p+1) * a (p^(2j+1)) = p^(2j+2) + 2p + 1`, `2*(p+1) * a (p^(2j)) = p^(2j+1) + p + 2`. [proved on paper]
+- R5 (P3) for k ≥ 2: ¬ (p^k)² ≡ 1 [MOD a(p^k)(a(p^k)−1)].
+  k even: a ≡ 1 mod p so p ∣ a−1 ∣ n²−1, but p ∣ n. k odd: D = a−1 has 2(p+1)D = p^(k+1) − 1;
+  D ∣ p^(2k) − 1 and D ∣ p^(k+1) − 1 give D ∣ p^(k−1) − 1 (subtract p^(k−1)·(p^(k+1)−1)),
+  then D ∣ p² − 1 (subtract p²·(p^(k−1)−1)); but 2(p+1)D ≥ p⁴ − 1 = (p²−1)(p²+1) > 2(p+1)(p²−1)
+  so D > p² − 1 ≥ 1, contradiction. [proved on paper, stage 1 P3]
+- R6 conjecture for n = p^k, k ≥ 2 (both sides false). [open, needs R5]
+
+Stage 2 route B (general reduction, then more families):
+- Q1 for n = m·q, q odd prime ∤ m, A = a(m) ≥ 2, w = (q+1)/2 ≥ 2, n² − 1 = k·Aw(Aw−1):
+  (i) kA² < 4m², (ii) kA < 4m², (iii) w ∣ m² − 1,
+  (iv) (4m² − kA²)·w² + (m² − 1) = (4m² − kA)·w, (v) (4m² − kA²)·w < 4m² − kA.
+  Paper: (iv) is the identity n² − 1 = 4m²w² − 4m²w + m² − 1 rearranged; (ii): if kA ≥ 4m² then
+  kA² − 4m² ≥ kA(A−1) + (kA − 4m²) and (iv) fails by size; (i): if kA² ≥ 4m² and kA < 4m² then (iv)
+  forces (4m²−kA)w < m² and (kA²−4m²)w² < m², so kA > 3.5m² and kA² < 4.25m², i.e. A < 2. [proved on paper]
+- Q2 family p²q (needs R4 for a(p²) = (p²−p+2)/2): k ≤ 20; k ≤ 15 ⇒ w < 16; k = 16 ⇒ w < p/2 and
+  a degree-4 polynomial inequality excludes it; k ∈ 17..20 ⇒ p ≤ 31, finite discriminant check. [open]
+- Q3 family pqr: k ≤ 63, bounded by the same method; large finite check (~10⁵ (u,v) pairs). [open, maybe out of reach]
+- Summary theorem S: every counterexample n is odd, not a prime power, not a product of two distinct
+  primes (hence has ≥ 2 distinct prime factors and Ω(n) ≥ 3). [open, needs R6]
+
+## 3. Facts
+
+- Exhaustive n ∈ [2, 4·10⁹): 0 mismatches (`sweep/a000224/search.c`, `run_4e9.txt`, 5m20s).
+- n = m·q, m odd in [3, 10⁶], q prime ∤ m of any size: 0 hits (`sweep/a000224/family.py`).
+- Relaxed semiprime system 2 ≤ u < v ≤ 20000 (no primality): 0 solutions (`relaxed.c`).
+- a(p^k) recursion checked against the direct definition in stage 1 for n ≤ 3000 (`search.c`, `direct.py`).
+- Small-case check of R4/R5 numbers: a(27) = 11, D = 10 = (3⁴−1)/8.
+
+## 4. Attempts
+
+(none yet)
+
+## 5. Dead ends
+
+- Blind enumeration beyond 4·10⁹ (a hit needs a modulus ≈ n²/16 to divide n² − 1; heuristically pointless).
+- Vieta jumping on the semiprime equation (discriminant is n² itself; circular).
+- Nested bounded ∀ with decide +kernel over 32×3721 cases: kernel deep recursion; enumerate a small cofactor.
