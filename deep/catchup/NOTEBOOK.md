@@ -48,7 +48,7 @@ The only known structure strong enough to carry an induction is the **pairs conj
 
 Route (lemma list, status in brackets):
 
-1. L1 gap reformulation `valueAux_eq_gv`, `value_eq_gv`. [proved on paper (stage 1 + above); Lean: open]
+1. L1 gap reformulation `valueAux_eq_gv`, `value_eq_gv`. [proved in Lean: `Solution/Gap.lean`, attempt 1]
 2. L2 reduction: (P) ∧ (P3) ⇒ target, stated in Lean with (P),(P3) as hypotheses. [proved on paper; Lean: open]
 3. L3 (P) "≤ draw" half for k even, g = 0, from the k−1 case: partner reply.
    [proved on paper in stage 1, not reviewed; Lean: open]
@@ -85,9 +85,27 @@ From stage 1 (`sweep/catchup/*.c`, see NOTES.md):
 
 ## 4. Attempts
 
-(none yet)
+### Attempt 1 — L1 gap reformulation in Lean — result: proved-in-lean (4 min)
+Worker (opus) defined `CatchUpDeep.gv` (mirrors `valueAux` with `R.attach.toList`) and proved
+`valueAux_eq_gv` (s ≤ t → valueAux R s t false = gv R (t − s)), `valueAux_first_eq_gv`,
+`value_eq_gv : value S = gv S 0`, plus helpers `gv_eq`, `gv_empty`, `gv_of_sum_lt`,
+`best_eq_win_iff`, `best_eq_loss_iff`, `gv_eq_win_iff`.
+Tried: strong induction on card, `rw [valueAux, gv]`, `congr 1; apply List.map_congr_left`, omega.
+Blocked: nothing; one fix: omega needs `Finset.card_pos.mpr ⟨x, hx⟩` for `(R.erase x).card < n`.
+Manager check: `lake build Solution` exit 0; grep for sorry/admit/axiom/native_decide/implemented_by/unsafe
+finds only the `#print axioms` lines; axioms of `value_eq_gv`: propext, Classical.choice, Quot.sound.
+Files: `Solution/Gap.lean`, `Solution.lean` (import line only).
+
+### Manager computation (between attempts 1 and 2), `deep/catchup/gv.py` (independent Python gap solver)
+- Sanity N = 0..14: DWWDDWWDDLLDDWL, agrees with F1.
+- v({2,3,4,5}, 2) = W (confirms the base case of F4 by hand and by code: mover takes 4, lead 2;
+  opponent at ({2,3,5}, 2) loses every reply).
+- Equal-sum pairs (R = union of pairs {a, c−a} with a common sum c, g = 0 for even total, g = 1 for odd):
+  121 of 632 such sets inside {1..14} are NOT draws (already {1,3} at g = 0, {1,4} at g = 1). Dead end.
 
 ## 5. Dead ends
+
+- Equal-sum pairs ({a, c−a} with common sum c, mirror pairs included) are not a drawing family: 121 of 632 fail inside {1..14} (manager, `gv.py`). The stage 1 'mirror pairs inside {1..20} are draws' fact was specific to c = 21.
 
 From stage 1:
 - Fixed greedy strategies (largest / smallest / smallest catching pick) lose at N = 4 already.
