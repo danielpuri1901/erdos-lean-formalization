@@ -1,5 +1,51 @@
 # a000224 deep attempt notebook
 
+```
+result: partial
+claim: For every n > 1 the biconditional (n.Prime ∧ n ≠ 2) ↔ n² ≡ 1 [MOD a(n)(a(n)−1)] holds whenever n is even,
+  prime, a prime power, a product of two primes, or of the form p²q or p³q with p, q prime
+  (`A224Deep.conjecture_of_structure''`). Equivalently (`counterexample_structure''`): every counterexample n is odd,
+  composite, not a prime power, not pq, not p²q, not p³q; so it has at least two distinct prime factors, Ω(n) ≥ 3,
+  and if it has exactly two distinct prime factors with one of them simple, the other exponent is ≥ 4.
+  The full conjecture (Ordowski) remains open; nothing false was claimed.
+lean: Solution.lean imports Solution/A224/*.lean (namespaces A224Sweep, A224Deep); all build from scratch with no
+  sorry and only propext, Classical.choice, Quot.sound. Main theorems: A224Deep.conjecture_of_structure'',
+  counterexample_structure'' (Summary3.lean); conjecture_prime_pow, not_modEq_prime_pow, a_prime_pow_odd,
+  a_prime_pow_even (PrimePow.lean); two_mul_a_prime_pow_succ_succ, card_nonunit_squares (Recursion.lean);
+  card_unit_squares (Units.lean); reduction, reduction_core (Reduction.lean); conjecture_sq_mul_prime,
+  not_modEq_sq_mul_prime, two_mul_a_sq (P2Q.lean, with P2QCheck.lean, P2QAlg.lean); conjecture_cube_mul_prime,
+  not_modEq_cube_mul_prime, two_mul_a_cube (P3Q.lean, with P3QCheck.lean, P3QAlg.lean); uniform-route blocks
+  q4_dvd_F, q4_F_ne_zero, q4_X_le (Uniform.lean), q4_k_le_28, q4_p_le_32, q4_w_le_15, q4_k16_w_bound
+  (UniformBounds.lean), q4_k16_e4 (P4QAlg.lean). Stage 1: conjecture_of_even, modEq_of_odd_prime, a_prime, a_mul,
+  conjecture_semiprime, dvd_of_modEq_mul_prime (Sweep.lean).
+computed: exhaustive check of every n < 1.6·10¹⁰ (0 mismatches); every n = m·q with m odd ≤ 10⁷ and q a prime not
+  dividing m of ANY size (0 hits; 1.17·10⁹ (m,k) pairs); the route-specific equation (E) for p^e q has no solution
+  with k ≥ 17, p ≤ 31, e ≤ 40; with k ≤ 15, w ≤ 15, e ≤ 23 only the excluded p = q = 3; with k = 16, p ≤ 2000, e ≤ 8
+  none. The kernel-checked finite parts of the Lean proofs (q2ChkSmall_all etc.) are proofs, not just computations.
+route: Q1 (Lean): a counterexample n = m·q with q a simple odd prime factor gives k with kA² < 4m², w ∣ m²−1 and the
+  quadratic (4m²−kA²)w² + (m²−1) = (4m²−kA)w, w = (q+1)/2, A = a(m). For m = p^e the quotient k is ≤ 28; k ≤ 15
+  forces w ≤ 15 and (mod p) p ∣ kw(w−1)+1 or kw(w−2)+4, a finite check; k = 16 forces a discriminant that lies
+  strictly between consecutive squares; k ≥ 17 forces p ≤ 32 and a finite check. Done in Lean for e = 1 (stage 1),
+  e = 2, e = 3. For general e the pieces X ∣ F, F ≠ 0 (so p^e ≤ |F|), the bounds k ≤ 28 / p ≤ 32 / w ≤ 15 /
+  2w ≤ p+5, and the k = 16, e = 4 squeeze are in Lean; see section 2, Q4.
+next idea: Finish Q4 (p^e q for every e ≥ 4) in about three more attempts: (i) the mod-p reduction of F
+  (F ≡ 4(kw(w−1)+1) or kw(w−2)+4 mod p, pure algebra), (ii) the e-bound p^e ≤ |F| made explicit (e ≤ 25) and Bool
+  finite checks over (p, e, k, w): k ≤ 15 (6,028 cases), k ≥ 17 (p ≤ 31, e ≤ 25, w ≤ B/δ ≤ 3027, ~90,000 cases),
+  k = 16 with e ∈ 5..8 and p ≤ 29, (iii) the assembly through `reduction` with m = p^e and 2(p+1)a(p^e) = p^(e+1)+c
+  from a_prime_pow_odd/even. That would give: every counterexample has ω ≥ 3, or ω = 2 with both exponents ≥ 2.
+  After that the natural targets are p²q² (no simple prime factor; Q1 does not apply) and pqr, where the corner
+  p = 127 (u = 64, ρ = 63.0039) leaves about 3.5·10⁹ (v,w) pairs for k = 63 and needs a new idea (Pell-type
+  analysis in s = v+w, x = vw).
+dead ends: blind enumeration beyond 10¹⁰ (heuristically pointless); Vieta jumping on the semiprime equation; nested
+  bounded ∀ with decide +kernel (deep recursion; use Bool loops over List.range instead); pqr by the Q1 bounding
+  method alone (the p = 127 corner); a direct uniform-in-e discriminant argument (the squeeze polynomial depends
+  on e, so each e needs its own g).
+confidence: high because every Lean theorem rebuilds from scratch with no sorry and only the standard axioms, the
+  statements of the family theorems are the conjecture's biconditional at the stated n, the searches use exact
+  integer arithmetic and the new search code reproduced stage 1's counts exactly; the claim is partial by design.
+
+```
+
 start: 1791109086 (date -u +%s); hard stop at 1791123486 (start + 4 h).
 
 ## 1. Target
@@ -217,6 +263,15 @@ Stage 2 route B (general reduction, then more families):
    Wall clock so far: 60 min. Decision for the last allowed attempt (10): two reusable Q4 pieces, O = the e ≥ 4
    bounds (k ≤ 28, k ≥ 17 ⇒ p ≤ 32, k ≤ 15 ⇒ w ≤ 15, k = 16 ⇒ 2w ≤ p + 5) and P = the k = 16, e = 4 discriminant
    squeeze (the only infinite-family algebra left in Q4). Then stop: the 10-attempt budget is the binding limit.
+10. Items Q4 bounds (worker O: `q4_k_le_28`, `q4_p_le_32`, `q4_w_le_15`, `q4_k16_w_bound`,
+    Solution/A224/UniformBounds.lean) and the k = 16, e = 4 squeeze (worker P: `q4_k16_e4` with helpers
+    `q4_disc_large`, `q4_disc_small`, `q4_two_mul_half`, Solution/A224/P4QAlg.lean). Both proved-in-lean.
+    O note: lemma 4 hit the heartbeat limit with nlinarith; linarith with explicit product hints fixed it.
+    Manager check: imported into Solution.lean; the WHOLE Solution library rebuilt from scratch (oleans deleted)
+    in 2m04s with no errors; grep over Solution.lean and Solution/A224 finds no sorry/admit/axiom/native_decide/
+    implemented_by/unsafe; `#print axioms` on the 18 main theorems (scratch file importing `Solution`): only
+    propext, Classical.choice, Quot.sound. Minutes: 5 + 3 (workers), 6 (manager). Wall clock: 69 min.
+    Ten attempts are logged: stop.
 
 ## 5. Dead ends
 
