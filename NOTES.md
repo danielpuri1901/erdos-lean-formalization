@@ -29,4 +29,11 @@ contradicting the lower bound.
 
 ## Status
 
-Skeleton in progress.
+All proved, no `sorry`; `#print axioms ramsey_3_3` gives `propext, Classical.choice, Quot.sound`;
+`type_of% @RamseyNumbers.ramsey_number_three_three = type_of% @ramsey_3_3` by `rfl`.
+Build: `Solution.Lower` 8 s (two tiny `decide +kernel` checks on 5 vertices), `Solution.Upper` 7 s,
+`Solution` 6 s.
+
+## Verdict
+
+Pending.
