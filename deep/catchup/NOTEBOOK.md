@@ -60,7 +60,7 @@ Route (lemma list, status in brackets):
 7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [certificates generated and checked in Python, attempt 5; Lean integration = attempt 7].
 8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [proved in Lean, attempt 6]
 9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [proved in Lean, attempt 8]
-10. L10 the "≥ draw" halves GE: ∀ A, PairStarts A → (Even card → gv (pairUnion A) 0 ≠ loss) ∧ (Odd card → gv (pairUnion A) 1 ≠ loss). [open; computed inside {1..24}; attempt 9 looks for a pick rule]
+10. L10 the "≥ draw" halves GE: ∀ A, PairStarts A → (Even card → gv (pairUnion A) 0 ≠ loss) ∧ (Odd card → gv (pairUnion A) 1 ≠ loss). [open; computed inside {1..24}; attempt 9: no simple pick rule exists]
 11. L11 final assembly in Lean: GE ∧ T2 ∧ T4 ⇒ PairsConj; GE ∧ T2 ∧ T4 ∧ PairsConj3 ⇒ target; `catchup_draw_le_16`. [attempt 10, after attempt 7]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
@@ -190,7 +190,22 @@ Worker (opus), `Solution/Hard.lean`: `T2 : Prop := ∀ B, PairStarts B → Even 
 Tried: the r6 case split, two `gv_ne_loss_of_move` steps. Blocked: nothing.
 Manager check: `lake build Solution.Hard` exit 0, no banned words, axioms propext/Classical.choice/Quot.sound, T2/T4 read and match F8.
 Files: `Solution/Hard.lean`; `Solution.lean` gets `import Solution.Hard`.
-### Attempt 9 — computational search for a pick rule for the "≥ draw" half of (P) — running (deadline 1791112400)
+### Attempt 9 — computational search for a pick rule for the "≥ draw" half of (P) — result: partial (negative), 30 min
+Worker (opus), `deep/catchup/gerule/` (solver `gr.c`, sanity table 0 mismatches at M = 20, 22; (P) 0 violations at M = 20, 22).
+- Good-pick sets G(R) for all 10,945 (M=20) and 28,656 (M=22) pair-unions at the right gap. k even: |G| ≥ 2 always;
+  k odd: 275 positions (M=20) / 522 (M=22) have a unique good pick.
+- Rule a₁+1 (larger element of the lowest pair) fails 31/5,472 (k even) and 87/5,473 (k odd) at M=20; 68/14,327 and
+  192/14,329 at M=22. NO exception contains the pair {2,3}; all have a₁ ≥ 5 and k ∈ {3,4,5,(6)}. Smallest: [6,8,10] G={9,10,11},
+  [7,10,12] G={13}, [5,7,9,14] G={7,8,9,10}.
+- Best refinement (rule B: if k ≥ 3 and a₃ ≤ 2a₁−2 take a₂+1 when a₂ = a₁+2 else a₃+1; else a₁+1): 3+3 failures at M=20,
+  9+13 at M=22 — failures grow with M. For k = 3 the exceptions are exactly {a₃ ≤ 2a₁−2} minus 5 holes; the zone is not
+  monotone in a₃ (a₁=11, a₂=15: a₃ = 17, 18, 20 exceptions, 19 not).
+- Greedy decision list over {a_i, a_i+1}: inside {1..20} every position has a good pick in {a₁+1, a₃+1, a₂+1}; inside {1..22}
+  three positions need a_k ([11,14,16,18,20] G={19,20,21}, [11,14,17,19,21] G={20,21,22}, [12,15,17,19,21] G={20,21,22}).
+  So no rule picking from {a₁+1, a₂+1, a₃+1} is complete, and new families (runs of adjacent pairs [11,13,15,17,19,(21)]) appear with M.
+Manager check: `deep/catchup/gecheck.py` (independent): G([7,10,12]) = {13}, G([6,8,10]) = {9,10,11}, G([7,9,12]) = {10,13},
+G([5,7,9,14]) = {7,8,9,10}, G([8,10,12,14]) = {11..15}, G([1,5,8]) = {2}: all agree.
+Conclusion: GE (L10) has no simple strategy; its exception structure is arithmetic. Recorded as a dead end for fixed rules.
 ### Attempt 7 — integrate the N = 15, 16 certificates into `Solution/Cert15*.lean`, `Solution/Cert16*.lean` — running (deadline 1791112000)
 ### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
 Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
@@ -207,6 +222,8 @@ Files: `deep/catchup/certgen/{gen.c, check.py, out/Cert*/}`.
 Decision D6: the Lean target is N ∈ {11, 12, 15, 16}; N = 19, 20 are not attempted (certificate too large for the kernel and the repo).
 
 ## 5. Dead ends
+
+- (attempt 9) Fixed pick rules for the mover at pairs positions: a₁+1 fails on an arithmetic, non-monotone exception zone (a₁ ≥ 5, k ∈ {3,4,5,6}); refinements over {a₁+1, a₂+1, a₃+1} are incomplete at {1..22}. The ≥-draw half of (P) is not a short strategy.
 
 - Equal-sum pairs ({a, c−a} with common sum c, mirror pairs included) are not a drawing family: 121 of 632 fail inside {1..14} (manager, `gv.py`). The stage 1 'mirror pairs inside {1..20} are draws' fact was specific to c = 21.
 
