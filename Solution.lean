@@ -280,4 +280,26 @@ theorem endAffine_eq677_imp_eq255 (V : Type) [AddCommGroup V] (A B : Module.End 
   rw [h255, hT, hH, ho, mul_zero, sub_zero, Module.End.mul_apply, hK, map_zero, add_zero,
     Module.End.one_apply]
 
+/-- On a finite abelian group the hypothesis `IsUnit B` is automatic: 677 makes every left
+multiplication `w ↦ A y + B w + c` surjective. So for finite `V` and arbitrary `A`, `B`, `c`,
+`677 → 255` as soon as `q(B) = B³ - B - 1` is invertible. -/
+theorem finite_endAffine_eq677_imp_eq255 (V : Type) [AddCommGroup V] [Finite V]
+    (A B : Module.End ℤ V) (c : V) (hq : IsUnit (B ^ 3 - B - 1)) :
+    @Equation677 V (endAffineMagma V A B c) → @Equation255 V (endAffineMagma V A B c) := by
+  intro h
+  have hsurj : Function.Surjective B := by
+    intro v
+    have := h (v + c) 0
+    dsimp only [endAffineMagma, Magma.op] at this
+    refine ⟨A (v + c) + B (A (A 0 + B (v + c) + c) + B 0 + c) + c, ?_⟩
+    simp only [map_zero, zero_add] at this ⊢
+    rw [map_add] at this ⊢
+    simp only [map_add] at this ⊢
+    have h2 := congrArg (fun t => t - c) this
+    simp only [add_sub_cancel_right] at h2
+    rw [← h2]
+  have hB : IsUnit B := (Module.End.isUnit_iff B).mpr
+    ⟨Finite.injective_iff_surjective.mpr hsurj, hsurj⟩
+  exact endAffine_eq677_imp_eq255 V A B c hB hq h
+
 end Eq677Sweep
