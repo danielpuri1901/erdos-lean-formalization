@@ -1,0 +1,3 @@
+L=1000000000000000000000 T=5 P0=3 H=3 PMAX=9999991 part 0/1: nodes=78857952 leafcands=0 hits=0
+secs 5
+L=10^24: no result, stopped by the 600 s timeout

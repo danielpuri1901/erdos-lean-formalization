@@ -1,5 +1,30 @@
 # Sweep a076495: no x with sigma(x) mod x = 5
 
+```
+result: partial
+claim: (Lean) every x > 0 with σ(x) mod x = 5 is a square, twice a square, or an odd number with σ(x) ≥ 3x + 5;
+       also σ(x) ≠ x + 5 for all x, σ(n) odd → n = m² or 2m², a 5 = 0 ∨ a 5 is of one of those three kinds,
+       and no x < 300 has σ(x) mod x = 5. The conjecture a 5 = 0 itself is NOT proved.
+lean: Solution.lean: A076495Sweep.sigma_ne_add_five, A076495Sweep.sq_or_two_sq_of_odd_sigma, A076495Sweep.reduction,
+      A076495Sweep.a5_zero_or_special, A076495Sweep.small_check (no sorry; axioms propext, Classical.choice, Quot.sound)
+computed: no x < 10^21 with σ(x) mod x = 5, by the Lean reduction plus two searches:
+          squares and twice squares m², 2m² for all m < 31622776602 (sq.c, exact 128-bit arithmetic);
+          all odd x ≤ 10^21 with σ(x) > 3x (dfs128.c, abundancy-pruned DFS with last-prime trick; earlier run of the
+          independent 64-bit dfs.c without the early break covers x ≤ 1.764·10^19).
+          Plain sieve: none below 10^7. Odd case alone (odd x with σ(x) > 3x): no solution x ≤ 10^23 (dfs128.c).
+next idea: the bottleneck is now the square / twice-square family (σ(m²) = k m² + 5, σ(2m²) = k·2m² + 5), which costs √L work;
+           the odd 3-abundant case is cheap (10^21 in 5 s). A sieve over m with a congruence filter (e.g. σ(m²) ≡ 5 mod small
+           prime powers dividing m²) or a DFS over the factorization of m with a last-prime trick (σ(p²) = p² + p + 1 forces
+           p | σ(n) − 5 type conditions) should push the square case well past 10^21. For a proof, the k = 2 case σ(x) = 2x + 5
+           with x a square is the core; it looks as hard as quasiperfect numbers.
+dead ends: k = 1 (σ(x) = x + 5) is ruled out (5 untouchable); no regular family n = p·m (m | 5, σ(m) = 5 has no solution);
+           simple congruences mod 8 for x = 2m² and x = m² odd give no contradiction (checked on paper, Phase D);
+           the 64-bit DFS without the monotone early break wastes 450× more nodes.
+confidence: high because the Lean theorems build with no sorry, and the searches were checked against an independent sieve
+            (all residues 1..40 up to 10^6 and 2·10^7) and against two known odd 3-abundant numbers; medium only for the
+            exact computational bound, since it rests on float pruning with explicit slack (reasoned in the notes).
+```
+
 start: 1791104466 (date -u +%s)
 
 ## Phase A: understand
@@ -126,3 +151,43 @@ Reduction: x > 0 and σ(x) mod x = 5 ⟹ x = m², or x = 2m², or (x odd and σ(
 - `small_check : ∀ x, x < 300 → sigma 1 x % x ≠ 5` (`decide +kernel`, a few seconds)
 
 Not attempted in Lean: a lower bound for odd x with σ(x) > 3x (needs at least 8 distinct odd prime factors, since 3/2·5/4·…·19/18 = 2.92 < 3 and adding 23/22 gives 3.06; so x ≥ 3·5·7·11·13·17·19·23 = 111546435).
+
+## Phase D: extended runs and report details
+
+### 128-bit odd-case search (`dfs128.c`)
+
+Same tree as `dfs.c` with 128-bit n, plus:
+- the children loop stops at the first prime q whose bound h(n)·q/(q−1)·boost(primes > q, L/(nq)) is below 3.
+  Sound because the bound is non-increasing in q: q/(q−1) decreases, and boost decreases when its start prime and its budget do.
+- prime list only up to PMAX = 10^7; past the list, the boost multiplies by (PMAX/(PMAX−1))^e, with e = ⌊log_PMAX(remaining budget)⌋, which is conservative;
+  the program aborts if a children loop or a leaf would need anything it cannot handle (no abort occurred).
+- optional split over processes by a counter on depth-2 nodes (tested: parts sum to the single-run node count and hits).
+
+Validation: the same tests as `dfs.c` (two known odd 3-abundant numbers, found also with PMAX = 9973 and 2999, so the beyond-list bound is exercised;
+all residues 1..40 for odd x ≤ 2·10^7 with σ(x) > 2x, single and 4-way split) all agree with the independent sieve.
+L = 10^14 gives 4146 nodes, 0 hits (64-bit `dfs.c`: 4780858 nodes, 0 hits).
+
+Runs (T = 5, odd x, σ(x) > 3x):
+- L = 1.764·10^19: 5119761 nodes, 0 hits (< 1 s).
+- L = 10^21: 78857952 nodes, 0 hits (5 s).
+- L = 10^22: 392597121 nodes, 0 hits (26 s).
+- L = 10^23: 2015639080 nodes, 0 hits (143 s).
+- L = 10^24: did not finish within 600 s (no result).
+
+### Square family runs (`sq.c`, T = 5)
+
+m in [1, 10^9), [10^9, 2·10^9), [2·10^9, 3.1·10^9), [3.1·10^9, 4.2·10^9), [4.2·10^9, 1.106·10^10), [1.106·10^10, 1.792·10^10),
+[1.792·10^10, 2.478·10^10), [2.478·10^10, 2.706·10^10), [2.706·10^10, 2.934·10^10), [2.934·10^10, 31622776602): 0 hits each
+(outputs `sqA1.out` … `sqA10.out`). 31622776601² < 10^21 < 31622776602², so every square and every twice-square below 10^21 is covered.
+
+### Congruence check on paper (no contradiction, recorded as a dead end)
+
+- x = 2m², m = 2^a·u with a ≥ 1: 8 | x, so σ(x) ≡ 5 (mod 8), and σ(2^(2a+1)) = 2^(2a+2) − 1 ≡ −1 (mod 8), so σ(u²) ≡ 3 (mod 8).
+  This is possible (u = 15: σ(225) = 403 ≡ 3).
+- x = m² odd: σ(x) ≡ k + 5 (mod 8) with k free; nothing.
+
+### Decisions made without asking
+
+- Searched the reduced families instead of a plain sieve, because the reduction is proved (in Lean) and it gives about 10^21 instead of about 10^11.
+- Stopped the computation at 10^21 for the combined bound, because the square family costs √L and the time box ends.
+- Kept the tiny `small_check` (x < 300) in Lean only as a sanity link between the Lean `sigma` and the C code; it is not part of the main claim.
