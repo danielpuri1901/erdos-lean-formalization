@@ -3,8 +3,12 @@ import FormalConjectures.Arxiv.«2507.17780».«3»
 /-!
 # Sweep work for txgraffiti3
 
-Special case `r = 1` of TxGraffiti Conjecture 3 (`i(G) ≤ μ*(G)` for `r`-regular `G`).
-Written proof (see `sweep/txgraffiti3/NOTES.md`):
+Two special cases of TxGraffiti Conjecture 3 (`i(G) ≤ μ*(G)` for `r`-regular `G`, `r ≥ 1`):
+* `tx3_regular_one`: the case `r = 1`;
+* `tx3_dense` / `tx3_three_quarters`: the case `2(2r-1)(n-r) ≤ nr`, in particular `4r ≥ 3n`
+  (proof outline before `exists_isMaximalEdgeMatching` below).
+
+Written proof of the case `r = 1` (see `sweep/txgraffiti3/NOTES.md`):
 
 1. In a 1-regular graph every vertex `v` has exactly one neighbour, so the only edge
    containing `v` is `s(v, w)` for that neighbour `w`; two edges sharing a vertex are equal.

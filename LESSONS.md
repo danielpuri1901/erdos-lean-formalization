@@ -15,3 +15,7 @@ Add one line for each problem that cost you time, with the fix.
 - A `noncomputable` definition built from `sInf` cannot be evaluated by `decide`.
   Prove a bridge lemma to a computable version first, as `dom_num_eq_computable` does in `FormalConjecturesForMathlib/Combinatorics/SimpleGraph/Domination.lean`.
 - A theorem restated under the name of an imported declaration clashes; pick a new name.
+- `rcases h with rfl | h` can leave the old hypothesis visible under the reused name after the `rfl` substitution, which gives a type mismatch; give the new hypothesis a fresh name (`hm₁`, not `he₁`).
+- `Finite.exists_le_maximal (p := fun I : Finset V => ...) (a := ∅)` gives a maximal independent set or a maximal matching in one line; `Finset.card_mul_le_card_mul` does double counting.
+- `pkill -f <pattern>` also kills the shell running it when the pattern appears in its own command line; use `pgrep -a` and then `kill <pid>`.
+- When a branch-and-bound counts distinct sets with an exclusion mask, compute the pruning bound from coverage without the mask; otherwise it undercounts. Check counts against brute force first.

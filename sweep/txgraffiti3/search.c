@@ -71,6 +71,13 @@ int main(int argc, char **argv) {
   if (mode == 0 || mode == 2) M = size; else N = size;
   long revert_after = argc > 6 ? atol(argv[6]) : 1000000000000L;
   init();
+  if (argc > 7) { /* load start graph (same structure as the chosen mode) */
+    FILE *fp = fopen(argv[7], "r"); int nn, ne;
+    if (!fp || fscanf(fp, "%d %d", &nn, &ne) != 2) return 1;
+    N = nn; NE = ne;
+    for (int k = 0; k < NE; k++) if (fscanf(fp, "%d %d", &EA[k], &EB[k]) != 2) return 1;
+    fclose(fp); build_adj();
+  }
   int cur = objective(), best = cur;
   static int BA[4096], BB[4096]; long lastimp = 0;
   memcpy(BA, EA, sizeof EA); memcpy(BB, EB, sizeof EB);
