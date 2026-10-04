@@ -68,3 +68,17 @@ The prior-work check (2026-10-04, `scratchpad/prior-work.json` in the working se
 The four OEIS problems have no resolution anywhere, and the OEIS Open benchmark (arXiv 2608.11941) reports failed language-model attempts on them.
 Each session's notes are in `sweep/<id>/NOTES.md` on its branch `sweep/<id>`.
 
+## Stage 2: deep attempts (started 2026-10-04)
+
+Daniel approved two problems: `catchup` and `a000224`.
+Each runs as one long cloud session that follows `DEEP.md` on its branch `deep/<id>`.
+The session is the manager (Claude Fable 5.1 at effort xhigh); it keeps `deep/<id>/NOTEBOOK.md`, gives single items to fresh Opus workers with a 30-minute box, has every paper proof attacked by a second worker, and commits after each attempt.
+It stops at a Lean proof or disproof, after four hours, after ten attempts, or when a file `STOP` appears on the branch.
+`LESSONS.md` on these branches collects the lessons of all 16 sweep sessions.
+Budget: about 50 USD per problem; the credit meter stood at 135 USD at the start, and 20 USD stay in reserve.
+
+| id | lead from stage 1 | session | start (UTC) | result |
+|----|-------------------|---------|-------------|--------|
+| catchup | a "pairs" statement that would imply the conjecture, checked on 75,024 cases | session_01BgcwTHbspsRCH9oTH5owpW | 2026-10-04 about 10:20 | running |
+| a000224 | proved for even n and for products of two odd primes; odd n with three or more prime factors remains | session_014KabgfrVeJMmKfShp1xwzq | 2026-10-04 about 10:23 | running |
+
