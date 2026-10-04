@@ -2,12 +2,12 @@
 
 ```
 result: partial
-claim: (Lean) for every n < 1000, a n is not a base-3 palindrome. (Paper, not in Lean) Lemma P: x + rev3(x) is a base-3 palindrome iff every mirrored digit pair of x has d_i + d_{L-1-i} <= 2, or x is a palindrome with digits in {0,2}. Hence the conjecture is equivalent to "every term a(n) has a mirrored digit pair with sum >= 3".
-lean: Solution.lean, A077408Sweep.no_palindrome_below_1000 (uses revAux_eq, revBase_eq_revAux, a_succ_eq_step, check_sound, check_103_1000); no sorry; axioms propext, Classical.choice, Quot.sound
-computed: no palindrome among a(0..999999) (C digit arrays, search.c; final term has 597449 base-3 digits; checksum at step 5999 cross-checked with independent Python); Lemma P exhaustively for all x with <= 18 base-3 digits (lemma_p.c) and <= 13 digits (independent lemma_p.py); starts 1..102 all reach a palindrome within 18 steps
-next idea: Formalize Lemma P in Lean (carry normalization of a symmetric digit list plus the bridge IsBasePalindrome <-> digit list is a palindrome). That turns the conjecture into the cleaner statement "no term is carry-free", where carry-free means all d_i + d_{L-1-i} <= 2. Then look for an invariant on the carry pattern of x + rev3(x) that survives one more step, for example a statement about the carry word of a(n) (always containing some carried position whose mirror carries differently) that propagates under the map. The outer-digit window will not do (see dead ends).
+claim: (Lean) (1) for every n < 1000, a n is not a base-3 palindrome. (2) Lemma P: for x ≠ 0, if x + revBase 3 x is a base-3 palindrome then x is carry-free or x is itself a palindrome; conversely, carry-free x gives a palindromic x + revBase 3 x. "Carry-free" means every mirrored digit pair has d_i + d_{L-1-i} <= 2. (3) Reduction: (∀ n, ¬ IsBasePalindrome 3 (a n)) ↔ (∀ n, ¬ CarryFree (a n)). The conjecture itself stays open.
+lean: Solution.lean, namespace A077408Sweep: no_palindrome_below_1000, lemmaP, lemmaP_converse, conjecture_iff_not_carryFree (plus helpers revAux_eq, check_sound, pal_iff, noOverflow, overflow, carry_step); no sorry; #print axioms on all four: propext, Classical.choice, Quot.sound
+computed: no palindrome among a(0..999999) (C digit arrays, search.c; final term has 597449 base-3 digits; checksum at step 5999 cross-checked with independent Python); the sharp form of Lemma P (overflow case: x is a palindrome with digits in {0,2}) exhaustively for all x with <= 18 base-3 digits (lemma_p.c) and <= 13 digits (independent lemma_p.py); starts 1..102 all reach a palindrome within 18 steps
+next idea: Attack the cleaner equivalent statement "no a(n) is carry-free" (Lean: conjecture_iff_not_carryFree). Look for an invariant of the carry word of x + rev3(x) that survives one step. For example, show that a(n+1) always has a heavy mirrored pair whose position can be traced from the carry pattern of a(n); the carry pattern is not palindromic because a(n) is not carry-free. Any such invariant has to use the whole digit string: the depth of the first heavy pair is unbounded in practice (see dead ends).
 dead ends: (1) a self-similar block pattern as in the binary Lychrel proof for 10110_2: none up to 100000 steps; runs of equal digits per digit stay >= 0.397. (2) modular obstructions (mod 2, mod 4): palindromes of odd length take every residue. (3) a finite-state invariant on a bounded window of outer digits: the first heavy mirrored pair sits as deep as 38 from the ends (step 18963), with roughly geometric depth distribution. (4) speeding up the Lean kernel check with small constant fuel: same time, because fuel is not the bottleneck.
-confidence: high because the bounded claim is kernel-checked with standard axioms only; the search is cross-checked by two implementations; and Lemma P has a short paper proof that agrees with exhaustive enumeration up to 18 digits. The full conjecture remains open.
+confidence: high because every Lean claim builds with no sorry and only the standard axioms; the search is cross-checked by two implementations; and the paper proof of Lemma P agrees with exhaustive enumeration up to 18 digits. The full conjecture remains open.
 ```
 
 
@@ -124,9 +124,10 @@ The carries that reach the outer digits come from the chaotic middle.
 
 ### C4. Lemma status
 
-- Lemma P, no-overflow half: proved on paper.
-- Lemma P, overflow half: proved on paper.
-- Corollary (reduction): proved on paper.
+- Lemma P, no-overflow half: proved on paper and in Lean (`noOverflow`, used in `lemmaP`).
+- Lemma P, overflow half: proved on paper and in Lean (`overflow`, used in `lemmaP`).
+  Lean exports the weaker conclusion "x is a palindrome"; `overflow` itself proves s_m = 4c_{m+1}, which gives the digits in {0,2}.
+- Corollary (reduction): proved in Lean (`conjecture_iff_not_carryFree`).
 - "No term of the trajectory is carry-free": unknown. This is the open problem itself.
   Heuristically, a random term of length L is carry-free with probability about (2/3)^{L/2}, and Σ over the trajectory (L ≈ 0.6 k) converges fast.
 
@@ -142,10 +143,17 @@ The carries that reach the outer digits come from the chaotic middle.
 - Bound choice: 1000 steps builds in about 60 s. The kernel cost grows about quadratically: 200 steps take 10 s and 1000 take 60 s.
   A constant-fuel variant (`revAux 1000 x 0` with an in-checker bound `x < 3^F`) took the same time, so fuel is not the bottleneck.
   I kept 1000 so a checker can rebuild in about a minute. Decision recorded here.
-- Lemma P is not formalized. It would need a carry-normalization of digit lists and the bridge `IsBasePalindrome ↔ digits palindrome`. I estimate 200+ lines, which does not fit the remaining time. Decision: leave it on paper.
+7. Part 2, Lemma P and the reduction. It follows C1-C2 step by step and was written after the first report draft, starting at about minute 15.
+   - `dig n i := n / 3^i % 3` and `len n := (digits 3 n).length`.
+   - `ofDigits_div_pow_mod`: the digit function of `ofDigits` of a list with entries < 3.
+   - `dig_rev`, then `pal_iff`: IsBasePalindrome ↔ symmetry of `dig` below `len`.
+   - `noOverflow`, `overflow`: the two carry arguments, on abstract functions s, c, e.
+   - `carry x r k := (x % 3^k + r % 3^k) / 3^k` and `carry_step`: schoolbook addition.
+   - `lemmaP`, `lemmaP_converse`, `conjecture_iff_not_carryFree`.
+   - The whole `Solution` build takes about 70 s, dominated by `check_103_1000`.
 
 ## Phase D
 
-End clock: see the commit time. The report block is at the top. (Elapsed at first draft of this report: 14 minutes.)
+End clock: see the commit time. The report block is at the top. (Elapsed at first draft of this report: 14 minutes; the Lean formalization of Lemma P then took about 10 minutes more; final report at about 26 minutes.)
 Formalizing Lemma P (an estimated 200+ lines of carry and digit-list Lean) would not have fit safely in the remaining time.
 A half-finished `sorry` skeleton in `Solution.lean` would have muddied the sorry-free deliverable.

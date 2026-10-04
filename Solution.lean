@@ -91,7 +91,7 @@ theorem no_palindrome_below_1000 (n : Nat) (hn : n < 1000) : ¬ IsBasePalindrome
   have h := check_sound 1000 0 check_103_1000 n hn
   rwa [Nat.zero_add] at h
 
-/-! ## Part 2: Lemma P and the reduction -/
+/- ## Part 2: Lemma P and the reduction -/
 
 /-- Base-3 digit of `n` at position `i`. -/
 def dig (n i : Nat) : Nat := n / 3 ^ i % 3
