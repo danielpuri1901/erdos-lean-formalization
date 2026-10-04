@@ -26,24 +26,24 @@ Picker page for Daniel: https://claude.ai/artifact/JvActjQ4n1QcNZdh6PuDUz
 Credit meter before the sweep: 218 USD.
 Cap for stage 1: about 80 USD.
 
-| id | problem | session | start (UTC) | result | notes |
-|----|---------|---------|-------------|--------|-------|
-| a076495 | no x with sigma(x) mod x = 5 | session_01LBnzQfRuFdCotsipkQcjRJ | 2026-10-04 about 08:59 | running | |
-| txgraffiti3 | i(G) ≤ saturation number, regular graphs | session_01EqkqwWzxQHEaZLRSn5eUdC | 2026-10-04 about 09:01 | running | |
-| a077408 | reverse and add in base 3 from 103 | session_01Uo1A5phCnLCSea9M9ZnYCw | 2026-10-04 about 09:07 | running | |
-| txgraffiti2 | zero forcing ≤ α + 1, subcubic | session_01JHXrsTxR5rVVAgnc52RdL9 | 2026-10-04 about 09:08 | running | |
-| catchup | Catch-Up draw when the total is even | session_017GF8mFiJ9Z3JjXMTdSDt7F | 2026-10-04 about 09:08 | running | |
-| a004290 | 0/1 multiples largest at 10^k - 1 | session_015Tafu7joZkMCMmxsCnsLm8 | 2026-10-04 about 09:09 | running | |
-| wowii198a | Graffiti.pc 198a | session_01JLYDv82r94qbGAChXB13uL | 2026-10-04 about 09:10 | running | |
-| wowii40 | Graffiti.pc 40 | session_01DUem6d7jnUEkXAEGCXdx3s | 2026-10-04 about 09:10 | running | |
-| wowii61 | Graffiti.pc 61 | session_01AmuUB8918XumjcsLrWAgnY | 2026-10-04 about 09:11 | running | |
-| wowii19 | Graffiti.pc 19 | session_01RXednorb5oidqgp4JQTbmK | 2026-10-04 about 09:12 | running | |
-| eq677 | equation 677 versus 255, finite magmas | session_017FZYmEGV9ZMtezeequwDqH | 2026-10-04 about 09:12 | running | |
-| minmodulus | minimum modulus for valid sets | session_018KDCAoHvtu4cEMNDiW2Qjj | 2026-10-04 about 09:13 | running | |
-| wowii100 | Graffiti.pc 100 | session_01FXhruPF1fSKbuPxkB892Jz | 2026-10-04 about 09:14 | running | |
-| wowii133 | Graffiti.pc 133 | session_01JcW3GVzAM4MCTeZZaBpJAt | 2026-10-04 about 09:14 | running | |
-| tanarctan | tan-arctan sum never an integer | session_01RrupiiSSGNbR4s8QuhCM3Y | 2026-10-04 about 09:15 | running | |
-| a000224 | squares mod n and odd primes | session_01MPhFhb8LMKhPazoZhNS3nB | 2026-10-04 about 09:16 | running | |
+| id | problem | session | start (UTC) | result | what the session established | prior work found |
+|----|---------|---------|-------------|--------|------------------------------|------------------|
+| a076495 | no x with sigma(x) mod x = 5 | session_01LBnzQfRuFdCotsipkQcjRJ | 2026-10-04 about 08:59 | partial | Lean: any solution is a square, twice a square, or odd with σ(x) ≥ 3x+5. Computed: none below 10^21. | open; AI benchmark runs failed |
+| txgraffiti3 | i(G) ≤ saturation number, regular graphs | session_01EqkqwWzxQHEaZLRSn5eUdC | 2026-10-04 about 09:01 | partial | Lean: true for r = 1 and for dense graphs (4r ≥ 3n). No counterexample found up to 60 vertices by local search. | disproved elsewhere (cubic graph on 50 vertices) |
+| a077408 | reverse and add in base 3 from 103 | session_01Uo1A5phCnLCSea9M9ZnYCw | 2026-10-04 about 09:07 | partial | Lean: no palindrome in the first 1000 terms; an equivalent "carry-free" form. Computed: none in 10^6 steps. | open; AI benchmark runs failed |
+| txgraffiti2 | zero forcing ≤ α + 1, subcubic | session_01JHXrsTxR5rVVAgnc52RdL9 | 2026-10-04 about 09:08 | partial | Lean: Z ≤ n-1, K4 exclusion needed, prism is tight. Exhaustive to 17 vertices: no counterexample. | disproved elsewhere (24 vertices, arXiv 2607.23664) |
+| catchup | Catch-Up draw when the total is even | session_017GF8mFiJ9Z3JjXMTdSDt7F | 2026-10-04 about 09:08 | partial | Lean: true for N ≤ 8, and the converse for all N. Computed: true for N ≤ 28. New stronger "pairs" statement that would imply it. | partial elsewhere (N = 23, 24 computed) |
+| a004290 | 0/1 multiples largest at 10^k - 1 | session_015Tafu7joZkMCMmxsCnsLm8 | 2026-10-04 about 09:09 | partial | Lean: true for k ≤ 3 and a reduction. Computed: k ≤ 7. Found an infinite family with zero margin. | open; about 20 AI benchmark runs failed |
+| wowii198a | Graffiti.pc 198a | session_01JLYDv82r94qbGAChXB13uL | 2026-10-04 about 09:10 | partial | Lean: true except possibly for self-centered graphs of eccentricity 2 or 3; paper argument for those. | solved elsewhere (Cohen, Lean, September 2026) |
+| wowii40 | Graffiti.pc 40 | session_01DUem6d7jnUEkXAEGCXdx3s | 2026-10-04 about 09:10 | partial | Lean: true for trees and for graphs with a Hamiltonian path. Exhaustive to 11 vertices. | partial elsewhere (same range) |
+| wowii61 | Graffiti.pc 61 | session_01AmuUB8918XumjcsLrWAgnY | 2026-10-04 about 09:11 | partial | Lean: conditional cases (diameter ≤ 3, 5, 6, trees), given a classical residue bound. A stronger variant is false. | partial elsewhere |
+| wowii19 | Graffiti.pc 19 | session_01RXednorb5oidqgp4JQTbmK | 2026-10-04 about 09:12 | solved | Lean proof, accepted by the checker. | solved elsewhere (July 2026) |
+| eq677 | equation 677 versus 255, finite magmas | session_017FZYmEGV9ZMtezeequwDqH | 2026-10-04 about 09:12 | partial | Lean: no affine model with commuting coefficients separates the two laws. | partial elsewhere; a well-known hard problem |
+| minmodulus | minimum modulus for valid sets | session_018KDCAoHvtu4cEMNDiW2Qjj | 2026-10-04 about 09:13 | partial | Lean: no valid set below 2^(n-1) for any n, and the conjecture for n ≤ 4. Computed: n ≤ 8. | partial elsewhere (the matching construction) |
+| wowii100 | Graffiti.pc 100 | session_01FXhruPF1fSKbuPxkB892Jz | 2026-10-04 about 09:14 | solved | Lean proof, accepted by the checker. | solved elsewhere (August 2026) |
+| wowii133 | Graffiti.pc 133 | session_01JcW3GVzAM4MCTeZZaBpJAt | 2026-10-04 about 09:14 | partial | Lean: reduced to C4-free graphs with l(G) > 2. Exhaustive for C4-free graphs to 12 vertices. | partial elsewhere |
+| tanarctan | tan-arctan sum never an integer | session_01RrupiiSSGNbR4s8QuhCM3Y | 2026-10-04 about 09:15 | partial | Lean: true for 5 ≤ n ≤ 50000. Computed: no integer value for n ≤ 4·10^9. | partial elsewhere (paper and Lean lemmas) |
+| a000224 | squares mod n and odd primes | session_01MPhFhb8LMKhPazoZhNS3nB | 2026-10-04 about 09:16 | partial | Lean: true for even n and for products of two odd primes. Computed: no counterexample below 4·10^9. | open; AI benchmark runs failed |
 
 ## Findings so far (2026-10-04)
 
@@ -57,4 +57,14 @@ Conjecture 19 has a Lean-verified proof by Chen, Wang and Feng dated 2026-07-02,
 Conjecture 198a also has a claimed proof (Ben Cohen, July 2026, Lean-verified September 2026).
 formal-conjectures still tags all three as open, so the tag alone does not show that a problem is open.
 The candidate scan checked the tag and missed this; a prior-work check on all 20 candidates now runs before stage 2 picks anything.
+
+## Stage 1 result (2026-10-04)
+
+All 16 sessions finished within about 55 minutes of the first launch.
+Result: 2 `solved` (both already known elsewhere, both accepted by the checker) and 14 `partial`.
+No session reported a false success, and every session ran the statement check.
+Cost: the credit meter went from 218 to 135 USD, so the sweep cost 83 USD, about 5 USD per problem.
+The prior-work check (2026-10-04, `scratchpad/prior-work.json` in the working session) found that 5 of the 16 were already settled by others: three proved (19, 100, 198a) and two disproved (TxGraffiti 2 and 3).
+The four OEIS problems have no resolution anywhere, and the OEIS Open benchmark (arXiv 2608.11941) reports failed language-model attempts on them.
+Each session's notes are in `sweep/<id>/NOTES.md` on its branch `sweep/<id>`.
 
