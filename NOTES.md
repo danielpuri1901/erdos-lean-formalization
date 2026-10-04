@@ -67,3 +67,26 @@ Partial statement chosen (all n, no extra hypotheses):
 2. Fill: `Walk.IsPath.length_lt`, `Fintype.card (Finset (Fin n)) = 2^n`, `csSup_le'`/`Nat.sSup_le`-style lemma.
 3. Main theorem: case `n = 1` from the general bound; case `n ≥ 2` stays `sorry`.
    No `submit(snakeupper):` commit, because the proof is incomplete.
+
+## Final state (19:43 UTC, about 17 minutes of work)
+
+`lake build Solution` passes; the only `sorry` is the case `n ≥ 2` of `snake_le_two_pow`.
+
+Proved in `Solution.lean` (namespace `SnakeUpper`; axioms `propext`, `Classical.choice`, `Quot.sound`):
+
+- `snake_length_lt`: a snake of length `k` in `Hypercube n` has `k < 2^n` (`Walk.IsPath.length_lt` plus `Fintype.card_finset`).
+- `snake_lengths_bddAbove`: the set of snake lengths is bounded above by `2^n`.
+- `longest_le_two_pow_sub_one`: `LongestSnakeInTheBox n ≤ 2^n - 1` for every `n` (`csSup_le'`, which needs no boundedness in `ℕ`).
+- `snake_upper_bound_one`: the target for `n = 1`.
+- `snake_le_two_pow`: the case `n = 1` is proved; the case `n ≥ 2` is `sorry`.
+
+Missing, exactly: a proof that for `n ≥ 2` every induced path in `Hypercube n` has at most `2^(n-1)` edges.
+Any one of the following would be enough (each is equivalent to the bound, or implies it):
+
+- (a) for one direction `i`: #(snake edges in direction `i`) ≤ #(direction-`i` cube edges with no snake vertex) + 1;
+- (b) `|S ∩ C| ≤ 2^(n-2)` for the colour class `C` of `v_1`;
+- (c) the Hall-type matching of item 5 above (checked by computer for n ≤ 5), which gives (a).
+
+After that, the Lean wrapper is short: the bound for each snake gives the target through `csSup_le'`, as in `longest_le_two_pow_sub_one`.
+I made no submit commit, because the proof is not complete.
+The checker was not polled.
