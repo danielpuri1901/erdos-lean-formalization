@@ -24,3 +24,9 @@ Let `P r := {(m, n) : ℤ × ℤ | !₂[m, n] ∈ closedBall 0 r}`, so `N r = (P
 ## Decisions
 
 - Area argument (not columns): Mathlib already has the volume of a disc in `EuclideanSpace ℝ (Fin 2)`.
+
+## Status
+
+- All lemmas proved; `lake build Solution` passes with no warnings.
+- `#print axioms gauss_circle_error_le`: `propext`, `Classical.choice`, `Quot.sound`.
+- `type_of% @gauss_circle_error_le = type_of% @GaussCircleProblem.error_le` checks by `rfl`.

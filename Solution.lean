@@ -95,19 +95,57 @@ lemma volume_preimage_P (r : ℝ) : volume (rnd ⁻¹' P r) = (P r).ncard := by
   simp [volume_fibre]
 
 lemma ball_subset (r : ℝ) : ball (0 : EuclideanSpace ℝ (Fin 2)) (r - √2 / 2) ⊆ rnd ⁻¹' P r := by
-  sorry
+  intro x hx
+  rw [mem_ball_zero_iff] at hx
+  rw [Set.mem_preimage, mem_P]
+  have h1 := dist_rnd_le x
+  have h2 := norm_sub_norm_le (pt (rnd x)) x
+  rw [norm_sub_rev] at h2
+  linarith
 
 lemma subset_closedBall (r : ℝ) :
     rnd ⁻¹' P r ⊆ closedBall (0 : EuclideanSpace ℝ (Fin 2)) (r + √2 / 2) := by
-  sorry
+  intro x hx
+  rw [Set.mem_preimage, mem_P] at hx
+  rw [mem_closedBall_zero_iff]
+  have h1 := dist_rnd_le x
+  have h2 := norm_sub_norm_le x (pt (rnd x))
+  linarith
 
 lemma card_le (r : ℝ) (hr : 0 ≤ r) : ((P r).ncard : ℝ) ≤ π * (r + √2 / 2) ^ 2 := by
-  sorry
+  have h := measure_mono (μ := volume) (subset_closedBall r)
+  rw [volume_preimage_P, EuclideanSpace.volume_closedBall_fin_two,
+    ← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_mul (by positivity),
+    ← ENNReal.ofReal_natCast, ENNReal.ofReal_le_ofReal_iff (by positivity)] at h
+  linarith
 
 lemma le_card (r : ℝ) (hr : √2 / 2 ≤ r) : π * (r - √2 / 2) ^ 2 ≤ (P r).ncard := by
-  sorry
+  have h := measure_mono (μ := volume) (ball_subset r)
+  rw [volume_preimage_P, EuclideanSpace.volume_ball_fin_two,
+    ← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_mul (by positivity),
+    ← ENNReal.ofReal_natCast, ENNReal.ofReal_le_ofReal_iff (by positivity)] at h
+  linarith
 
 end GaussCircleSol
 
 theorem gauss_circle_error_le : type_of% @GaussCircleProblem.error_le := by
-  sorry
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with r hr
+  have hs : √2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hs1 : 1 ≤ √2 := by
+    rw [show (1 : ℝ) = √1 by simp]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  have hs2 : √2 ≤ 2 := by nlinarith
+  have h1 := GaussCircleSol.card_le r (by linarith)
+  have h2 := GaussCircleSol.le_card r (by linarith)
+  have hπ := Real.pi_pos
+  have hk : 0 ≤ π * (√2 * r - 1 / 2) := mul_nonneg hπ.le (by nlinarith)
+  have e1 : π * (r + √2 / 2) ^ 2 = π * r ^ 2 + π * (√2 * r) + π / 2 := by
+    ring_nf; rw [hs]; ring
+  have e2 : π * (r - √2 / 2) ^ 2 = π * r ^ 2 - π * (√2 * r) + π / 2 := by
+    ring_nf; rw [hs]; ring
+  have e3 : 2 * √2 * π * r = 2 * (π * (√2 * r)) := by ring
+  show |((GaussCircleSol.P r).ncard : ℝ) - π * r ^ 2| ≤ 2 * √2 * π * r
+  rw [abs_le, e3]
+  constructor
+  · linarith
+  · linarith
