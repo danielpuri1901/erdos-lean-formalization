@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Paper.ClaudesCycles
 
-open SimpleGraph
+/-! Solution for the claudecycles2 target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem cube_no_decomposition_m2 : type_of% @ClaudesCycles.cube_hamiltonian_arc_decomposition_impossible_m2 := by
   sorry
