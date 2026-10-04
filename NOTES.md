@@ -20,7 +20,7 @@ Library (`Solution/GiugaIff.lean`, copied from `origin/run/giuga`, accepted ther
 
 ## Plan
 
-- `Solution/GiugaIff.lean`: the `run/giuga` `Solution.lean` unchanged (library).
+- `Solution/GiugaIff.lean`: the `run/giuga` `Solution.lean` (library); only its module docstring changed.
 - `Solution.lean`: lemmas `two_not_mem`, `one_le_sum`, `sum_lt_one`, then the theorem.
 - Skeleton with `sorry`, build, then fill.
 
@@ -31,3 +31,9 @@ Library (`Solution/GiugaIff.lean`, copied from `origin/run/giuga`, accepted ther
 `#print axioms strong_giuga_nine_primes` gives `propext`, `Classical.choice`, `Quot.sound`, and
 `example : type_of% @AgohGiuga.agoh_giuga.variants.le_primeFactors_card_of_isStrongGiuga := strong_giuga_nine_primes` checks.
 No kernel `decide` is used; the only finite check is `interval_cases p` for p < 29.
+
+Submitted: commit d075839110ebf8b17aec22cc68e5ed0ba46bddc0 (`submit(giuga9): ...`) on `run/giuga9`.
+Verdict: not known. The checker is paused today, so per the user's instruction the status
+`comparator/giuga9` was not polled. Next step for a later session: read
+`gh api repos/danielpuri1901/erdos-lean-formalization/commits/d075839110ebf8b17aec22cc68e5ed0ba46bddc0/status`
+and act on `comparator/giuga9` (on failure, read its description, fix, resubmit).
