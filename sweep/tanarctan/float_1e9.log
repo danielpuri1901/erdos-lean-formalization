@@ -1,0 +1,12 @@
+not excluded: n=96696 x~9.999993e-01
+not excluded: n=212081 x~-2.283029e+05
+not excluded: n=212082 x~-3.350109e-07
+not excluded: n=212083 x~1.980141e+05
+not excluded: n=1020208 x~-1.105638e+05
+not excluded: n=1020210 x~-1.411598e+05
+not excluded: n=1020212 x~-1.951680e+05
+not excluded: n=1020214 x~-3.161139e+05
+not excluded: n=1020216 x~-8.312229e+05
+not excluded: n=1020217 x~2.228632e-07
+N=1000000000 S_N=21.024906157913944354 not excluded: 8734 (of 999999996)
+exit 0

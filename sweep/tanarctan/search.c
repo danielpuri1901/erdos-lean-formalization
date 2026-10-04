@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
   uint64_t N = strtoull(argv[1], 0, 10);
   int dump = argc > 2;
   uint64_t B = N + 2;                          /* sieve primes <= B; leftover > B is prime */
+  if (argc > 3) B = strtoull(argv[3], 0, 10);  /* testing only: a larger sieve bound (needs B >= N+2) */
   uint8_t *comp = calloc(B + 1, 1);
   for (uint64_t i = 2; i * i <= B; i++) if (!comp[i]) for (uint64_t j = i * i; j <= B; j += i) comp[j] = 1;
   uint64_t np = 0;

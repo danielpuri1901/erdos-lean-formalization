@@ -81,8 +81,23 @@ Validation of the C code against independent exact Python big integers:
 Results:
 - n ≤ 10^9 (`run_1e9.log`, segment size 2^24): the only survivors are n = 1, 2, 3, 4. So for 5 ≤ n ≤ 10^9, A_n ∤ B_n.
   This is computed, not proved: it relies on the correctness of `search.c`.
-- n ≤ 4·10^9 (`run_4e9.log`, segment size 2^25): running; the result goes in the report.
+- n ≤ 4·10^9 (`run_4e9.log`, segment size 2^25): see the report block at the top for the range reached.
   4·10^9 is about the limit where 1 + k^2 fits in a uint64.
+- Extra validation, with the sieve bound forced to 20002, 10^6 and 4·10^8 (third argument of `search`, testing only):
+  A_n mod q0 agrees for every n ≤ 20000, and gcd mod q0 agrees at every n divisible by 97 (207 points).
+  With bound 4·10^8 ≥ 20000^2 + 1, every prime is sieved directly. That is the code path the big runs use for small n.
+  Also: n ≤ 3000 with bound 9·10^6.
+- Independent cross-check (`floatcheck.c`, long double; non-rigorous: it uses no content formula and no modular arithmetic):
+  - x_n = -tan(S_n) for n even and cot(S_n) for n odd, with S_n = Σ arctan(1/k), summed with Kahan compensation.
+  - An integer value needs x_n to be an integer.
+  - For 5 ≤ n ≤ 10^9, all but 8734 n have |x_n| < 10^5 and x_n farther than 10^-6 from every integer (`float_1e9.log`).
+    So the float test alone excludes them.
+  - The 8734 others are excluded only by `search.c`.
+  - Examples: n = 96696 (x ≈ 0.9999993), n = 212082 (x ≈ -3.4·10^-7), n = 212081 (x ≈ -2.3·10^5).
+- Margin (`margin.py`, exact for n ≤ 3000): min over 5 ≤ n ≤ 9 of log10(|A_n|/c_n) is 1.28 (n = 5).
+  Over [10, 100] it is 3.65 (n = 10), over [100, 1000] it is 82.9 (n = 100), and over [1000, 3000] it is 1393 (n = 1000).
+  An integer value needs exactly 0.
+  The heuristic chance of a counterexample beyond n = 10 is about Σ_n c_n/|A_n|-scale, below 10^-3.
 
 A local obstruction was looked for and not found (on paper):
 - 2-adic: Z_n/2^floor(o/2) ≡ i^(t + o/2) (mod 2) when o is even, where t = #{k ≤ n : k ≡ 3 mod 4}.
