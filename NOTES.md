@@ -21,3 +21,8 @@ Python check: all four facts hold for n < 40.
 ## Plan
 
 All in `Solution.lean`, no kernel computation needed beyond tiny base cases.
+
+## Status
+
+All lemmas proved in `Solution.lean`; `#print axioms a112970_power_of_two` gave
+`[propext, Classical.choice, Quot.sound]`. Submitted.
