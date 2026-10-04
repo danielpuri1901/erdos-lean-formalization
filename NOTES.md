@@ -38,4 +38,4 @@ then pick a Pell solution with z ≥ max(M, 1); x ≥ z ≥ M, so C |x|^(1/2+δ)
 ## Status
 
 `Solution.lean` proves `hall_danilov` with no `sorry`; `#print axioms` shows only propext, Classical.choice, Quot.sound.
-Submitted as `submit(danilov): ...`.
+Submitted as commit 7db3bbc; `comparator/danilov` reported success ("Your solution is okay!") at 18:44 UTC on 2026-10-04.
