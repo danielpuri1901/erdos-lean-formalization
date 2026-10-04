@@ -1,3 +1,4 @@
+import Solution.Hard
 import Solution.Pairs
 import Solution.Cert11
 import Solution.Cert12

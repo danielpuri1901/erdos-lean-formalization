@@ -59,7 +59,9 @@ Route (lemma list, status in brackets):
 6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [BLOCKED after attempt 2: no small family exists; see D5]
 7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [certificates generated and checked in Python, attempt 5; Lean integration = attempt 7].
 8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [proved in Lean, attempt 6]
-9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [attempt 8]
+9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [proved in Lean, attempt 8]
+10. L10 the "≥ draw" halves GE: ∀ A, PairStarts A → (Even card → gv (pairUnion A) 0 ≠ loss) ∧ (Odd card → gv (pairUnion A) 1 ≠ loss). [open; computed inside {1..24}; attempt 9 looks for a pick rule]
+11. L11 final assembly in Lean: GE ∧ T2 ∧ T4 ⇒ PairsConj; GE ∧ T2 ∧ T4 ∧ PairsConj3 ⇒ target; `catchup_draw_le_16`. [attempt 10, after attempt 7]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
 (it tells soonest whether this route can work). In parallel one worker does L1 in Lean (needed by
@@ -180,8 +182,15 @@ Worker (opus): `mem_pairUnion`, `pairUnion_erase_erase` (removing a whole pair),
 by `Finset.strongInduction`. Tried: the paper proofs line by line. Blocked: nothing.
 Manager check: `lake build Solution.Pairs` exit 0, no banned words, axioms propext/Classical.choice/Quot.sound, statements as specified.
 Files: `Solution/Pairs.lean`; `Solution.lean` gets `import Solution.Pairs`.
-### Attempt 8 — Lean: the hard-case claim follows from T2 and T4 (`hard_of_T2_T4`), closing the formal reduction
-"GE(odd,1) ∧ T2 ∧ T4 ⇒ both ≤-draw halves of (P)" — running (deadline 1791112200)
+### Attempt 8 — Lean: the hard-case claim follows from T2 and T4 — result: proved-in-lean (2 min)
+Worker (opus), `Solution/Hard.lean`: `T2 : Prop := ∀ B, PairStarts B → Even B.card → 2 ∉ B → gv (pairUnion B) 2 ≠ win`,
+`T4 : Prop := ∀ B, PairStarts B → Odd B.card → (∀ b ∈ B, 4 ≤ b) → gv (insert 3 (pairUnion B)) 4 ≠ win`,
+`r6_set_eq` (set identity for the r6 landing), `hard_of_T2_T4 : T2 → T4 → ∀ A, PairStarts A → Odd A.card → ∀ a ∈ A, gv ((pairUnion A).erase a) (a−1) ≠ loss`,
+`pairsConj_le_halves_of_T2_T4 : (∀ A odd, gv (pairUnion A) 1 ≠ loss) → T2 → T4 → ∀ A, (Even → gv … 0 ≠ win) ∧ (Odd → gv … 1 ≠ win)`.
+Tried: the r6 case split, two `gv_ne_loss_of_move` steps. Blocked: nothing.
+Manager check: `lake build Solution.Hard` exit 0, no banned words, axioms propext/Classical.choice/Quot.sound, T2/T4 read and match F8.
+Files: `Solution/Hard.lean`; `Solution.lean` gets `import Solution.Hard`.
+### Attempt 9 — computational search for a pick rule for the "≥ draw" half of (P) — running (deadline 1791112400)
 ### Attempt 7 — integrate the N = 15, 16 certificates into `Solution/Cert15*.lean`, `Solution/Cert16*.lean` — running (deadline 1791112000)
 ### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
 Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
