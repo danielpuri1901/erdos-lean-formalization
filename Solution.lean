@@ -172,4 +172,153 @@ theorem caseA_of_lemma3 (G : SimpleGraph α) (h : G.Connected)
     ∃ a c : α, ∃ p : G.Walk a c, p.IsHamiltonian :=
   caseA_of_lemmas G h hb hnsc (fun u x y hne hadj hxy => lemma1_bip G h u x y hne hadj hxy) L3
 
+omit [Fintype α] [DecidableEq α] [Nontrivial α] in
+/-- A nonempty `G.Adj`-chain list is the support of a walk. -/
+theorem exists_walk_support_eq (G : SimpleGraph α) :
+    ∀ (l : List α), l ≠ [] → l.IsChain G.Adj → ∃ a c : α, ∃ p : G.Walk a c, p.support = l
+  | [], h, _ => absurd rfl h
+  | [a], _, _ => ⟨a, a, Walk.nil, rfl⟩
+  | a :: b :: t, _, hc => by
+    rw [List.isChain_cons_cons] at hc
+    obtain ⟨b', c, p, hp⟩ := exists_walk_support_eq G (b :: t) (List.cons_ne_nil _ _) hc.2
+    have hb : b' = b := by
+      have := p.cons_tail_support
+      rw [hp] at this
+      exact (List.cons.inj this).1
+    subst hb
+    exact ⟨a, c, Walk.cons hc.1 p, by rw [Walk.support_cons, hp]⟩
+
+omit [Fintype α] [DecidableEq α] [Nontrivial α] in
+/-- Every vertex at distance `k+1` from `u` has a neighbour at distance `k`. -/
+theorem exists_parent (G : SimpleGraph α) (h : G.Connected) (u s : α) (k : ℕ)
+    (hs : G.dist u s = k + 1) : ∃ w, G.Adj w s ∧ G.dist u w = k := by
+  obtain ⟨q, hq⟩ := h.exists_walk_length_eq_dist u s
+  have hadj : G.Adj (q.getVert k) s := by
+    have := q.adj_getVert_succ (i := k) (by omega)
+    rwa [show k + 1 = q.length by omega, Walk.getVert_length] at this
+  refine ⟨q.getVert k, hadj, ?_⟩
+  have h1 := dist_le (q.take k)
+  rw [Walk.take_length] at h1
+  have h2 : G.dist u s ≤ G.dist u (q.getVert k) + G.dist (q.getVert k) s := h.dist_triangle
+  have h3 : G.dist (q.getVert k) s = 1 := dist_eq_one_iff_adj.mpr hadj
+  have h4 : k ⊓ q.length = k := min_eq_left (by omega)
+  omega
+
+/-- Lemma 3. If every distance layer around `u` is a clique, `G` has a Hamiltonian path. -/
+theorem lemma3_hamPath (G : SimpleGraph α) (h : G.Connected) (u : α)
+    (hcl : ∀ x y : α, G.dist u x = G.dist u y → x ≠ y → G.Adj x y) :
+    ∃ a c : α, ∃ p : G.Walk a c, p.IsHamiltonian := by
+  classical
+  obtain ⟨v, hv⟩ := G.exists_edist_eq_eccent_of_finite u
+  have hecc : G.eccent u ≠ ⊤ :=
+    ne_top_of_le_ne_top (connected_iff_ediam_ne_top.mp h) eccent_le_ediam
+  set D := (G.eccent u).toNat with hDdef
+  have hdv : G.dist u v = D := by rw [SimpleGraph.dist, hv]
+  have hle : ∀ x, G.dist u x ≤ D := fun x => by
+    rw [SimpleGraph.dist]; exact ENat.toNat_le_toNat edist_le_eccent hecc
+  let Lk : ℕ → Finset α := fun k => Finset.univ.filter (fun x => G.dist u x = k)
+  have hLk : ∀ k x, x ∈ Lk k ↔ G.dist u x = k := fun k x => by simp [Lk]
+  have hpw : ∀ (k : ℕ) (A : List α), A.Nodup → (∀ x ∈ A, G.dist u x = k) → A.Pairwise G.Adj :=
+    fun k A hA hk => hA.pairwise_of_forall_ne fun a ha c hc hac =>
+      hcl a c ((hk a ha).trans (hk c hc).symm) hac
+  have hhead : ∀ (A B : List α) (y : α), y ∈ (A ++ B).head? → y ∈ A ∨ y ∈ B.head? := by
+    intro A B y hy
+    cases A with
+    | nil => exact Or.inr (by simpa using hy)
+    | cons a A' =>
+      left
+      simp at hy
+      simp [hy]
+  have key : ∀ m ≤ D, ∃ l : List α, l.IsChain G.Adj ∧ l.Nodup ∧
+      (∀ x, x ∈ l ↔ D - m ≤ G.dist u x) ∧ ∀ s ∈ l.head?, G.dist u s = D - m := by
+    intro m
+    induction m with
+    | zero =>
+      intro _
+      refine ⟨(Lk D).toList, ?_, Finset.nodup_toList _, ?_, ?_⟩
+      · exact (hpw D _ (Finset.nodup_toList _) fun x hx =>
+          (hLk D x).1 (Finset.mem_toList.1 hx)).isChain
+      · intro x
+        rw [Finset.mem_toList, hLk]
+        have := hle x
+        omega
+      · intro s hs
+        have := (hLk D s).1 (Finset.mem_toList.1 (List.mem_of_mem_head? hs))
+        omega
+    | succ m ih =>
+      intro hm
+      obtain ⟨l, hc, hnd, hmem, hhd⟩ := ih (by omega)
+      cases l with
+      | nil => exact absurd ((hmem v).2 (by omega)) List.not_mem_nil
+      | cons s t =>
+        have hs : G.dist u s = (D - (m + 1)) + 1 := by
+          have := hhd s rfl
+          omega
+        obtain ⟨w, hws, hw⟩ := exists_parent G h u s _ hs
+        have hAmem : ∀ x, x ∈ ((Lk (D - (m + 1))).erase w).toList ↔
+            x ≠ w ∧ G.dist u x = D - (m + 1) := fun x => by
+          rw [Finset.mem_toList, Finset.mem_erase, hLk]
+        refine ⟨((Lk (D - (m + 1))).erase w).toList ++ w :: s :: t, ?_, ?_, ?_, ?_⟩
+        · rw [List.isChain_append]
+          refine ⟨(hpw _ _ (Finset.nodup_toList _) fun x hx => ((hAmem x).1 hx).2).isChain,
+            hc.cons ?_, ?_⟩
+          · intro y hy
+            simp at hy
+            subst hy
+            exact hws
+          · intro x hx y hy
+            simp at hy
+            subst hy
+            have hxA := (hAmem x).1 (List.mem_of_mem_getLast? hx)
+            exact hcl x w (hxA.2.trans hw.symm) hxA.1
+        · rw [List.nodup_append]
+          refine ⟨Finset.nodup_toList _, List.nodup_cons.2 ⟨?_, hnd⟩, ?_⟩
+          · intro hwl
+            have := (hmem w).1 hwl
+            omega
+          · intro a ha c hc' hac
+            subst hac
+            have h1 := (hAmem a).1 ha
+            rcases List.mem_cons.1 hc' with h' | h'
+            · exact h1.1 h'
+            · have := (hmem a).1 h'
+              omega
+        · intro x
+          rw [List.mem_append, List.mem_cons, hAmem, hmem]
+          constructor
+          · rintro (⟨_, h'⟩ | h' | h')
+            · omega
+            · subst h'
+              omega
+            · omega
+          · intro hx
+            by_cases hxk : G.dist u x = D - (m + 1)
+            · by_cases hxw : x = w
+              · exact Or.inr (Or.inl hxw)
+              · exact Or.inl ⟨hxw, hxk⟩
+            · exact Or.inr (Or.inr (by omega))
+        · intro y hy
+          rcases hhead _ _ y hy with h' | h'
+          · exact ((hAmem y).1 h').2
+          · simp at h'
+            subst h'
+            exact hw
+  obtain ⟨l, hc, hnd, hmem, -⟩ := key D le_rfl
+  have hne : l ≠ [] := fun h0 => by
+    have := (hmem v).2 (by omega)
+    rw [h0] at this
+    exact List.not_mem_nil this
+  obtain ⟨a, c, p, hp⟩ := exists_walk_support_eq G l hne hc
+  refine ⟨a, c, p, fun x => ?_⟩
+  rw [hp]
+  exact List.count_eq_one_of_mem hnd ((hmem x).2 (by omega))
+
+/-- **Theorem A (formalized).** Conjecture 198a holds for every connected graph that is not
+self-centered, i.e. whose vertices do not all have the same eccentricity. -/
+theorem conjecture198a_of_not_selfCentered (G : SimpleGraph α) (h : G.Connected)
+    (hb : b G ≤ 2 + averageEccentricity G)
+    (hnsc : ∃ v w : α, G.eccent v ≠ G.eccent w) :
+    ∃ a c : α, ∃ p : G.Walk a c, p.IsHamiltonian :=
+  caseA_of_lemma3 G h hb hnsc fun u hcl => lemma3_hamPath G h u hcl
+
 end Sweep198a
