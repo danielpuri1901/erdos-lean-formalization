@@ -25,3 +25,5 @@ No kernel computation is needed.
 All lemmas are proved; `lake build Solution` passes with no `sorry`.
 `#print axioms complexity_of_three_pow` gave `[propext, Classical.choice, Quot.sound]` (the line was removed before submitting).
 The only snag: `nlinarith` could not prove `(1 + n)^3 ≤ 3 n^3` from `n ≥ 3` directly; substituting `n = t + 3` and `ring_nf` first fixed it.
+
+Verdict: `comparator/intcomplexity` = success ("Your solution is okay!") on commit a2f611d, about 7 minutes after the push.
