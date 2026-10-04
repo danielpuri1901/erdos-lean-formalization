@@ -19,3 +19,4 @@
 - Proof complete, no `sorry`; builds in about 9 s. Decision: C = 5, threshold X ≥ 1.
 - `#print axioms green66_trivial_bound`: propext, Classical.choice, Quot.sound.
 - `type_of% @green66_trivial_bound = type_of% @Green66.green_66.variants.trivial_bound := rfl` checks.
+- Checker verdict on 0d83e9e: `comparator/green66` success ("Your solution is okay!"), 18:39 UTC.
