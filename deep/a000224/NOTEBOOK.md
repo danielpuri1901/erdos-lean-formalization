@@ -36,16 +36,16 @@ Stage 1 (namespace `A224Sweep` in `Solution.lean`, all proved in Lean, no sorry)
 - L4 necessary condition `dvd_of_modEq_mul_prime`: q odd prime ∤ m, congruence at m·q ⇒ (q+1)/2 ∣ m²−1. [proved in Lean]
 
 Stage 2 route A (prime powers):
-- R1 (unit squares) for odd prime p, j ≥ 1:
+- R1 (unit squares) for odd prime p, j ≥ 1: [proved in Lean: `A224Deep.card_unit_squares`, Solution/A224/Units.lean]
   `2 * (((range (p^j)).filter (¬ p ∣ ·)).image (· ^2 % p^j)).card = p^j - p^(j-1)`.
   Proof: squaring is exactly 2-to-1 on residues coprime to p (fibres {x, p^j − x}), because
-  y² ≡ x² ⇒ (y−x)(y+x) ≡ 0 and p cannot divide both factors (else p ∣ 2x). [proved on paper]
-- R2 (non-unit squares) for p prime, k ≥ 0:
+  y² ≡ x² ⇒ (y−x)(y+x) ≡ 0 and p cannot divide both factors (else p ∣ 2x).
+- R2 (non-unit squares) for p prime, k ≥ 0: [proved in Lean: `A224Deep.card_nonunit_squares`, Solution/A224/Recursion.lean]
   `(((range (p^(k+2))).filter (p ∣ ·)).image (· ^2 % p^(k+2))).card = a (p^k)`.
   Proof: multiplication by p² is a bijection from squares mod p^k onto squares of multiples of p
-  mod p^(k+2) (Nat.mul_mod_mul_left). [proved on paper]
+  mod p^(k+2) (Nat.mul_mod_mul_left).
 - R3 (recursion) `2 * a (p^(k+2)) = p^(k+2) - p^(k+1) + 2 * a (p^k)` from R1+R2 and the disjoint
-  split of range (p^(k+2)) by p ∣ x. [proved on paper]
+  split of range (p^(k+2)) by p ∣ x. [proved in Lean: `A224Deep.two_mul_a_prime_pow_succ_succ`]
 - R4 (closed forms) by induction on j from R3 and `a_prime`, a 1 = 1:
   `2*(p+1) * a (p^(2j+1)) = p^(2j+2) + 2p + 1`, `2*(p+1) * a (p^(2j)) = p^(2j+1) + p + 2`. [proved on paper]
 - R5 (P3) for k ≥ 2: ¬ (p^k)² ≡ 1 [MOD a(p^k)(a(p^k)−1)].
@@ -75,10 +75,20 @@ Stage 2 route B (general reduction, then more families):
 - Relaxed semiprime system 2 ≤ u < v ≤ 20000 (no primality): 0 solutions (`relaxed.c`).
 - a(p^k) recursion checked against the direct definition in stage 1 for n ≤ 3000 (`search.c`, `direct.py`).
 - Small-case check of R4/R5 numbers: a(27) = 11, D = 10 = (3⁴−1)/8.
+- R3, R4, R5 checked against the direct definition for all odd p < 60 and p^k ≤ 4·10⁵: 0 failures
+  (`deep/a000224/check_recursion.py`).
+- Independent family search `deep/a000224/famq.c` (quadratic in w, 128-bit exact, Miller–Rabin on q)
+  reproduces stage 1 exactly for m odd ≤ 10⁶: 84,272,330 (m,k) pairs, 78,500 integer roots, 0 hits.
+  m odd ≤ 2·10⁶: 186,806,550 pairs, 148,935 roots, 0 hits (`famq_2e6.txt`).
 
 ## 4. Attempts
 
-(none yet)
+1. Items R1 (worker A) and R2+R3 (worker B), in parallel. Both: proved-in-lean, first build passed.
+   Files: Solution/A224/Units.lean, Solution/A224/Recursion.lean. Manager check: merged (stub R1 in
+   Recursion.lean deleted, `import Solution.A224.Units` added), `lake build Solution` passes, grep finds
+   no sorry/admit/axiom/native_decide, `#print axioms` on all three: propext, Classical.choice, Quot.sound.
+   Also moved the stage 1 content of Solution.lean unchanged into Solution/A224/Sweep.lean so that
+   submodules can import it. Minutes used: about 4 (workers) + 6 (manager). Wall clock so far: 10 min.
 
 ## 5. Dead ends
 

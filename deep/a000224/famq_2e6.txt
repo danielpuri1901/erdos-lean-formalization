@@ -1,0 +1,1 @@
+m odd in [3,2000000]: 999999 values, (m,k) pairs 186806550, integer roots 148935, prime-q hits 0
