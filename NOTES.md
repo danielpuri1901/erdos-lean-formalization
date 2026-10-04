@@ -36,4 +36,5 @@ Build: `Solution.Lower` 8 s (two tiny `decide +kernel` checks on 5 vertices), `S
 
 ## Verdict
 
-Pending.
+Submitted commit `3bb9b1387aca7d94ef5c5db5f3995a52e4a13dad`; `comparator/ramsey33` reported
+`success` ("Your solution is okay!") on 2026-10-04.
