@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.OEIS.«112970»
 
-open SimpleGraph
+/-! Solution for the a112970 target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem a112970_power_of_two : type_of% @OeisA112970.conjecture1_value := by
   sorry
