@@ -4,7 +4,9 @@ claim: Conjecture 133 (exact Lean statement, same `let` form) holds for every co
   >= 2 vertices that (a) contains a 4-cycle; or (b) has l(G) <= 2; or (c) has a vertex adjacent to
   all others (radius 1); or (d) satisfies l(G)^cC4 <= diam + 1 - rad; or (e) has l(v) >= k >= 2
   for all v and rad + l(G) <= k + 2, in particular (f) has radius <= 2 and l(v) = k >= 2 for all v
-  (all diameter-2 Moore graphs: C5, Petersen, Hoffman-Singleton, a 57-regular one if it exists).
+  (on paper every diameter-2 Moore graph meets (f): girth 5 gives l(v) = deg v = k, radius 2;
+  so C5, Petersen, Hoffman-Singleton and a 57-regular Moore graph if it exists; the Lean theorem
+  takes (f) as hypotheses and does not formalize Moore graphs).
   Also proved: path >= diam+1 >= rad+1 (any connected G); path >= rad+2 (C4-free G with a vertex
   having two non-adjacent neighbours); path >= k+2 (C4-free G with l(v) >= k >= 2 for all v).
   The conjecture is reduced to C4-free graphs with l(G) > 2; that case is NOT proved.
@@ -17,7 +19,7 @@ lean: Solution.lean, namespace Wowii133Sweep, builds with no sorry (axioms: prop
   geodesic_shortcut; fidelity_hasC4, fidelity_l_le_two, fidelity_reduction state their results
   with type `type_of% (conjecture133 G h)`, so the restatement is literally the imported statement.
 computed: EXHAUSTIVE (exhaust.c, canonical augmentation, counts 1,2,3,8,19 for n=2..6 match an
-  independent brute force): all connected C4-free graphs n=2..11 (n=9: 740, n=10: 3389,
+  independent brute force): all connected C4-free graphs n=2..12 (n=9: 740, n=10: 3389,
   n=11: 18502, n=12: 120221): 0 failures; ties only K2, K3, C5, C6 and one graph at n=10, which
   is the Petersen graph (a known tie). n=13: see the Phase D note at the end.
   HEURISTIC: cycles C3..C11; Petersen; Hoffman-Singleton; ER_q polarity graphs
@@ -34,14 +36,14 @@ next idea: The open case is C4-free with l(G) > 2: show path >= rad + 3 when l(G
   argument modelled on the near-extremal families: double stars (rad 2, path 4, l -> 2), theta
   graphs theta(3,k) (two hubs joined by k paths of length 3: rad 3, path 6, l = 3k/(k+1) -> 3,
   margin 3/(k+1)), and Petersen (exact tie, l = 3). A counterexample must beat these limits;
-  search "hub + C4-free gadget" constructions and exhaustive n=12,13.
+  search "hub + C4-free gadget" constructions and run the exhaustive check at n=14.
 dead ends: Pointwise greedy alone (needs min_v l(v), not the average). Extending only at the far
   end of a geodesic beyond one step (later steps can lose 2 components per step, giving only
   ~rad + l/2). Per-vertex inequality path >= rad + l(v) is false (stars). Annealing on
   rad + l - path drifts to trees; restricted to l > 2 it drifts to theta(3,k). Edge-switch chain
   never reached girth 5 for 4-regular n<=22 or 5-regular n=30..40.
 confidence: high for the Lean special cases (they build, axioms checked) and for the exhaustive
-  n<=11 C4-free check (cross-checked counts n<=6); medium that the conjecture is true (margins go
+  n<=12 C4-free check (cross-checked counts n<=6); medium that the conjecture is true (margins go
   to 0 along theta(3,k) and double stars, so it is sharp).
 ```
 
@@ -177,9 +179,9 @@ Annealing restricted to l(G) > 2 (`anneal3`, n=11..24) converged to theta(3,k)-l
 `exhaust.c`: connected C4-free graphs by adding a vertex with neighbourhood S (valid iff no vertex
 of G has two neighbours in S) to connected C4-free graphs on n-1 vertices; dedup by an exact
 canonical form (minimum adjacency code over permutations preserving an isomorphism-invariant
-ordered partition; an imperfect invariant only costs time, never completeness). Counts 1,1,2,3,8,19
-for n=1..6... (n=2..6 cross-checked against `bruteforce_count.py`), then 57, 186, 740, 3389, 18502,
-120221 for n=7..12. Each graph checked exactly (`n*(path-rad) >= sum_v l(v)` in integers, general
+ordered partition; an imperfect invariant only costs time, never completeness). Counts 1, 2, 3, 8, 19
+for n=2..6 (cross-checked against the labelled brute force `bruteforce_count.py`), then 57, 186,
+740, 3389, 18502, 120221 for n=7..12. Each graph checked exactly (`n*(path-rad) >= sum_v l(v)` in integers, general
 brute-force indepNum, exact DFS path): 0 failures n<=12. Run time n=12: about 5 minutes.
 `exhaust13.c`: final level n=13 without dedup (every extension checked, redundantly), split over
 4 processes by parent index; skips graphs with sum_v l(v) <= 2n (covered by the Lean theorem
