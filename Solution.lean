@@ -86,7 +86,34 @@ theorem dean_three_fan [DecidableRel G.Adj] (hG : 3 ≤ G.minDegree) :
       (∀ w, G.Adj a w → ∃ i, 1 ≤ i ∧ i ≤ p.length ∧ p.getVert i = w ∧ i % 3 ≠ 2) ∧
       (∀ i j, i < j → j ≤ p.length → G.Adj a (p.getVert i) → G.Adj a (p.getVert j) →
         (j - i) % 3 ≠ 1) := by
-  sorry
+  have : Nonempty V := by
+    by_contra hV
+    rw [not_nonempty_iff] at hV
+    have : Subsingleton V := ⟨fun x => isEmptyElim x⟩
+    rw [minDegree_of_subsingleton] at hG
+    omega
+  by_cases hc : ∃ m ∈ G.cycleLengths, 3 ∣ m
+  · exact Or.inl hc
+  right
+  have hc' : ∀ m ∈ G.cycleLengths, ¬ 3 ∣ m := fun m hm hd => hc ⟨m, hm, hd⟩
+  obtain ⟨a, b, p, hp, hmax⟩ := exists_longest_path (G := G)
+  have pos : ∀ i, G.Adj a (p.getVert i) → 1 ≤ i := by
+    intro i hai
+    rcases Nat.eq_zero_or_pos i with rfl | h
+    · rw [Walk.getVert_zero] at hai; exact (G.irrefl hai).elim
+    · exact h
+  refine ⟨a, b, p, hp, hmax, hG.trans (G.minDegree_le_degree a), ?_, ?_⟩
+  · intro w hw
+    obtain ⟨i, hi, hil⟩ := Walk.mem_support_iff_exists_getVert.mp (nbr_mem_support p hp hmax hw)
+    have hai : G.Adj a (p.getVert i) := by rw [hi]; exact hw
+    refine ⟨i, pos i hai, hil, hi, fun hmod => ?_⟩
+    have h2 : 1 < i := by omega
+    have h01 : G.Adj a (p.getVert 1) := by
+      have := p.adj_getVert_succ (i := 0) (by omega)
+      rwa [Walk.getVert_zero] at this
+    exact hc' _ (fan_cycle p hp le_rfl h2 hil h01 hai) (by omega)
+  · intro i j hij hj hai haj hmod
+    exact hc' _ (fan_cycle p hp (pos i hai) hij hj hai haj) (by omega)
 
 end DeanThree
 

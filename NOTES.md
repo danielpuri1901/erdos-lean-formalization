@@ -43,6 +43,18 @@ Lean plan:
 - `fan_cycle`: for `1 ≤ i < j ≤ p.length` with `a ~ v_i`, `a ~ v_j`: `j - i + 2 ∈ G.cycleLengths`
   (cycle `a → v_j → … → v_i → a`, `Walk.cons_isCycle_iff`). With `i = 1` this gives `j + 1`.
 
+## Status at stop (about 35 of 40 minutes used)
+
+Proved in `Solution.lean`, no `sorry`, axioms `propext`, `Classical.choice`, `Quot.sound` only:
+
+- `DeanThree.exists_longest_path`, `DeanThree.nbr_mem_support`, `DeanThree.fan_cycle`;
+- `DeanThree.dean_three_fan`: for `3 ≤ G.minDegree`, either `∃ m ∈ G.cycleLengths, 3 ∣ m`, or there
+  is a longest path `p : G.Walk a b` with `3 ≤ G.degree a`, every neighbour of `a` equal to
+  `p.getVert i` with `1 ≤ i ≤ p.length` and `i % 3 ≠ 2`, and `(j - i) % 3 ≠ 1` for any two neighbour
+  indices `i < j`.
+
+Not proved: `dean_three` itself still ends in `sorry`, so there is no `submit(dean3):` commit.
+
 ## What is missing for the full theorem
 
 The combinatorial core of Chen–Saito: a reason why the fan pattern `1,…,1,0,…,0` (mod 3) cannot hold
