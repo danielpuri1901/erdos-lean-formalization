@@ -1,3 +1,5 @@
-/-! Sweep work goes here: import the problem module, then build with `lake build Solution`. -/
+import FormalConjectures.OEIS.«77408»
+
+/-! Sweep work for a077408. -/
 
 theorem solution_placeholder : True := trivial
