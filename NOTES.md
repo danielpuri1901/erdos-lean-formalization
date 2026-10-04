@@ -37,3 +37,8 @@ All proved, no `sorry`; `#print axioms ramsey_3_4` gives `propext, Classical.cho
 `type_of% @RamseyNumbers.ramsey_number_three_four = type_of% @ramsey_3_4` by `rfl`.
 Build: `Solution.Lower` 9 s (two tiny `decide +kernel` checks on 8 vertices), `Solution.Upper` 10 s,
 `Solution` 7 s.
+
+## Verdict
+
+Submitted commit `43a345a7d83b4de94200ff82780eb80465508e61`; `comparator/ramsey34` reported
+`success` ("Your solution is okay!") at 20:08 UTC on 2026-10-04, about 8 minutes after the push.
