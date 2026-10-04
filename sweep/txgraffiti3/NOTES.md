@@ -42,3 +42,12 @@ Small cases reproduced (own code): `eval.h` (C, exact branch and bound for i and
 checked against `brute.py` (independent exhaustive Python) on 130 graphs: C_3..C_12 and
 120 random r-regular graphs (r = 1..5, n <= 12). 0 mismatches, 0 counterexamples.
 i(C_n) = mu*(C_n) = ceil(n/3) for n = 3..12, as in the problem file.
+
+## Phase B: search (in progress)
+
+Structured family ("extremal for mu*"): r-regular graphs with a matching M of m edges whose
+vertex set induces only M, the other vertices U independent, every matched vertex has r-1
+neighbours in U, every U vertex r neighbours in V(M). Then M is maximal, so mu* <= m, and
+n = 2m(2r-1)/r, which is the smallest n allowed by the bound mu* >= nr/(2(2r-1)).
+A counterexample here only needs i(G) > m. Code: `search.c` mode 0 (random start plus
+endpoint-swap hill climbing on i - m, accepting ties and 0.5% of worse moves).
