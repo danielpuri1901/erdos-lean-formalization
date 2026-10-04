@@ -158,6 +158,9 @@ Tried: N = 4q+r with interval_cases; set equalities by ext + parity split + omeg
 Manager check: build exit 0, no banned words, axioms propext/Classical.choice/Quot.sound; definitions read and match (P),(P3).
 Files: `Solution/Reduction.lean`, `Solution.lean` (import line).
 
+### Attempt 4 — certificate apparatus (`Solution/Cert.lean`) + N = 11, 12 — running (deadline 1791111433)
+### Attempt 5 — C generator for N = 15, 16 certificates in the agreed `Cert` syntax, staged in `deep/catchup/certgen/out/` — running (deadline 1791111433)
+
 ## 5. Dead ends
 
 - Equal-sum pairs ({a, c−a} with common sum c, mirror pairs included) are not a drawing family: 121 of 632 fail inside {1..14} (manager, `gv.py`). The stage 1 'mirror pairs inside {1..20} are draws' fact was specific to c = 21.
