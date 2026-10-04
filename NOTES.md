@@ -26,3 +26,4 @@ Skeleton with sorries in Solution.lean, then fill one at a time.
 
 `Solution.lean` proves `strong_giuga_iff` with no `sorry`; `#print axioms` gives `propext`, `Classical.choice`, `Quot.sound`.
 Built in about 12 s. Submitted with a `submit(giuga):` commit.
+Verdict: `comparator/giuga` = success ("Your solution is okay!") on commit ba3ffba, first submission.
