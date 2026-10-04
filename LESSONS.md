@@ -15,3 +15,7 @@ Add one line for each problem that cost you time, with the fix.
 - A `noncomputable` definition built from `sInf` cannot be evaluated by `decide`.
   Prove a bridge lemma to a computable version first, as `dom_num_eq_computable` does in `FormalConjecturesForMathlib/Combinatorics/SimpleGraph/Domination.lean`.
 - A theorem restated under the name of an imported declaration clashes; pick a new name.
+- eq677: `simp only [Magma.op]` makes no progress on a `letI` instance; use an `@[reducible] def` magma, state goals as `@Equation677 V (myMagma ..)`, and unfold with `dsimp only [myMagma, Magma.op]`.
+- eq677: after unfolding module expressions (`a • x + ...`), the `module` tactic closes them; `ring_nf; abel` did not.
+- eq677: `noncomm_ring` cannot use hypotheses such as `b * b⁻¹ = 1`; derive `∀ x, c * (b * x) = x` and alternate `rw [show _ = _ by noncomm_ring, ecb]` steps.
+- eq677: `IsUnit.mul_right_eq_zero` cancels a unit left factor in a non-commutative ring.

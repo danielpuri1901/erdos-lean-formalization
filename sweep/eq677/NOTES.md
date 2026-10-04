@@ -1,3 +1,48 @@
+```
+result: partial
+claim: (Lean) Affine models never separate 677 from 255 when the coefficients commute:
+  for any commutative ring R, R-module V, a b : R, c : V, the magma x◇y = a•x + b•y + c on V
+  satisfies 677 → 255 (covers every affine model on an abelian group with AB = BA, in particular
+  every affine model on every Z_n). (Lean) In any ring, if B is a unit, BA + B²AB = 1 and
+  A + B²A² + B³ = 0, then q(B)(B³A + BA − 1) = 0 and q(B)·o(B) = 0 with q = t³−t−1,
+  o = t⁸+2t⁶+t⁴+t²+t+1; if moreover q(B) is a unit then A = −B−B³+B⁴−2B⁵+B⁶−B⁷ and
+  A³ + A²B + AB + B = 1. (Paper only, not Lean) every affine 677 model x◇y = Ax+By+c on a
+  finite-dimensional vector space over any field, with A, B not assumed to commute, has AB = BA
+  and hence satisfies 255. The open problem itself is not resolved.
+lean: Solution.lean — Eq677Sweep.affine_eq677_imp_eq255, Eq677Sweep.moduleAffine_eq677_imp_eq255,
+  Eq677Sweep.star_relation, Eq677Sweep.star_star_relation, Eq677Sweep.linear_eq255_of_q_unit
+  (all build with no sorry; #print axioms: propext, Quot.sound only).
+computed: (all: no counterexample; every 677 model found satisfies 255)
+  - exhaustive tables, orders 1–6 (order 5: one iso class; order 6: no 677 model at all);
+  - translation-invariant x◇y = x·f(x⁻¹y), all permutations f, groups C5–C13, C2², C2³, C3²,
+    C2×C4, D6, D8, Q8, D10, A4, D12, C2×C6;
+  - affine Ax+By+c on F_p^k, all A, B (B up to conjugacy), all c: k=1 p≤13; k=2 p≤11;
+    k=3 p≤13; k=4 p∈{2,3} complete, p=5 all but 5 B's; k=5 p=2 complete, p=3 all but 2 B's;
+    k=6 p=2 all but 2 B's; every solution found has AB = BA;
+  - char 5, B with sole eigenvalue 2, all Jordan types k ≤ 4: no 677 solution;
+  - cocycle extensions (x,a)◇(y,b) = (x◇y, αa+βb+θ(x,y)), fiber F_p, p∈{5,7,11,13}:
+    72 base/fiber pairs over linear Z_q bases (q∈{5,7,11,13}), then 56 second-level extensions
+    over non-trivial extensions of order 35–65; new non-medial (so non-affine) 677 models of
+    orders 35, 49, 65, ... appear, all satisfy 255, all are right-cancellative;
+  - rows drawn from AGL(1,p) (p = 5,7,11,13) and PGL(2,p) on p+1 points (p = 5, 7):
+    models only in the AGL cases, all satisfy 255; PGL(2,5) (order 6) and PGL(2,7) (order 8): none.
+next idea: The only affine case left open is non-elementary abelian groups (e.g. Z_{p²}^k) with
+  non-commuting A, B; the (★)/(★★) machinery plus a p-adic filtration argument should close it,
+  giving "no affine counterexample at all". For the real problem, every model found (including
+  non-affine extensions) is right-cancellative; checking and then trying to prove "finite 677 ⇒
+  quasigroup" looks like the most promising structural step towards a proof, while for a
+  counterexample the natural next family is extensions whose fiber coefficients depend on the
+  base element (677 becomes polynomial rather than linear in the unknowns).
+dead ends: blind backtracking beyond order 6 (order 6 already 5·10⁷ nodes, no symmetry breaking);
+  truncated linear algebra for non-commutative ideal membership (no certificate up to word
+  length 9 without B⁻¹, 6 with B⁻¹; the useful relations have degree 7–11 and were found by
+  rewriting instead); 2-eigenvalue diagonal-block non-commuting affine models (impossible in every
+  characteristic, unit-norm argument); translation-invariant models over groups up to order 13.
+confidence: high for the Lean theorems (machine-checked); medium-high for the paper theorem on
+  vector spaces (each step written out, numeric ingredients computed twice where possible);
+  no claim about the open problem, which is not settled by any of this.
+```
+
 # eq677 sweep notes
 
 start: 1791105215 (date -u +%s), 2026-10-04 09:13 UTC
@@ -165,3 +210,16 @@ solution of g1; for k ≤ 4 none satisfies g2 (as the proof predicts).
   677 models, e.g. order 35, 55, 77, 65), but every cocycle satisfies 255.
 - Level 2: random non-trivial extensions of order ≤ 70 as bases, extended again by every fiber:
   every cocycle satisfies 255 (see batch.log).
+
+## Lean summary (Solution.lean, namespace Eq677Sweep)
+
+- `affine_eq677_imp_eq255`: x◇y = a*x + b*y + c on a commutative ring: 677 → 255
+  (`linear_combination` with the integer certificates P, Q, C0, C1 above).
+- `moduleAffine_eq677_imp_eq255`: x◇y = a•x + b•y + c on an R-module, R commutative: 677 → 255.
+- `star_relation`: (★) in any ring with B a unit.
+- `star_star_relation`: (★★) q(B)·o(B) = 0.
+- `linear_eq255_of_q_unit`: if q(B) is also a unit, A = u(B) with u from the Bezout identity
+  u·(t³+t) + (1 − t + t²)·o = 1 (bezout.py), and A³ + A²B + AB + B = 1
+  (T(u(t), t) − 1 = w(t)·o(t), w of degree 13).
+The magma-level version for non-commuting A, B (needs End(V) bookkeeping and the eigenspace
+argument of the paper theorem) is not formalized.
