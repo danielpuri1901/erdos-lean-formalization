@@ -57,7 +57,8 @@ Route (lemma list, status in brackets):
    which are computed-only and do not close. [reduced to T2, T4 (computed only)]
 5. L5 (P) "≥ draw" halves (mover has a good pick). No fixed rule works. [open, key]
 6. L6 a closed strategy family F ⊇ pairs positions on which an induction closes L4 and L5. [BLOCKED after attempt 2: no small family exists; see D5]
-7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 (attempt 4) and 15, 16 (attempts 5–6) by kernel-checked strategy trees. [open]
+7. L7 certificates: `value (Icc 1 N) = draw` for N = 11, 12 [proved in Lean, attempt 4: `catchup_draw_11`, `catchup_draw_12`] and 15, 16 [certificates generated and checked in Python, attempt 5; Lean integration = attempt 7].
+8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [attempt 6]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
 (it tells soonest whether this route can work). In parallel one worker does L1 in Lean (needed by
@@ -158,7 +159,21 @@ Tried: N = 4q+r with interval_cases; set equalities by ext + parity split + omeg
 Manager check: build exit 0, no banned words, axioms propext/Classical.choice/Quot.sound; definitions read and match (P),(P3).
 Files: `Solution/Reduction.lean`, `Solution.lean` (import line).
 
-### Attempt 4 — certificate apparatus (`Solution/Cert.lean`) + N = 11, 12 — running (deadline 1791111433)
+### Attempt 4 — certificate apparatus (`Solution/Cert.lean`) + N = 11, 12 — result: proved-in-lean (8 min)
+Worker (opus): `gvL` (fuel list copy of `gv`), `gv_eq_gvL`, `value_Icc_eq_gvL`; `Cert`/`CertList` mutual inductive;
+`chkGe`/`chkLe`/`chkLeList` (mutual structural recursion, Bool); `chkGe_sound : chkGe l g c = true → gvL n l g ≠ loss`,
+`chkLe_sound : … → gvL n l g ≠ win` (induction on the fuel, cases on the certificate); `value_Icc_eq_draw_of_certs`.
+`Solution/Cert11.lean`, `Solution/Cert12.lean`: generated minimal certificates (`deep/catchup/cert/gen.py`) and
+`catchup_draw_11 : value (Icc 1 11) = .draw`, `catchup_draw_12 : value (Icc 1 12) = .draw` by `decide +kernel`.
+Timings: kernel 3.3 s (N=11, both sides), 3.65 + 4.18 s (N=12); module builds 28 s / 75 s; about 0.65 ms per node.
+Deviation (semantics unchanged): leaf cases use `l.isEmpty`; memberships use `decide (x ∈ l)`.
+Manager check: `lake build Solution` exit 0 (8942 jobs); no banned words; `#print axioms` for both theorems: propext,
+Classical.choice, Quot.sound; the root statements are checked at `List.range' 1 N`, gap 0, and chained through
+`value_Icc_eq_gvL` and `gvL_eq_draw_of_certs`. Files: `Solution/Cert.lean`, `Solution/Cert11.lean`, `Solution/Cert12.lean`,
+`deep/catchup/cert/gen.py`.
+### Attempt 6 — partner-reply lemmas in Lean (`Solution/Pairs.lean`): L3 and the easy half of L4, and
+`pairsConj_le_halves` (the "≤ draw" halves of (P) follow from the "≥ draw" half at odd k, gap 1, plus the hard-case claim) — running (deadline 1791111803)
+### Attempt 7 — integrate the N = 15, 16 certificates into `Solution/Cert15*.lean`, `Solution/Cert16*.lean` — running (deadline 1791112000)
 ### Attempt 5 — C generator for N = 15, 16 certificates — result: done (3 min)
 Worker (opus), `deep/catchup/certgen/gen.c` (bottom-up over bitmask and gap, minimal sizes, emits Lean terms) and
 `check.py` (independent Python implementation of the checkers with a parser; mutation-tested). Emitted and verified

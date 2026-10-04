@@ -7,3 +7,12 @@ info: Solution/Gap.lean:134:0: 'CatchUpDeep.best_eq_loss_iff' depends on axioms:
 info: Solution/Reduction.lean:119:0: 'CatchUpDeep.catchup_of_pairsConj' depends on axioms: [propext, Classical.choice, Quot.sound]
 ℹ [8939/8942] Built Solution.Cert11 (28s)
 info: Solution/Cert11.lean:26:0: 'CatchUpDeep.catchup_draw_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+ℹ [8940/8942] Built Solution.Cert12 (75s)
+info: Solution/Cert12.lean:26:0: 'CatchUpDeep.catchup_draw_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+ℹ [8941/8942] Built Solution (50s)
+info: Solution.lean:219:0: 'CatchUpSweep.catchup_draw_le_8' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:220:0: 'CatchUpSweep.valueAux_eq_valL' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:221:0: 'CatchUpSweep.value_ne_draw_of_odd' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Solution.lean:222:0: 'CatchUpSweep.catchup_draw_iff_le_8' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (8942 jobs).
+exit 0 1791110067
