@@ -1,3 +1,48 @@
+```
+result: partial
+claim: (Lean, no sorry) For a connected graph G on a Nontrivial finite type:
+  (1) α(G) + 1 ≤ f(G);  (2) diam ≥ 5 → α(G) + 2 ≤ f(G);  (3) ⌊(diam+1)/2⌋ ≤ n - α(G).
+  Hence, under the hypothesis residue G ≤ indepNum G (the Favaron–Mahéo–Saclé theorem,
+  from memory, unverified, NOT formalized), conjecture 61 holds when diam ≤ 3, when
+  diam ∈ {5, 6}, when G is a tree, and more generally when n - f + ⌈diam/3⌉ ≤ ⌊(diam+1)/2⌋.
+  On paper (not in Lean): f ≥ α + ⌈diam/4⌉, sharp; with FMS this also covers diam = 9.
+  The unconditional conjecture is NOT proved or disproved.
+lean: Solution.lean, namespace Wowii61Sweep, builds with no sorry, axioms only
+  propext/Classical.choice/Quot.sound: card_le_largestInducedForestSize,
+  induce_insert_indep_isAcyclic, indepNum_add_one_le, conjecture61_of_diam_le_three,
+  walk_support_filter_length, diam_half_le_card_sub_indepNum,
+  largestInducedForestSize_le_card, conjecture61_of_feedback_le, conjecture61_of_isAcyclic,
+  induce_insert_two_isAcyclic, indepNum_add_two_le, conjecture61_of_diam_five_six.
+  (All the conjecture61_of_* theorems take `residue G ≤ G.indepNum` as a hypothesis.)
+computed: no counterexample. Exhaustive over all labeled connected graphs n ≤ 8
+  (251,548,592 at n = 8, matching OEIS A001187): 0 failures. Annealing searches (edge
+  toggles, banded graphs, degree-preserving swaps) n = 10..28, diam up to 13: min slack
+  f - r - ⌈D/3⌉ is 0 only at diam = 4; ≥ 1 for diam 5-6 (n = 12, 16), ≥ 1 at diam 7
+  (n = 20), ≥ 2 at diam ≥ 7 in the other runs. K_{2,m}-chain family (287 graphs, n ≤ 30): tight only
+  for one K_{2,m} plus pendants (diam 4). The stronger f ≥ α + ⌈D/3⌉ is FALSE (C4 plus two
+  pendants, n = 6; confirmed by two independent programs, C and Python). Residue lemma
+  R(G) ≤ R(G - v) + 1 holds for all labeled graphs n ≤ 7.
+next idea: The open cases (given FMS) are exactly diam = 4, 7, 8 and diam ≥ 10, where
+  f - α can be as small as ⌈D/4⌉, so the residue itself must be shown to be < α by about
+  D/12. Start with diam = 4: prove "f = α + 1 and diam ≥ 4 ⇒ residue ≤ α - 1". The tight
+  graphs there (K_{2,m} plus pendants on both hubs; all tight graphs found have diam 4)
+  suggest following one Havel–Hakimi step on a max-degree vertex and tracking a geodesic
+  through the reduced realization (Griggs–Kleitman/Triesch style realization argument).
+  In Lean, the next cheap step is a Finset version of induce_insert_two_isAcyclic
+  (S pairwise at distance ≥ 3) plus geodesic vertices via Walk.getVert, giving the diam = 9
+  case and the general f ≥ α + ⌈diam/4⌉.
+dead ends: (a) going through α: f ≥ α + ⌈D/3⌉ is false (n = 6) and f - α = ⌈D/4⌉ is attained
+  by K_{2,2}-chains, so residue ≤ α alone cannot work for diam = 4, 7, 8, ≥ 10. (b) Vertex
+  deletion: R(G) ≤ R(G - S) + |S| (if L1 holds) combined with FMS still gives ≥ 4 > 3 = R on
+  C4 + 2 pendants for every S. (c) Residue is not monotone under edge deletion (fails n = 5).
+  (d) Unconstrained annealing drifts to dense, small-diameter graphs; force large diameter
+  (band or minD) to search the interesting regime.
+confidence: high because every Lean result builds with no sorry and only the standard axioms,
+  and the computational claims were reproduced (n ≤ 7 counts, the α counterexample checked
+  twice). The conditional results depend on the FMS theorem, which I recall but did not
+  check or formalize.
+```
+
 # wowii61 sweep notes
 
 start: 1791105131 (date -u +%s)
