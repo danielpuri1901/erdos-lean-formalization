@@ -1,0 +1,21 @@
+N= 0 T%2=0 profile g=0..N: D
+N= 1 T%2=1 profile g=0..N: WD
+N= 2 T%2=1 profile g=0..N: WDW
+N= 3 T%2=0 profile g=0..N: DLDW
+N= 4 T%2=0 profile g=0..N: DWDWD
+N= 5 T%2=1 profile g=0..N: WDWWWW
+N= 6 T%2=1 profile g=0..N: WDWDWDW
+N= 7 T%2=0 profile g=0..N: DLDWDWDW
+N= 8 T%2=0 profile g=0..N: DWDWDWDWD
+N= 9 T%2=1 profile g=0..N: LDWDWDWDWD
+N=10 T%2=1 profile g=0..N: LDWDWDWDWDW
+N=11 T%2=0 profile g=0..N: DWDWDWDWDWDW
+N=12 T%2=0 profile g=0..N: DWDWDWDWDWDWD
+N=13 T%2=1 profile g=0..N: WDLDWDWDWDWDWD
+N=14 T%2=1 profile g=0..N: LDWDWDWDWDWDWDW
+N=15 T%2=0 profile g=0..N: DLDWDWDWDWDWDWDW
+N=16 T%2=0 profile g=0..N: DWDWDWDWDWDWDWDWD
+N=17 T%2=1 profile g=0..N: WDWDWDWDWDWDWDWDWD
+N=18 T%2=1 profile g=0..N: LDWDWDWDWDWDWDWDWDW
+N=19 T%2=0 profile g=0..N: DLDWDWDWDWDWDWDWDWDW
+N=20 T%2=0 profile g=0..N: DWDWDWDWDWDWDWDWDWDWD

@@ -1,5 +1,39 @@
 # Sweep notes: catchup
 
+```
+result: partial
+claim: (1) value (Finset.Icc 1 N) = .draw for every N ≤ 8 with N*(N+1)/2 even (N = 0,3,4,7,8);
+       (2) for every N, value (Finset.Icc 1 N) = .draw → Even (N*(N+1)/2) (the converse direction);
+       (3) hence for N ≤ 8: draw ↔ N*(N+1)/2 even.  The conjecture itself (all N) is NOT proved.
+lean: Solution.lean, namespace CatchUpSweep, builds with no sorry (axioms: propext,
+      Classical.choice, Quot.sound): catchup_draw_le_8, catchup_draw_0/3/4/7/8,
+      value_ne_draw_of_odd, catchup_draw_iff_le_8, valueAux_draw_even, valueAux_eq_valL
+      (bridge from valueAux to a computable list version), value_Icc_eq_valL, best_eq_bestSpec.
+computed: conjecture true for every N ≤ 28 (exact C search `catchup.c`, values for N ≤ 22
+      identical to the problem file's Python run; N = 23,24,27,28 draw).
+      New "pairs conjecture" (below) true for all 75,024 unions of disjoint pairs {a,a+1}
+      inside {1..24}, and for all sets {1,2,3} ∪ pairs (a ≥ 4) inside {1..24}; re-checked by an
+      independent Python implementation of the literal Lean recursion inside {1..14} (754 sets).
+next idea: Prove the pairs conjecture: for R a disjoint union of k pairs {a,a+1},
+      v(R,0) = D if k even and v(R,1) = D if k odd (plus the {1,2,3} ∪ pairs variant); it
+      implies the Catch-Up conjecture at once ({1..4m} = 2m pairs; {1..4m+3} = {1,2,3} ∪ 2m pairs).
+      At gap ≤ 1 a turn is a single pick, and the partner reply (take the other element of the
+      pair) returns to a pairs position in 3 of 4 cases, which proves the "≤ D" half modulo one
+      case (k odd, mover takes the smaller element a). That case and the "≥ D" half need a
+      larger family; every exception found so far lives at the bottom pairs {2,3},{4,5}
+      (see "Attempted proof"), so a "generic pairs + finitely many low configurations"
+      induction looks like the way in.
+dead ends: fixed greedy strategies (largest / smallest / smallest catching pick / mixtures)
+      lose already at N = 4 for both players; "the player behind gets the parity-best result"
+      fails for 24–43 % of general positions; balanced sets (#odd = #even) are not draws
+      (1,617 of 12,869 fail inside {1..16}); intervals {a..b} are not draws; general triple
+      {t,t+1,t+2} ∪ pairs is not; kernel `decide` without memoisation stops at N = 8
+      (N = 11 needs 15 M nodes; sorting the pre-picks of a turn saves only ~20 %).
+confidence: high for the Lean results (full build, no sorry, standard axioms only); high for
+      the computations (two independent implementations agree on overlapping ranges);
+      low that the pairs approach closes quickly.
+```
+
 start: 1791105017 (date -u +%s)
 
 ## Phase A: understand
@@ -92,8 +126,9 @@ axioms propext / Classical.choice / Quot.sound only)
 ### Mathematics: structure found by computation
 
 1. Gap profile of the full set (`profile.c`, N ≤ 20): for R = {1..N} and 2 ≤ g ≤ N the value
-   v(R,g) is the parity-best outcome (D if T−g even, W if T−g odd), with the single exception
-   N = 13, g = 2 (L). For general subsets this is false: over all R ⊆ {1..14}, 24–43 % of
+   v(R,g) is the parity-best outcome (D if T−g even, W if T−g odd), with exactly three
+   exceptions: N = 5, g = 3 and g = 5 (W instead of D) and N = 13, g = 2 (L instead of W)
+   (rechecked programmatically from `profile20.txt`). For general subsets this is false: over all R ⊆ {1..14}, 24–43 % of
    positions with gap g ≥ 1 are not parity-best (`parity.c`). So there is no
    "the player behind always gets the parity-best result" lemma for arbitrary sets.
 2. First moves (`firstmove.c`, N ≤ 22): for T even and N = 8 or N ≥ 12 *every* first move
@@ -146,3 +181,14 @@ Lemmas and status:
   "take the smallest number" in 4915 / 4592; none is always right.
 So the pairs family is not closed under the obvious replies; a proof needs a larger family
 that also contains positions like (pairs, gap 2) and (pairs ∪ {one singleton}, gap a−1).
+
+Exceptions in the hard case (`g2ex.c`, `hard.c`, inside {1..18} / {1..20}): the 24 even
+pair-unions Q with v(Q,2) = W all contain the pairs {2,3} and {4,5}; in the 307 cases where
+the reply a+1 fails, the shown examples all contain {2,3},{4,5}, and the replier instead starts
+with a small pre-pick from {2,3,4,5} (failures by a: a = 6..19, 15–38 each).
+
+## Phase D
+
+Stopped at about minute 20 of 60 (`date -u +%s` = 1791106130 at the last computation): the
+remaining gap is a genuine research step (a closed strategy family), not more computation.
+The N = 29 run was stopped by hand after N = 28 (N = 29, 30 have odd T; N = 31 needs 17 GB).
