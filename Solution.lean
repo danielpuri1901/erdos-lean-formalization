@@ -138,4 +138,123 @@ theorem conjecture133_of_le_diam [Nontrivial α] (G : SimpleGraph α) [Decidable
   push_cast at hd
   linarith
 
+-- Radius one (a dominating vertex)
+
+omit [Fintype α] [DecidableEq α] in
+/-- Step 9. If the neighbourhood of `v` is a clique, then `l(v) ≤ 1`. -/
+lemma indepNeighborsCard_le_one {G : SimpleGraph α} (v : α)
+    (hv : ∀ x y, G.Adj v x → G.Adj v y → x ≠ y → G.Adj x y) : indepNeighborsCard G v ≤ 1 := by
+  unfold indepNeighborsCard
+  obtain ⟨s, hs⟩ := (G.induce (G.neighborSet v)).exists_isNIndepSet_indepNum
+  rw [← hs.card_eq]
+  apply Finset.card_le_one.mpr
+  intro a ha b hb
+  by_contra hab
+  apply hs.isIndepSet ha hb hab
+  exact hv a.1 b.1 a.2 b.2 (fun h => hab (Subtype.ext h))
+
+/-- Step 10. `l(v) ≤ n - 1`. -/
+lemma indepNeighborsCard_le_card_sub_one {G : SimpleGraph α} (v : α) :
+    indepNeighborsCard G v ≤ Fintype.card α - 1 := by
+  unfold indepNeighborsCard
+  obtain ⟨s, hs⟩ := (G.induce (G.neighborSet v)).exists_isNIndepSet_indepNum
+  rw [← hs.card_eq]
+  have hsub : s.map (Function.Embedding.subtype _) ⊆ Finset.univ.erase v := by
+    intro x hx
+    obtain ⟨y, _, rfl⟩ := Finset.mem_map.mp hx
+    refine Finset.mem_erase.mpr ⟨?_, Finset.mem_univ _⟩
+    exact (G.ne_of_adj y.2).symm
+  have := Finset.card_le_card hsub
+  rw [Finset.card_map, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ] at this
+  exact this
+
+/-- Step 11. Conjecture 133 holds for every connected graph with a vertex adjacent to all others
+(equivalently, of radius 1). -/
+theorem conjecture133_of_dominating [Nontrivial α] (G : SimpleGraph α) [DecidableRel G.Adj]
+    (h : G.Connected) (c : α) (hc : ∀ v, v ≠ c → G.Adj c v) :
+    let rad := G.radius.toNat
+    let hasC4 := ∃ a b c d : α, a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d ∧
+      G.Adj a b ∧ G.Adj b c ∧ G.Adj c d ∧ G.Adj d a
+    let cC4 : ℕ := if hasC4 then 0 else 1
+    (rad : ℝ) + l G ^ cC4 ≤ (path G : ℝ) := by
+  intro rad hasC4 cC4
+  by_cases hC4 : hasC4
+  · exact conjecture133_of_hasC4 G h hC4
+  have hcC4 : cC4 = 1 := if_neg hC4
+  rw [hcC4, pow_one]
+  have hn : (0 : ℝ) < Fintype.card α := by exact_mod_cast Fintype.card_pos
+  have hn2 : 1 < Fintype.card α := Fintype.one_lt_card_iff_nontrivial.mpr ‹_›
+  -- the radius is at most 1
+  have hrad : rad ≤ 1 := by
+    have h1 : G.eccent c ≤ 1 := (G.eccent_le_one_iff c).mpr (fun v hv => hc v (Ne.symm hv))
+    have h2 : G.radius ≤ 1 := G.radius_le_eccent.trans h1
+    exact (ENat.toNat_le_toNat h2 (by simp)).trans (by simp)
+  have hradR : (rad : ℝ) ≤ 1 := by exact_mod_cast hrad
+  by_cases hcomp : ∀ a b, a ≠ b → G.Adj a b
+  · -- complete graph: every neighbourhood is a clique, so `l ≤ 1`
+    have hl : l G ≤ 1 := by
+      have hsum : ∑ v ∈ Finset.univ, indepNeighbors G v ≤ ∑ _v ∈ (Finset.univ : Finset α), (1 : ℝ) := by
+        apply Finset.sum_le_sum
+        intro v _
+        unfold indepNeighbors
+        exact_mod_cast indepNeighborsCard_le_one v (fun x y _ _ hxy => hcomp x y hxy)
+      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one] at hsum
+      show (∑ v ∈ Finset.univ, indepNeighbors G v) / (Fintype.card α : ℝ) ≤ 1
+      rw [div_le_one hn]
+      exact hsum
+    have hp : ((rad + 1 : ℕ) : ℝ) ≤ (path G : ℝ) := by
+      exact_mod_cast radius_toNat_add_one_le_path G h
+    push_cast at hp
+    linarith
+  · -- not complete: `a - c - b` is an induced path, and `l < 2`
+    push Not at hcomp
+    obtain ⟨a, b, hab, hnadj⟩ := hcomp
+    have hac : a ≠ c := fun hac => hnadj (hac ▸ hc b (fun hbc => hab (hac.trans hbc.symm)))
+    have hbc : b ≠ c := fun hbc => hnadj (hbc ▸ (hc a (fun hac' => hab (hac'.trans hbc.symm))).symm)
+    have hpath3 : 3 ≤ path G := by
+      have hind : G.isInducedPath [a, c, b] := by
+        have hnadj' : ¬ G.Adj b a := fun h => hnadj h.symm
+        refine ⟨by simp [hab, hac, Ne.symm hbc], ?_⟩
+        intro i j
+        fin_cases i <;> fin_cases j <;>
+          simp [hnadj, hnadj', (hc a hac).symm, hc b hbc, (hc b hbc).symm, hc a hac]
+      simpa using length_le_path_of_isInducedPath G _ hind
+    -- every `u ≠ c` has a clique neighbourhood (else a 4-cycle through `c`)
+    have hu : ∀ u, u ≠ c → indepNeighborsCard G u ≤ 1 := by
+      intro u huc
+      apply indepNeighborsCard_le_one
+      intro x y hux huy hxy
+      by_cases hxc : x = c
+      · subst hxc; exact hc y (fun hyc => hxy hyc.symm)
+      by_cases hyc : y = c
+      · subst hyc; exact (hc x hxc).symm
+      exfalso
+      apply hC4
+      exact ⟨c, x, u, y, Ne.symm hxc, Ne.symm huc, Ne.symm hyc, G.ne_of_adj hux.symm,
+        hxy, G.ne_of_adj huy, hc x hxc, hux.symm, huy, (hc y hyc).symm⟩
+    have hl : l G < 2 := by
+      have hsum : ∑ v ∈ Finset.univ, indepNeighbors G v ≤
+          ((Fintype.card α : ℝ) - 1) + ((Fintype.card α : ℝ) - 1) := by
+        rw [← Finset.add_sum_erase _ _ (Finset.mem_univ c)]
+        apply add_le_add
+        · unfold indepNeighbors
+          have := indepNeighborsCard_le_card_sub_one (G := G) c
+          have h1 : ((Fintype.card α - 1 : ℕ) : ℝ) = (Fintype.card α : ℝ) - 1 := by
+            rw [Nat.cast_sub (by omega)]; simp
+          rw [← h1]
+          exact_mod_cast this
+        · calc ∑ v ∈ Finset.univ.erase c, indepNeighbors G v
+              ≤ ∑ _v ∈ Finset.univ.erase c, (1 : ℝ) := by
+                apply Finset.sum_le_sum
+                intro v hv
+                unfold indepNeighbors
+                exact_mod_cast hu v (Finset.ne_of_mem_erase hv)
+            _ = (Fintype.card α : ℝ) - 1 := by
+                simp [Finset.card_erase_of_mem (Finset.mem_univ c), Nat.cast_sub (by omega : 1 ≤ Fintype.card α)]
+      show (∑ v ∈ Finset.univ, indepNeighbors G v) / (Fintype.card α : ℝ) < 2
+      rw [div_lt_iff₀ hn]
+      linarith
+    have hp : (3 : ℝ) ≤ (path G : ℝ) := by exact_mod_cast hpath3
+    linarith
+
 end Wowii133Sweep
