@@ -123,6 +123,20 @@ Runs (each run: random start, endpoint swaps, ties accepted, 0.5% worse moves ac
 | 2 | 4 | m=8 (n=28) | 400,000 | 24 | i = m with 95 minimum sets |
 | 3 | 3 | n=16 | 300,000 | 31 | i = mu* with 10 minimum sets |
 | 3 | 3 | n=22 | 300,000 | 32 | i = mu* with 16 minimum sets |
+| 2 (revert after 30k) | 3 | m=12 (n=40) | stopped after 263,658 | 41 | i = m with 18 minimum sets |
+| 2 (revert after 30k) | 3 | m=12 (n=40) | stopped after 249,196 | 42 | i = m with exactly 1 minimum set (second near miss) |
+| 2 (revert after 30k) | 3 | m=15 (n=50) | stopped after 30,212 | 43 | i = m with 77 minimum sets |
+| 2, start = near22 | 3 | m=12 (n=40) | timeout 900 s | 51 | stays at 1 minimum set |
+| 2 (revert after 30k) | 4 | m=12 (n=42) | timeout 720 s (1.17M) | 61 | i = m with 855 minimum sets |
+| 3 (revert after 20k) | 3 | n=26 | timeout 540 s | 91 | i = mu* with 22 minimum sets |
+| scan of near22 | 3 | n=40 | 5 rounds of all 3,540 double edge swaps | - | best neighbour still 1 minimum set; no i > mu* |
+| satsearch | 3 | m=12 | 2,000,000 | 71 | 16 satisfying assignments at best |
+| satsearch | 3 | m=15 | 2,000,000 | 72 | 69 at best |
+| satsearch | 3 | m=15 | timeout 480 s (4.57M) | 73 | 51 at best |
+| satsearch, start = near22 | 3 | m=12 | stopped | 81, 82 | stays at 1 |
+
+"stopped" = killed by me to free a core; "timeout" = hard time limit reached. No run printed
+FOUND or COUNTEREXAMPLE (checked with grep over `runs/*.out`). Logs are in `runs/`.
 
 Random graphs in the extremal family start at i = m - 1 or m - 2 (6 samples, m = 12, 18).
 
