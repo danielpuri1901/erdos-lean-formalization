@@ -1,0 +1,7 @@
+# compiled search binaries (build from the .c sources with gcc -O2 ... -lm)
+cnt
+cnth
+dfs
+dfs128
+small
+sq
