@@ -79,6 +79,29 @@ Budget: about 50 USD per problem; the credit meter stood at 135 USD at the start
 
 | id | lead from stage 1 | session | start (UTC) | result |
 |----|-------------------|---------|-------------|--------|
-| catchup | a "pairs" statement that would imply the conjecture, checked on 75,024 cases | session_01BgcwTHbspsRCH9oTH5owpW | 2026-10-04 about 10:05 | running |
-| a000224 | proved for even n and for products of two odd primes; odd n with three or more prime factors remains | session_014KabgfrVeJMmKfShp1xwzq | 2026-10-04 about 10:08 | running |
+| catchup | a "pairs" statement that would imply the conjecture, checked on 75,024 cases | session_01BgcwTHbspsRCH9oTH5owpW | 2026-10-04 about 10:05 | partial (10 attempts, done 11:07) |
+| a000224 | proved for even n and for products of two odd primes; odd n with three or more prime factors remains | session_014KabgfrVeJMmKfShp1xwzq | 2026-10-04 about 10:08 | partial (10 attempts, done 11:28) |
+
+### Stage 2 result (2026-10-04)
+
+Neither conjecture is proved.
+Both sessions used all ten attempts in about 80 minutes, kept their notebooks, and reported `partial`.
+Cost: the credit meter went from 135 to 67 USD, so stage 2 cost 68 USD.
+
+`catchup` (branch `deep/catchup`, commit `f0b660a`, notebook `deep/catchup/NOTEBOOK.md`):
+
+- Lean, no sorry: the conjecture for every N ≤ 16, through strategy certificates that the kernel checks (`CatchUpDeep.catchup_draw_le_16`).
+- Lean, no sorry: the conjecture follows from four explicit statements about unions of pairs {a, a+1} (`catchup_of_GE_T2_T4_P3`).
+  The four statements are checked by computer inside {1..20} and are not proved.
+- Where it stopped: the "mover has a good pick" half has no simple pick rule; the exceptions sit on an arithmetic zone.
+
+`a000224` (branch `deep/a000224`, commit `f6dd3a8`, notebook `deep/a000224/NOTEBOOK.md`):
+
+- Lean, no sorry: the conjecture holds for every n that is even, prime, a prime power, pq, p²q or p³q (`A224Deep.conjecture_of_structure''`).
+  So a counterexample is odd, has at least two distinct prime factors and at least three prime factors in total, and is not p²q or p³q.
+- Computed: no counterexample below 1.6·10^10.
+- The session's next step: finish p^e q for every e ≥ 4, which it estimates at three more attempts.
+
+The statements above are the sessions' own reports.
+Independent builds of both branches run in GitHub Actions (`build.yml` on each branch); the partial theorems have not been through the checker, because they are not the frozen conjecture statements.
 
