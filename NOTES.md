@@ -30,3 +30,4 @@ Let `P r := {(m, n) : ℤ × ℤ | !₂[m, n] ∈ closedBall 0 r}`, so `N r = (P
 - All lemmas proved; `lake build Solution` passes with no warnings.
 - `#print axioms gauss_circle_error_le`: `propext`, `Classical.choice`, `Quot.sound`.
 - `type_of% @gauss_circle_error_le = type_of% @GaussCircleProblem.error_le` checks by `rfl`.
+- Submitted as `60cbba7`; `comparator/gausscircle` reported success ("Your solution is okay!") at 18:48 UTC, about 22 minutes of work.

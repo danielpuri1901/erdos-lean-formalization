@@ -108,5 +108,5 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
 - (gausscircle) `measurability` timed out on `NullMeasurableSet (Set.pi univ fun i => Ico ..)`; write `(MeasurableSet.univ_pi fun _ => measurableSet_Ico).nullMeasurableSet`.
-- (gausscircle) `rw [← hf.coe_toFinset]` fails with "motive is not type correct" because `hf` mentions the set; use `obtain ⟨F, rfl-like hF⟩ := hf.exists_finset_coe` and `Set.ncard_coe_finset`.
+- (gausscircle) `rw [← hf.coe_toFinset]` fails with "motive is not type correct" because `hf` mentions the set; use `obtain ⟨F, hF⟩ := hf.exists_finset_coe`, `rw [← hF, Set.ncard_coe_finset]`.
 - (gausscircle) Disc area in the plane: `EuclideanSpace.volume_ball_fin_two` / `volume_closedBall_fin_two` (`.ofReal r ^ 2 * .ofReal π`); unit cells via `PiLp.volume_preserving_ofLp` and `Real.volume_pi_Ico`; fibres via `sum_measure_preimage_singleton`.
