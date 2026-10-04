@@ -33,3 +33,28 @@ Observation A3 (greedy induced path in C4-free graphs): extend induced path v1..
 neighbour w not adjacent to v1..v_{k-1}. Forbidden: v_{k-1}, and for each i<=k-1 the (at most one)
 common neighbour of v_i and v_k; for i=k-2 that common neighbour is v_{k-1} itself. So at most k-1
 forbidden (k>=3), and the path extends while deg(vk) >= k. Hence path >= δ+1 (δ = min degree).
+
+## Phase B: search (09:16-09:21 UTC)
+
+Code: `check.py` (pure Python, exact, general indepNum, independent of the C code),
+`families.py` (structured families), `anneal.c`/`anneal2.c` (simulated annealing over connected
+C4-free graphs maximising `rad + l - path`), `exactpath.c` (exact induced-path number, DFS).
+
+Structured families, all OK (`python3 families.py`, early-stopping DFS finds an induced path of the
+needed length; witnesses re-checked by `is_induced_path`):
+- cycles C3..C11; Petersen; Hoffman-Singleton (n=50, need 9);
+- Erdős–Rényi polarity graphs ER_q, q in {2,3,4,5,7,8,9,11,13} (n up to 183; rad 2, l ~ 0.6q);
+- incidence graphs of PG(2,q), q in {2,3,4,5,7,8,9} (rad 3, l = q+1);
+- generalized Petersen GP(m,k), 5<=m<=15.
+Exact path numbers (`exactpath`): Petersen 5, ER_3 8, ER_4 11, PG(2,2)-inc 7, PG(2,3)-inc 11,
+Hoffman-Singleton 20 (from vertex 0, vertex-transitive; witness verified in Python), PG(2,4)-inc 20.
+
+Tight cases seen: C3, C4 (C4 branch), C5 (2+2=4), C6 (3+2=5), Petersen (2+3=5), K2.
+Double stars approach tightness from below: rad 2, l = 2(n-1)/n, path 4.
+
+Annealing (C4-free, connected): n=10..19 (seeds n, 7n; 2-3M moves each; random-tree start and
+random-maximal-C4-free start): best score `rad + l - path` = -0.1667 (n=12), always a tree near a
+double star or similar. No positive score. (n=22 run still going when written.)
+
+Margins grow quickly with density: HS needs 9, has 20; ER/PG families have long induced paths
+(conic / arc constructions give ~2q induced paths in PG(2,q) incidence graphs).
