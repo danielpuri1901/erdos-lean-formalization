@@ -107,3 +107,14 @@ Add one line for each problem that cost you time, with the fix.
 - a000224: `zify [h1, h2, ...] at hk` (with the `1 ≤ x` facts for every Nat subtraction) cleanly turns a Nat divisibility equation into an Int one for `linear_combination`/`nlinarith`.
 - a000224: names: `Prod.pow_fst`/`Prod.pow_snd` (not `fst_pow`), `ZMod.val_injective n` takes `n` explicitly, `ZMod.chineseRemainder` gives the CRT ring equiv; `a n = #squares in ZMod n` bridge is `A224Sweep.a_eq_card_zmod`.
 - a000224: segmented C sieve starting at 0 looped forever dividing `rem[0] = 0` by p; start each prime's multiples at `max(p, ...)`.
+
+## txgraffiti3 (2026-10-04)
+
+- Kernel cost of bit tests: `if d.testBit i then ..` cost about 150 µs per bit in `decide +kernel`; raw `Nat.land (Nat.shiftRight d i) 1` with `Nat.beq`/`Nat.blt` and `bif` is about 30 times faster. Write kernel checkers with raw `Nat.*` operations and prove one bridge lemma `bit d v = d.testBit v` (`Nat.testBit_eq_decide_div_mod_eq`, `Nat.and_one_is_mod`, `Nat.shiftRight_eq_div_pow`).
+- A fuel loop of depth 10000 inside `decide +kernel` took 107 s for trivial work; keep recursion depth small (iterate over `List.range` or a tree).
+- Write kernel-only recursions directly with `Nat.rec`/`List.rec` and mark them `noncomputable` (without Mathlib, the code generator rejects `Option.rec`); unfolding lemmas are then `rfl`.
+- A branch-and-bound certificate as one big `Nat` literal read 6 bits at a time (`Nat.land c 63`, `Nat.shiftRight c 6`) checks about 2000 nodes per second in the kernel with about 1 GB RSS for a core-only module; 125K nodes in 36 chunks over 12 modules built in 20 s.
+- Give the kernel checker a list of already-verified frontier states (`inOk`) so the top of the tree and the chunks use one checker and one soundness proof.
+- `Finset.range_succ` is now `Finset.range_add_one`.
+- `simp only [List.forall_mem_cons]` leaves `∀ x ∈ [], p x`; close it with `fun _ h => by cases h`.
+- The RSS of any process that imports Mathlib reads about 7 GB here, because the memory-mapped `.olean` files count; measure kernel memory in a core-only module.

@@ -24,3 +24,14 @@ Lowest-index pick would need 874K nodes, so the picks come from the certificate,
   value 48 = bound leaf, value 49 = frontier state proved in another chunk (lookup in a list of verified states).
 - Chunks of about 10K nodes in separate modules `Solution/TxCert/*.lean` so each kernel run stays small.
 - Proof over Nat vertices (< 48) and convert from Finset (Fin 48) at the end.
+
+## Status (2026-10-04, about 1 hour in)
+- Files: `Solution/TxDefs.lean` (table + checker, core only, `noncomputable`), `Solution/TxChunk0..11.lean`
+  (36 chunk checks, 617 to 5958 nodes each, 12 modules of 9 to 12K nodes), `Solution/TxSound.lean`
+  (soundness), `Solution/TxTop.lean` (top tree of 62 entries with 36 frontier states, `P15`), `Solution.lean`.
+- Generator: `python3 sweep/txg3/gen.py 6000 && python3 sweep/txg3/emit.py 12000`.
+  `gen.py` re-runs a Python model of the Lean checker on every chunk before writing `cert.json`.
+- Clean build of `Challenge Solution`: 39 s here; each chunk module 4 to 7 s and about 1 GB peak RSS.
+- Axioms of `txgraffiti3_false`: propext, Classical.choice, Quot.sound.
+- Decision: `Nat.sInf_mem` needs the set nonempty, so `D16 = {0,2,...,28,34}` (an independent dominating set)
+  is checked by `decide +kernel`.
