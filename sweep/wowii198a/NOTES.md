@@ -1,3 +1,26 @@
+result: partial
+claim: Paper proof (not formalized) that conjecture198a holds for every connected graph. The only step not
+  re-derived independently is the Chvátal–Erdős theorem (κ >= α ⇒ Hamiltonian), used only for
+  self-centered graphs of diameter 2 (Theorem B2). Its classical proof is written out below from memory.
+  Elementary, fully written parts: Theorem A (non-self-centered graphs), B1 (D=1), B3 (self-centered,
+  D>=5 impossible), B4 (D=3 impossible), B5 (D=4 impossible).
+lean: none (Solution.lean only imports the problem module; a sorry-skeleton may follow, see below)
+computed: exhaustive over ALL labeled graphs n=2..8 (C, check.c): 0 counterexamples; 4,351,887 labeled
+  graphs on 8 vertices satisfy the hypothesis. Claim A (all layers from a peripheral vertex are cliques
+  when not self-centered) 0 violations n<=8. Self-centered D>=3 graphs: layer α-sum lemma 0 failures n<=8
+  (layer.c); random G(n,p) n=10..16 (sc.c) none with b<=D+2; D=2 sanity (d2.c) n<=7.
+next idea: Formalize. Order: (1) Lemma 1 in the weak form "two non-adjacent vertices at equal distance from
+  u, plus a geodesic from u of length ecc(u), give an induced bipartite set of size ecc(u)+2" (parity of
+  dist(u,.) as the 2-colouring); (2) Lemma 3 (all BFS layers cliques ⇒ Ham path), by downward induction on
+  layers building a List with Chain' G.Adj and Nodup, then a Walk; (3) Theorem A; (4) the distance lemmas
+  B3–B5 (pure dist reasoning); (5) Chvátal–Erdős (longest cycle argument) for D=2.
+dead ends: blind random G(n,p) search never hits the hypothesis for D>=3 (b is far too large); random
+  graphs are useless as counterexample candidates. Simulated annealing toward self-centered D in {3,4}
+  with small layer sums never succeeded (and B4/B5 now explain why).
+confidence: medium because every step is short and elementary and was re-read adversarially once, and all
+  intermediate claims were confirmed exhaustively for n<=8, but no second person or Lean has checked it,
+  and Chvátal–Erdős is used from memory.
+
 # wowii198a sweep notes
 
 start: 1791105072 (date -u +%s)
@@ -135,3 +158,18 @@ Independent computer checks of intermediate claims (exhaustive, labeled graphs):
   (3, 102, 2730, 83037 graphs for n=4..7; 0 failures).
 - `anneal.c` (simulated annealing toward self-centered D in {3,4} with all layer sums <= D+2, n=7..11,
   3 seeds): never reached such a graph.
+
+## Chvátal–Erdős (from memory, unverified; classical proof reproduced for the reviewer)
+Claim: κ(H) >= α(H), |H| >= 3 ⇒ H Hamiltonian. Here κ(H)>=3 so H is 2-connected and has a cycle.
+Take a longest cycle C; suppose v not on C; K = component of H - V(C) containing v; N = N(K) ∩ V(C).
+No two consecutive vertices of C are both in N (else reroute through K: longer cycle), so V(C) \ N is
+nonempty and N separates K from it: |N| >= κ. The successors c^+ (c in N, fixed orientation) are not in
+N, so not adjacent to K; two successors c_i^+ ~ c_j^+ would give the longer cycle
+c_i -(K)- c_j -(backwards)- c_i^+ - c_j^+ -(forwards)- c_i. So {v} ∪ {c^+} is independent of size
+|N|+1 >= κ+1 > α. Contradiction. Applied in B2 to H = G + universal vertex.
+
+## Decisions
+- Lean: the full proof is long (BFS layers, walks, Ham path construction, real arithmetic). With about
+  35 minutes left after the paper proof I judged a complete formalization impossible in the box, and chose
+  a careful write-up plus exhaustive checks of every intermediate claim instead.
+- Counts are for labeled graphs; I did not reproduce the iso-class count 516 (labeled exhaustive is stronger).
