@@ -113,11 +113,17 @@ Daniel approved two more runs and a reserve of about 20 USD; no more credit goes
 
 | run | branch | session | goal | result |
 |-----|--------|---------|------|--------|
-| a000224 continuation | `deep/a000224` | session_018XUdyycEGiv3Vico6jo1YS (Fable 5.1 manager) | Q4: the conjecture for n = p^e q with every e ≥ 4; at most 5 attempts and 90 minutes | running |
+| a000224 continuation | `deep/a000224` | session_018XUdyycEGiv3Vico6jo1YS (Fable 5.1 manager) | Q4: the conjecture for n = p^e q with every e ≥ 4; at most 5 attempts and 90 minutes | goal reached in one attempt and about 20 minutes (commit `b5af17c`) |
 | TxGraffiti 3 disproof | `run/txg3-disproof` | session_013nzAAwLLQXTdW4fCA9Dn92 (Opus 5.5) | a Lean proof that conjecture 3 is false, from the public 48-vertex cubic graph, judged by the checker target `txgraffiti3` | running |
 
 The TxGraffiti 3 run is a known result, not an open problem: the graph comes from https://github.com/ipitchford/txgraffiti-order48-successor, whose authors call it an unrefereed, certificate-backed candidate.
 formal-conjectures issue 6737 asks for exactly this fix and had no pull request on 2026-10-04; no Lean proof was found.
 Before the run, separate code confirmed that the graph is cubic and connected, that the listed 15 edges are a maximal matching, and that no independent dominating set has 15 or fewer vertices.
 The session gets only the edge list and writes its own certificate.
+
+Result of the a000224 continuation: the Lean theorem `A224Deep.conjecture_of_structure'''` now covers every n that is even, prime, a prime power, or p^e q with p, q prime and any exponent e.
+So a counterexample to the conjecture has at least three distinct prime factors, or exactly two distinct prime factors that both have exponent at least 2; the smallest open family is p²q².
+The conjecture itself is still open.
+An independent build of commit `b5af17c` was started in GitHub Actions.
+The credit meter read 51 USD after this run, with the TxGraffiti 3 run still going.
 
