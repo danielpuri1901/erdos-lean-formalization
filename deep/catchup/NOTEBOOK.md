@@ -61,7 +61,7 @@ Route (lemma list, status in brackets):
 8. L8 (Lean record of the partial argument) partner-reply lemmas `pairs_le_draw_of_gap_one`, `pairs_le_draw_of_gap_zero`, `pairsConj_le_halves`. [proved in Lean, attempt 6]
 9. L9 `hard_of_T2_T4`: rule r6 in Lean, so that T2 ∧ T4 ⇒ the hard-case claim. [proved in Lean, attempt 8]
 10. L10 the "≥ draw" halves GE: ∀ A, PairStarts A → (Even card → gv (pairUnion A) 0 ≠ loss) ∧ (Odd card → gv (pairUnion A) 1 ≠ loss). [open; computed inside {1..24}; attempt 9: no simple pick rule exists]
-11. L11 final assembly in Lean: GE ∧ T2 ∧ T4 ⇒ PairsConj; GE ∧ T2 ∧ T4 ∧ PairsConj3 ⇒ target; `catchup_draw_le_16`. [attempt 10, after attempt 7]
+11. L11 final assembly in Lean: GE ∧ T2 ∧ T4 ⇒ PairsConj; GE ∧ T2 ∧ T4 ∧ PairsConj3 ⇒ target; `catchup_draw_le_16`, `catchup_draw_iff_le_16`. [proved in Lean, attempt 10]
 
 The key step is L6. Decision: before any attempt on L4/L5, one worker searches computationally for F
 (it tells soonest whether this route can work). In parallel one worker does L1 in Lean (needed by
@@ -230,6 +230,17 @@ Manager check: `deep/catchup/mycheck.py` (written independently): N=11 and N=12 
 Files: `deep/catchup/certgen/{gen.c, check.py, out/Cert*/}`.
 
 Decision D6: the Lean target is N ∈ {11, 12, 15, 16}; N = 19, 20 are not attempted (certificate too large for the kernel and the repo).
+
+### Attempt 10 — final Lean assembly — result: proved-in-lean (3 min)
+Worker (opus): `Solution/CertSmall.lean` (certificates for N = 3, 4, 7, 8 from `gen.py`, sizes 6/10, 11/18, 88/137, 189/285,
+plus `catchup_draw_0`); `Solution/Final.lean`: `GE : Prop` (the "≥ draw" halves of (P)), `pairsConj_of_GE_T2_T4 : GE → T2 → T4 → PairsConj`,
+`catchup_of_GE_T2_T4_P3 : GE → T2 → T4 → PairsConj3 → ∀ N, Even (N*(N+1)/2) → value (Icc 1 N) = .draw`,
+`catchup_draw_le_16 : ∀ N ≤ 16, Even (N*(N+1)/2) → value (Icc 1 N) = .draw`; `Solution.lean` (appended):
+`catchup_draw_iff_le_16 : ∀ N ≤ 16, value (Icc 1 N) = .draw ↔ Even (N*(N+1)/2)`.
+Manager check: `lake build Solution` exit 0 (9009 jobs); no banned words in `Solution.lean` or `Solution/`; every `#print axioms`
+(15 theorems) shows propext/Classical.choice/Quot.sound only. Files: `Solution/CertSmall.lean`, `Solution/Final.lean`, `Solution.lean`.
+
+Ten attempts logged: stop condition reached at about 1791112100 (55 min after the start).
 
 ## 5. Dead ends
 

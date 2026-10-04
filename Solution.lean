@@ -1,3 +1,4 @@
+import Solution.Final
 import Solution.Cert15
 import Solution.Cert16
 import Solution.Hard
@@ -224,3 +225,16 @@ end CatchUpSweep
 #print axioms CatchUpSweep.valueAux_eq_valL
 #print axioms CatchUpSweep.value_ne_draw_of_odd
 #print axioms CatchUpSweep.catchup_draw_iff_le_8
+
+namespace CatchUpDeep
+
+/-- For `N ≤ 16`: the game on `{1, …, N}` is a draw exactly when `N * (N + 1) / 2` is even. -/
+theorem catchup_draw_iff_le_16 (N : ℕ) (hN : N ≤ 16) :
+    CatchUp.value (Finset.Icc 1 N) = .draw ↔ Even (N * (N + 1) / 2) :=
+  ⟨fun h => by_contra fun h' => CatchUpSweep.value_ne_draw_of_odd N h' h, catchup_draw_le_16 N hN⟩
+
+end CatchUpDeep
+
+#print axioms CatchUpDeep.catchup_draw_le_16
+#print axioms CatchUpDeep.catchup_draw_iff_le_16
+#print axioms CatchUpDeep.catchup_of_GE_T2_T4_P3
