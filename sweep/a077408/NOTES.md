@@ -38,3 +38,16 @@ In words: no term of the base-3 reverse-and-add trajectory of 103 = 10211_3 is a
   `runs.py`: the maximum run of equal digits up to step 3000 jumps around (for example 35 at step 1114, then 9 at step 1200).
   So there is no sign of the self-similar block structure that proves the binary Lychrel case of 10110_2.
 - `lake build Solution` with the import passes (the module was already compiled; 7 s).
+
+## Phase B: try to break it
+
+Clock at start of phase B: 1791105040 (+88 s).
+
+- `search.c`: plain digit-array reverse-and-add in base 3, checks every term with a two-pointer palindrome test.
+  Cross-check: at step 5999 (3582 digits), value mod 1e9+7 = 47550255 from both `search.c` and independent Python big-integer code. They agree.
+- Run `./search 1000000` (log in `search_1e6.log`): see the result line below (filled in when the run finishes).
+- `structure.c` over steps 0..99999, no palindrome:
+  - Runs of equal digits per digit never drop below 0.397 (minimum at step 203). There is no low-complexity block structure, unlike the provable binary Lychrel case 10110_2, whose terms have O(1) runs.
+  - The longest outer prefix that matches the reversed suffix is 37 digits (step 18964, length 11323).
+    This is well above the ~10 a random string would give, because x + rev(x) is symmetric before carries (see Phase C). It is still tiny compared with the length.
+- Structured candidates: the trajectory is one fixed sequence, so the only "candidates" are later terms. There is no family to choose from.
