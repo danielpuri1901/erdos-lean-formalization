@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Arxiv.«2605.02731».DeanCycles
 
-open SimpleGraph
+/-! Solution for the dean3 target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem dean_three : type_of% @Arxiv.«2605.02731».dean_conjecture.variants.three := by
   sorry
