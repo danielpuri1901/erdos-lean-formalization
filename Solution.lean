@@ -1,8 +1,6 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Wikipedia.LeinsterGroup
 
-open SimpleGraph
+/-! Solution for the leinster target. See `TASK.md`. -/
 
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem leinster_nonabelian_exists : type_of% @LeinsterGroup.exists_nonabelian_leinster_group := by
   sorry
