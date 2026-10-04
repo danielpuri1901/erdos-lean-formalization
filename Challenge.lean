@@ -1,15 +1,10 @@
-import FormalConjectures.Wikipedia.VizingConjecture
+import FormalConjectures.Wikipedia.LeinsterGroup
 
-/-! Frozen statement for the clarksuen target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict. -/
+/-! Frozen statement for the dihedral target. The checker overwrites the agent's `Challenge.lean` with this file before every verdict.
 
-open SimpleGraph
+The dihedral group of order 2n is a Leinster group exactly when n is an odd perfect number (Leinster, 2001).
+The statement is taken with `type_of%` from `LeinsterGroup.dihedral_is_leinster_iff_odd_perfect` at formal-conjectures commit df3f12d7bd06, so it is that statement by construction.
+`tests/statement/dihedral.lean` checks this again. -/
 
-/-- The Clark-Suen inequality (2000): for all finite simple graphs `G` and `H`,
-`γ(G) γ(H) ≤ 2 γ(G □ H)`, where `γ` is the domination number and `□` the Cartesian product.
-This is `VizingConjecture.vizing_conjecture.variants.clark_suen` at formal-conjectures commit df3f12d7bd06,
-renamed so it does not clash with the imported declaration. `tests/statement/clarksuen.lean` checks that
-the two statements are identical. -/
-theorem clark_suen {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
-    (G : SimpleGraph α) (H : SimpleGraph β) :
-    G.dominationNumber * H.dominationNumber ≤ 2 * (G □ H).dominationNumber := by
+theorem dihedral_leinster_iff : type_of% @LeinsterGroup.dihedral_is_leinster_iff_odd_perfect := by
   sorry
