@@ -31,3 +31,8 @@ Checked first in Python.
 
 - Generic finset formulation instead of induced subgraphs on subtypes (avoids coercions).
 - Lower-bound kernel check kept in `Solution/Lower.lean` so edits to the main file do not rerun it.
+
+## Status
+
+All proved, no `sorry`; `#print axioms ramsey_3_5` gives `propext, Classical.choice, Quot.sound`.
+Build: `Solution.Lower` 33 s (kernel check), `Solution.Upper` 7 s, `Solution` 6 s.
