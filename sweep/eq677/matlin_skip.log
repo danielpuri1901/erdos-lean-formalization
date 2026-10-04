@@ -1,0 +1,6 @@
+p=2 k=4 Breps=17 677sols=2 fail255=0 skipped(nullity>12)=0
+p=2 k=5 Breps=37 677sols=0 fail255=0 skipped(nullity>12)=0
+p=3 k=4 Breps=86 677sols=3 fail255=0 skipped(nullity>9)=0
+p=2 k=6 Breps=83 677sols=0 fail255=0 skipped(nullity>12)=2
+p=3 k=5 Breps=266 677sols=0 fail255=0 skipped(nullity>8)=2
+p=5 k=4 Breps=644 677sols=6 fail255=0 skipped(nullity>6)=5
