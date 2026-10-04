@@ -64,10 +64,14 @@ If the plan's skills are unavailable, run the tasks in order by hand, keeping a 
 
 Done: checker token, cloud environment `erdos-lean` (setup script now pasted by the executor through Chrome), smoke sessions, usage-credit check (usage credits on, 0 EUR balance, 43 EUR monthly cap, auto-reload off; cloud credit 247 of 250 USD at launch, expires 2026-11-05).
 
-Second round so far (2026-10-03, details in `docs/clarksuen-pilot.md`): bare pilots proved Clark-Suen (22 minutes, about 2 USD) and Suen-Tarr (about 31 minutes, about 3 USD), each on the first submission.
-Both are short combinatorics proofs, too easy to show whether the harness helps.
-Daniel chose to look for a target about 10 times harder (a long published proof, or one that needs theory Mathlib lacks); the search is running.
-New run caps for that target need Daniel's approval before any run.
+Second round (2026-10-03, details in `docs/clarksuen-pilot.md`): bare pilots proved Clark-Suen (22 minutes, about 2 USD) and Suen-Tarr (about 31 minutes, about 3 USD), each on the first submission.
+Both are short proofs, too easy to need a harness.
+
+Current work (2026-10-04, details in `docs/sweep.md`): Daniel changed the scope to open problems.
+Stage 1 is a sweep of 16 open statements, one bounded cloud session each, following `SWEEP.md` on branch `sweep/base`.
+Stage 2 goes deep on the few that show progress, with Fable 5.1.
+The home-built orchestrator harness is parked; its notebook idea returns in stage 2.
+Still open for Daniel: whether to publish the four finished proofs in a public repository and link them from formal-conjectures.
 
 Still Daniel's, whenever he wants:
 
@@ -86,7 +90,7 @@ Still Daniel's, whenever he wants:
 
 ## Decisions already made
 
-- Formalize known results, not open problems (spec section 2).
+- Formalize known results, not open problems (spec section 2). Changed by Daniel on 2026-10-04: open problems are now in scope (`docs/sweep.md`).
 - Fable 5.1 orchestrates, Opus 5.5 workers implement, no multi-agent fan-out, fresh worker per attempt.
 - Claude Code cloud sessions, not the Pi harness, because the credit pays only for cloud sessions.
 - Green 72 `Green72.no_three_in_line_le` is the main target; Erdős 105 `variants.sub_four` is the warm-up and smoke test.
