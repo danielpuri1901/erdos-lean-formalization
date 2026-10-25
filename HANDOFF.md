@@ -1,7 +1,7 @@
 # Handoff
 
 Read this first in every session on this repository.
-Last update: 2026-10-04 20:35 UTC. The cloud credit is used: 6 of 250 USD are left. No open problem was solved; 26 known results have Lean proofs that the checker accepted, and two open problems have partial results (`docs/sweep.md`). The write-up is published privately at https://claude.ai/artifact/3x7der745TqJWx4sYaPkKH (copy in `docs/writeup/`). The checker repository is public since 2026-10-04, because GitHub Actions stopped starting jobs in private repositories on this account.
+Last update: 2026-10-04 20:35 UTC. The cloud credit is used: 6 of 250 USD are left. No open problem was solved; 26 known results have Lean proofs that the checker accepted, and two open problems have partial results (`docs/sweep.md`). The write-up is in `docs/writeup/`. The checker repository is public since 2026-10-04, because GitHub Actions stopped starting jobs in private repositories on this account.
 
 ## What this project is
 

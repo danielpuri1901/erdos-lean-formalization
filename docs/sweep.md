@@ -19,8 +19,6 @@ A result of `solved`, `disproved` or `statement-flaw` gets a frozen challenge in
 
 The 16 problems come from a scan of the open statements in formal-conjectures at the pin (candidate list and small-case checks: 2026-10-04).
 Four more candidates are playable in the picker page but left out of the sweep because they are old or famous: Kotzig, the curling number conjecture, Chvátal, strong sensitivity.
-Picker page for Daniel: https://claude.ai/artifact/JvActjQ4n1QcNZdh6PuDUz
-
 ## Sessions
 
 Credit meter before the sweep: 218 USD.

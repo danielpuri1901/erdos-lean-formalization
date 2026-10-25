@@ -13,14 +13,20 @@ A green check there on commit X is the only definition of success.
 
 ## Honesty inventory
 
-To be filled during the run: what the model did, what Daniel did, what was borrowed from published sources.
+The write-up in `docs/writeup/untrusted-prover-trusted-referee.html` says what the agent did, what Daniel did, and what came from published sources.
 
 ## Provenance map
 
-To be filled during the run: which published source each harness idea and each proof idea came from.
+Published sources for the harness and proof ideas:
 
 - Worker rule "translate the supplied published proof, do not invent a new one", and the `lean` or `math` classification of failed attempts that routes them to a Lean repair or to a re-plan: Magenta, arXiv 2609.11319, Appendix B.1.
 
 ## Decision log
 
 See section 10 of the design document.
+
+## License and credits
+
+The code is MIT licensed, see `LICENSE`.
+The problem statements come from [google-deepmind/formal-conjectures](https://github.com/google-deepmind/formal-conjectures) (Apache-2.0).
+The Green 72 witness data in `data/green72/` is credited in its README: Thomas Prellberg (MIT) and Achim Flammenkamp's database.
