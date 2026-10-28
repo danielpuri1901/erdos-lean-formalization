@@ -1,6 +1,6 @@
 # erdos-lean-formalization
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23733028.svg)](https://doi.org/10.5281/zenodo.23733028)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23733027.svg)](https://doi.org/10.5281/zenodo.23733027)
 
 An autonomous Claude Code agent turns published human proofs of known results into Lean 4 proofs of the exact statements in [google-deepmind/formal-conjectures](https://github.com/google-deepmind/formal-conjectures).
 The harness around the agent is measured, and every proof is verified outside the agent's reach.
@@ -36,7 +36,7 @@ See section 10 of the design document.
 
 ## Citation
 
-Daniel Puri, "Untrusted Prover, Trusted Referee: 26 Lean Proofs for formal-conjectures from an AI Agent Judged by an External Checker", 2026. DOI: 10.5281/zenodo.23733028 (release v1.0.0).
+Daniel Puri, "Untrusted Prover, Trusted Referee: 28 Lean Proofs for formal-conjectures from an AI Agent Judged by an External Checker", 2026. DOI: 10.5281/zenodo.23733027 (all versions; v1.0.1 is 10.5281/zenodo.23734014).
 
 ## License and credits
 
