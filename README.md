@@ -5,6 +5,13 @@ The harness around the agent is measured, and every proof is verified outside th
 
 Design: [docs/superpowers/specs/2026-10-02-lean-formalization-harness-design.md](docs/superpowers/specs/2026-10-02-lean-formalization-harness-design.md).
 
+## Results
+
+`PROOFS.md` lists the 26 Lean proofs that the checker accepted, each with the frozen statement, the accepted commit and the checker's log; the files are copied under `proofs/<id>/`.
+`paper/main.pdf` is a short paper on the project (source in `paper/main.tex`).
+The plain-language write-up is `docs/writeup/untrusted-prover-trusted-referee.html`, and the run records are in `docs/`.
+No open problem was solved; the two partial results on open problems are on the branches `deep/catchup` and `deep/a000224`.
+
 ## Verification path
 
 Nothing in this repository is trusted for verdicts, because the agent can edit all of it.
