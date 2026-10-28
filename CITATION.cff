@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "Untrusted Prover, Trusted Referee: 26 Lean Proofs for formal-conjectures from an AI Agent Judged by an External Checker"
+message: "If you use this work, cite it with the DOI below."
+type: software
+authors:
+  - family-names: Puri
+    given-names: Daniel
+doi: 10.5281/zenodo.23733028
+date-released: 2026-10-28
+repository-code: https://github.com/danielpuri1901/erdos-lean-formalization
+license: MIT
