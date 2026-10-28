@@ -187,7 +187,7 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <h3>Erdős problem 105 (the warm-up)</h3>
 <ul>
 <li><strong>The question.</strong> Take two separate groups of points in the plane, A and B. A has four more points than B, and A's points are not all on one line. Must some line through two A points miss every B point?</li>
-<li><strong>What was known.</strong> A person on the Erdős problems forum, Xichuan, found 10 points for A and 6 points for B where every line through two A points hits a B point. So the answer is no.</li>
+<li><strong>What was known.</strong> A person on the Erdős problems forum, Core_65536, found 10 points for A and 6 points for B where every line through two A points hits a B point, with an AI-assisted search in July 2026. So the answer is no. (The original question, with three fewer points, was answered the same way by Xichuan in 2025.)</li>
 <li><strong>What the AI did.</strong> It wrote those 16 points into Lean. Then it proved in Lean that they meet every condition, and that all 45 lines hit B.</li>
 </ul>
 
@@ -393,7 +393,7 @@ svg .alabel { fill: var(--accent); font: 600 11.5px var(--font-body); }
 <li><strong>Me.</strong> I set the goal, chose the problems, approved each stage, and made the decisions that needed a person.</li>
 <li><strong>Claude on my laptop</strong> (Opus 5.5 on day one, Fable 5.1 on day two). It built the checker and the cloud setup, fixed the problems above, searched for earlier work, and started each run.</li>
 <li><strong>Claude Opus 5.5 in the cloud.</strong> It wrote almost every Lean proof. Claude Fable 5.1 was the manager in stage 2.</li>
-<li><strong>Borrowed.</strong> The problems come from formal-conjectures (Google DeepMind). The checking tool is Comparator (the Lean team). The sandbox is <a href="https://github.com/Zouuup/landrun">landrun</a>. The working method is Terence Tao's. The counterexample for Erdős 105 is Xichuan's. The point sets for Green 72 are Flammenkamp's and Prellberg's. The 48-point graph is from the <a href="https://github.com/ipitchford/txgraffiti-order48-successor">txgraffiti-order48-successor</a> repository. The 24-point graph is from M. Fischer's paper (arXiv 2607.23664).</li>
+<li><strong>Borrowed.</strong> The problems come from formal-conjectures (Google DeepMind). The checking tool is Comparator (the Lean team). The sandbox is <a href="https://github.com/Zouuup/landrun">landrun</a>. The working method is Terence Tao's. The counterexample for Erdős 105 is Core_65536's. The point sets for Green 72 are Flammenkamp's and Prellberg's. The 48-point graph is from the <a href="https://github.com/ipitchford/txgraffiti-order48-successor">txgraffiti-order48-successor</a> repository. The 24-point graph is from M. Fischer's paper (arXiv 2607.23664).</li>
 </ul>
 
 <h2>In one line</h2>

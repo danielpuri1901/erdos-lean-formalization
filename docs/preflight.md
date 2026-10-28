@@ -48,7 +48,7 @@ It is not Daniel's own sign-off; spec section 4 item 5 still asks for his readin
 - `line[ℝ, p, q]` is Mathlib's notation for `affineSpan ℝ {p, q}`, the affine line through p and q when p ≠ q.
 - The English variant (erdosproblems.com/105, and the docstring of `Erdos105.erdos_105.variants.sub_four`) asks whether, for disjoint finite sets A and B in the plane with |A| = |B| + 4 and A not collinear, some line contains at least two points of A and no point of B.
   The formal variant is `answer(sorry) ↔ ∀ A B, ...`.
-  Xichuan's 10 plus 6 configuration answers it negatively, so the frozen challenge states `¬ ∀ A B, ...` with the inner formula copied verbatim from the pin.
+  Core_65536's 10 plus 6 configuration (forum post of 2026-07-24; earlier recorded here as Xichuan's, which is wrong: Xichuan's counterexamples are for the n-3 question) answers it negatively, so the frozen challenge states `¬ ∀ A B, ...` with the inner formula copied verbatim from the pin.
 
 ## Erdős 105 warm-up
 

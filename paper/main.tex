@@ -7,7 +7,7 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{lmodern}
-\title{Untrusted Prover, Trusted Referee:\\ 26 Lean Proofs for \texttt{formal-conjectures} from an AI Agent Judged by an External Checker}
+\title{Untrusted Prover, Trusted Referee:\\ 28 Lean Proofs for \texttt{formal-conjectures} from an AI Agent Judged by an External Checker}
 \author{Daniel Puri\\ \small \href{https://github.com/danielpuri1901/erdos-lean-formalization}{github.com/danielpuri1901/erdos-lean-formalization}}
 \date{28 October 2026}
 \begin{document}
@@ -15,7 +15,7 @@
 
 \begin{abstract}
 Google DeepMind's \texttt{formal-conjectures} library states hundreds of research problems in Lean~4, most with a hole (\texttt{sorry}) where a proof belongs.
-On 3 and 4 October 2026 I had AI agents (Claude Opus~5.5 and Claude Fable~5.1, through Claude Code) fill 26 such holes: 24 results that were already settled on paper, among them two disproofs that had no machine-checked proof, and the two Graffiti.pc conjectures that other people had proved in the months before.
+On 3 and 4 October 2026 I had AI agents (Claude Opus~5.5 and Claude Fable~5.1, through Claude Code) fill 28 such holes: 26 results that were already settled on paper, among them two disproofs that had no machine-checked proof, and two Graffiti.pc conjectures that other people had proved in the months before.
 Each proof was judged by a checker the agent cannot change: a separate repository rebuilds the agent's commit, replaces the agent's copy of the statement with a frozen one taken with \texttt{type\_of\%} from the library, and runs Comparator in a sandbox.
 The same agents spent one hour each on 16 problems the library marks open and ten more attempts on two of them.
 They solved none.
@@ -62,17 +62,17 @@ Each known result ran as one plain Claude Code cloud session (Claude Opus~5.5, h
 The branch holds the frozen statement, a \texttt{Solution.lean} with \texttt{sorry}, a lessons file shared across sessions, and a task file with the goal, the known mathematics in a few lines, the working rules and the submit rule.
 The working rules follow Terence Tao's published recipe for Claude Code and Lean: write the argument in prose first, build a skeleton with every lemma stated and \texttt{sorry}, make it compile, then fill the holes one at a time; commit after each step; keep every kernel check small because the checker machine has 7.8\,GB of memory.
 Time boxes were 15 to 90 minutes of work.
-The agent polled the commit status itself and fixed and resubmitted on failure; in the event every accepted proof passed on its first submission.
+The agent polled the commit status itself and fixed and resubmitted on failure. Of the 28 accepted proofs, 26 passed on their first submission; two day-one runs on Green~72 needed a second submission after the checker's machine ran out of memory.
 
 \section{Results on known results}
 
-Table~\ref{tab:known} lists the 26 accepted proofs.
+Table~\ref{tab:known} lists the 28 accepted proofs.
 Each entry links from \texttt{PROOFS.md} in the repository to the proof files at the accepted commit and to the checker's log.
 Proofs with large finite checks (the Witt design, the two TxGraffiti disproofs, $R(4,4)$, $R(3,5)$, the cube digraph) use \texttt{Nat} bitmasks, a Boolean checker with a soundness lemma, and \texttt{decide +kernel} in chunks; this pattern was learned in the first such run and reused through the lessons file.
 
 \begin{small}
 \begin{longtable}{p{6.0cm}p{9.2cm}}
-\caption{The 26 proofs accepted by the checker. ``Negated'' means the proof is of the negation of the library statement.}\label{tab:known}\\
+\caption{The 28 proofs accepted by the checker. ``Negated'' means the proof is of the negation of the library statement.}\label{tab:known}\\
 \toprule
 Result and library statement & Note \\
 \midrule
@@ -81,7 +81,7 @@ Result and library statement & Note \\
 Result and library statement & Note \\
 \midrule
 \endhead
-Erd\H{o}s problem 105, $n-4$ variant\newline \small\path{Erdos105.erdos_105.variants.sub_four} (negated) & The variant with $|A|=|B|+4$ is false (counterexample by Xichuan on the Erd\H{o}s problems forum). \\
+Erd\H{o}s problem 105, $n-4$ variant\newline \small\path{Erdos105.erdos_105.variants.sub_four} (negated) & The variant with $|A|=|B|+4$ is false (counterexample found by forum user Core\_65536 in July 2026 with an AI-assisted search, who also checked it in Lean). \\
 Green's problem 72, $N\le 60$\newline \small\path{Green72.no_three_in_line_le} & No three in a line on an $N\times N$ grid: the maximum is $2N$ for $3\le N\le 60$, from the published point sets of Flammenkamp and Prellberg. \\
 Clark and Suen (2000)\newline \small\path{VizingConjecture.vizing_conjecture.variants.clark_suen} & $\gamma(G)\gamma(H)\le 2\gamma(G\,\square\, H)$. \\
 Suen and Tarr (2012)\newline \small\path{VizingConjecture.vizing_conjecture.variants.suen_tarr} & $\gamma(G)\gamma(H)+\min(\gamma(G),\gamma(H))\le 2\gamma(G\,\square\, H)$. \\
@@ -107,12 +107,14 @@ OEIS A112970\newline \small\path{OeisA112970.conjecture1_value} & $a(2^n)=\lfloo
 $R(3,3)=6$\newline \small\path{RamseyNumbers.ramsey_number_three_three} &  \\
 Strong Giuga implies Carmichael\newline \small\path{AgohGiuga.agoh_giuga.variants.isStrongGiuga_implies_isCarmichael} &  \\
 2-increasing triples, powers\newline \small\path{Arxiv.1609.08688.maximalLength_pow} & $F(n)=n^e$ for one $n>1$ gives $F(m)\ge m^e$ for infinitely many $m$. \\
+Graffiti.pc conjecture 19\newline \small\path{WrittenOnTheWallII.GraphConjecture19.conjecture19} & Proved by Chen, Wang and Feng in July 2026; the library still tags it open. Found in the open-problem sweep. \\
+Graffiti.pc conjecture 100\newline \small\path{WrittenOnTheWallII.GraphConjecture100.conjecture100} & Proved by Kias Henry in August 2026; the library links his proof. Found in the open-problem sweep. \\
 \bottomrule
 \end{longtable}
 \end{small}
 
 Not all of these are first formal proofs.
-When this paper was written the library already linked proofs by other people for the Erd\H{o}s~105 variant, for A112970, for the Giuga-to-Carmichael implication and for Graffiti.pc~100, and $R(4,4)=18$ exists in Bhavik Mehta's Ramsey project with other definitions.
+When this paper was written the library already linked proofs by other people for the Erd\H{o}s~105 variant, for A112970, for the Giuga-to-Carmichael implication and for Graffiti.pc~100, and a theorem named \texttt{ramsey\_number\_four\_four} exists in Bhavik Mehta's Ramsey project, so $R(4,4)=18$ very likely has an earlier Lean proof with other definitions.
 The two TxGraffiti disproofs are the only ones for which I found no earlier Lean proof; the counterexample graphs are from Fischer and from the \texttt{txgraffiti-order48-successor} repository, and the Lean proofs add the machine check.
 
 Two known results were not finished in their time box: Chen and Saito's theorem that minimum degree~3 forces a cycle of length divisible by~3, and the Danzer--Klee bound $2^{n-1}$ for snakes in the $n$-cube.
@@ -180,7 +182,7 @@ The run records, costs and session identifiers are in \texttt{docs/}.
 The Lean proofs were written by Claude Opus~5.5 in Claude Code cloud sessions, with task files written by Claude Fable~5.1 under my direction; the stage-2 manager was Claude Fable~5.1.
 The checker, the candidate scans, the prior-work search and this text were written by Claude Fable~5.1 and Claude Opus~5.5 under my direction and with my decisions at every stage.
 I am not a mathematician.
-The mathematics in the known results is other people's: the counterexample for Erd\H{o}s~105 is Xichuan's, the point sets for Green~72 are Flammenkamp's and Prellberg's, the 24-vertex graph is Fischer's, the 48-vertex graph is from \texttt{ipitchford/txgraffiti-order48-successor}, and the theorems carry their authors' names in Table~\ref{tab:known}.
+The mathematics in the known results is other people's: the $n-4$ counterexample for Erd\H{o}s~105 is Core\_65536's (the $n-3$ counterexamples are Xichuan's), the point sets for Green~72 are Flammenkamp's and Prellberg's, the 24-vertex graph is Fischer's, the 48-vertex graph is from \texttt{ipitchford/txgraffiti-order48-successor}, and the theorems carry their authors' names in Table~\ref{tab:known}.
 The problems come from \texttt{formal-conjectures} (Google DeepMind), the checking tool is Comparator (the Lean team) and the sandbox is landrun.
 
 \end{document}
